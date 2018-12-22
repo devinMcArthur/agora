@@ -92,6 +92,64 @@ export async function getNodeByID(req, res) {
 }
 
 /**
+ * Get all sources for a Node
+ * @param req
+ * @param res
+ * @returns void
+ */
+export async function getNodeSources(req, res) {
+  try {
+    let node = await Node.findById(req.params.id);
+    let sourceArray = [],
+      src;
+
+    if (node.sources && node.sources.length > 0) {
+      let sources = node.sources.slice();
+      for (var i in sources) {
+        src = await Node.findById(sources[i]);
+        sourceArray.push(src);
+      }
+    }
+
+    res.json(sourceArray);
+  } catch (e) {
+    console.log(e);
+    let errors = {};
+    errors.general = e;
+    res.status(500).json(errors);
+  }
+}
+
+/**
+ * Get all subtopics for a Node
+ * @param req
+ * @param res
+ * @returns void
+ */
+export async function getNodeSubtopics(req, res) {
+  try {
+    let node = await Node.findById(req.params.id);
+    let subtopicArray = [],
+      src;
+
+    if (node.subtopics && node.subtopics.length > 0) {
+      let subtopics = node.subtopics.slice();
+      for (var i in subtopics) {
+        src = await Node.findById(subtopics[i]);
+        subtopicArray.push(src);
+      }
+    }
+
+    res.json(subtopicArray);
+  } catch (e) {
+    console.log(e);
+    let errors = {};
+    errors.general = e;
+    res.status(500).json(errors);
+  }
+}
+
+/**
  * Get all root nodes
  * @param req
  * @param res
