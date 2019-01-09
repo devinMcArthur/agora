@@ -3,22 +3,19 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 
-import { createNode, getAllNodesForSelect } from "../NodeActions";
+import { editNode, getAllNodesForSelect } from "../NodeActions";
 
 import SelectMultiple from "../../../components/SelectMultiple";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 
-class NodeForm extends Component {
-  constructor() {
-    super();
+class EditNodeForm extends Component {
+  constructor(props) {
+    super(props);
 
     this.state = {
-      title: "",
-      content: "",
-      subtopics: [],
-      sources: [],
+      content: this.props.node.node.content.string,
       errors: {}
     };
 
@@ -29,7 +26,7 @@ class NodeForm extends Component {
   }
 
   componentDidMount() {
-    if (this.props.node.allNodes == null && !this.props.node.loading) {
+    if (this.props.node.formNodes === null && !this.props.node.loading) {
       this.props.getAllNodesForSelect();
     }
   }
@@ -37,13 +34,9 @@ class NodeForm extends Component {
   onSubmit(e) {
     e.preventDefault();
     let newData = {
-      title: this.state.title,
-      content: this.state.content,
-      subtopics: this.state.subtopics,
-      sources: this.state.sources,
-      author: this.props.auth.user.id
+      content: this.state.content
     };
-    this.props.createNode(newData);
+    this.props.editNode(newData);
   }
 
   onChange(e) {
@@ -76,21 +69,12 @@ class NodeForm extends Component {
 
   render() {
     let content;
-    if (this.props.node.formNodes !== null) {
+    if (this.props.node !== null && this.props.node.formNodes !== null) {
       content = (
         <div>
           <Paper>
-            <h4>Add a New Idea (Node)</h4>
+            <h4>Edit this Node</h4>
             <form onSubmit={this.onSubmit}>
-              <TextField
-                id="title"
-                label="Title of Idea"
-                name="title"
-                onChange={this.onChange}
-                value={this.state.title}
-                margin="normal"
-                variant="outlined"
-              />
               <TextField
                 id="content"
                 label="Description of Idea"
@@ -105,11 +89,13 @@ class NodeForm extends Component {
                 placeholder="Select sources for this subject"
                 onChange={this.onSourceSelect}
                 options={this.props.node.formNodes}
+                defaultValues={this.props.node.formNodes}
               />
               <SelectMultiple
                 placeholder="Select subtopics that belong to this subject"
                 onChange={this.onSubtopicSelect}
                 options={this.props.node.formNodes}
+                defaultValues={this.props.node.formNodes}
               />
               <Button type="submit" color="primary">
                 Submit
@@ -129,15 +115,15 @@ class NodeForm extends Component {
 // Retrieve data from store as props
 const mapStateToProps = state => ({
   auth: state.auth,
-  node: state.node
+  node: state.auth
 });
 
-NodeForm.propTypes = {
+EditNodeForm.propTypes = {
   auth: PropTypes.object.isRequired,
-  createNode: PropTypes.func.isRequired
+  node: PropTypes.object.isRequired
 };
 
 export default connect(
   mapStateToProps,
-  { createNode, getAllNodesForSelect }
-)(NodeForm);
+  { editNode, getAllNodesForSelect }
+)(EditNodeForm);

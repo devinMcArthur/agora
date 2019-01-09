@@ -4,12 +4,21 @@ import { connect } from "react-redux";
 import { Link } from "react-router";
 
 import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+
+import EditNodeForm from "../components/EditNodeForm";
 
 import { getNodeByID } from "../NodeActions";
 
 class Node extends Component {
   constructor() {
     super();
+
+    this.state = {
+      editFormToggle: false,
+    }
+
+    this.toggleEditForm = this.toggleEditForm.bind(this);
   }
 
   componentDidMount() {
@@ -18,16 +27,24 @@ class Node extends Component {
     }
   }
 
-  render() {
-    console.log("Props:", this.props);
-    console.log("State:", this.state);
+  toggleEditForm() {
+    this.setState({ editFormToggle: !this.state.editFormToggle });
+  }
 
+  render() {
+    let {editFormToggle} = this.state;
     let content;
     if (this.props.node.node !== null) {
-      let node,
-        sources = [],
-        subtopics = [];
-      node = this.props.node.node;
+      let sources = [],
+        subtopics = [],
+        editForm;
+      let node = this.props.node.node;
+
+      if (editFormToggle) {
+        editForm = <div><EditNodeForm node={node} /></div>
+      } else {
+        editForm = ""
+      }
 
       // Sources
       if (node.sources.length > 0) {
@@ -52,6 +69,10 @@ class Node extends Component {
         <div>
           <h1>{node.title}</h1>
           <p>{sources}</p>
+          <Button variant="contained" onClick={this.toggleEditForm}>
+          Edit Node
+        </Button>
+          {editForm}
           <br />
           <Paper style={{ padding: "1em" }}>{node.content.string}</Paper>
           <br />
