@@ -10,7 +10,7 @@ import Button from "@material-ui/core/Button";
 import NodeForm from "../../../Node/components/NodeForm";
 import NodeList from "../../../Node/components/NodeList";
 
-import { getRootNodes } from "../../../Node/NodeActions";
+import { getRootNodes, clearNodes } from "../../../Node/NodeActions";
 
 class Home extends Component {
   constructor() {
@@ -18,6 +18,10 @@ class Home extends Component {
 
     this.state = {
       nodeFormToggle: false,
+      title: "",
+      content: "",
+      subtopics: [],
+      sources: [],
       errors: {}
     };
 
@@ -31,14 +35,20 @@ class Home extends Component {
     this.props.getRootNodes();
   }
 
+  componentWillUnmount() {
+    this.props.clearNodes();
+  }
+
   nodeFormToggle() {
     this.setState({ nodeFormToggle: !this.state.nodeFormToggle });
   }
 
   render() {
-    let nodeForm;
+    let nodeForm,
+      nodeFormComp = <NodeForm />;
+
     if (this.state.nodeFormToggle) {
-      nodeForm = <NodeForm />;
+      nodeForm = nodeFormComp;
     } else {
       nodeForm = "";
     }
@@ -73,5 +83,5 @@ Home.propTypes = {
 
 export default connect(
   mapStateToProps,
-  { getRootNodes }
+  { getRootNodes, clearNodes }
 )(Home);
