@@ -16,6 +16,8 @@ class EditNodeForm extends Component {
 
     this.state = {
       content: this.props.node.node.content.string,
+      sources: this.props.node.node.sources,
+      subtopics: this.props.node.node.subtopics,
       errors: {}
     };
 
@@ -34,7 +36,11 @@ class EditNodeForm extends Component {
   onSubmit(e) {
     e.preventDefault();
     let newData = {
-      content: this.state.content
+      id: this.props.node.node._id,
+      content: this.state.content,
+      sources: this.state.sources,
+      subtopics: this.state.subtopics,
+      author: this.props.auth.user.id
     };
     this.props.editNode(newData);
   }
@@ -70,6 +76,26 @@ class EditNodeForm extends Component {
   render() {
     let content;
     if (this.props.node !== null && this.props.node.formNodes !== null) {
+      let subtopicOptions = [],
+        sourceOptions = [];
+
+      for (var i in this.props.node.formNodes) {
+        if (
+          this.props.node.node.subtopics.includes(
+            this.props.node.formNodes[i].value
+          )
+        ) {
+          subtopicOptions.push(this.props.node.formNodes[i]);
+        }
+        if (
+          this.props.node.node.sources.includes(
+            this.props.node.formNodes[i].value
+          )
+        ) {
+          sourceOptions.push(this.props.node.formNodes[i]);
+        }
+      }
+
       content = (
         <div>
           <Paper>
@@ -89,13 +115,13 @@ class EditNodeForm extends Component {
                 placeholder="Select sources for this subject"
                 onChange={this.onSourceSelect}
                 options={this.props.node.formNodes}
-                defaultValues={this.props.node.formNodes}
+                defaultValue={sourceOptions}
               />
               <SelectMultiple
                 placeholder="Select subtopics that belong to this subject"
                 onChange={this.onSubtopicSelect}
                 options={this.props.node.formNodes}
-                defaultValues={this.props.node.formNodes}
+                defaultValue={subtopicOptions}
               />
               <Button type="submit" color="primary">
                 Submit
@@ -115,7 +141,7 @@ class EditNodeForm extends Component {
 // Retrieve data from store as props
 const mapStateToProps = state => ({
   auth: state.auth,
-  node: state.auth
+  node: state.node
 });
 
 EditNodeForm.propTypes = {

@@ -11,14 +11,25 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 
 class NodeForm extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
+    let defaultSources = [],
+      sources = [];
+    if (this.props.node.node !== null) {
+      sources.push(this.props.node.node._id);
+      defaultSources.push({
+        label: this.props.node.node.title,
+        value: this.props.node.node._id.toString()
+      });
+    }
 
     this.state = {
       title: "",
       content: "",
       subtopics: [],
-      sources: [],
+      sources,
+      defaultSources,
       errors: {}
     };
 
@@ -75,6 +86,7 @@ class NodeForm extends Component {
   }
 
   render() {
+    console.log(this.state);
     let content;
     if (this.props.node.formNodes !== null) {
       content = (
@@ -105,6 +117,7 @@ class NodeForm extends Component {
                 placeholder="Select sources for this subject"
                 onChange={this.onSourceSelect}
                 options={this.props.node.formNodes}
+                defaultValue={this.state.defaultSources}
               />
               <SelectMultiple
                 placeholder="Select subtopics that belong to this subject"

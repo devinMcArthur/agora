@@ -33,6 +33,14 @@ const nodeSchema = new Schema({
   },
   sources: {
     type: [Schema.Types.ObjectId]
+  },
+  version: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  versions: {
+    type: [Schema.Types.ObjectId]
   }
 });
 

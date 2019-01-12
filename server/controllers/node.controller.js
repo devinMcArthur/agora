@@ -3,6 +3,9 @@ import { ObjectId } from "mongodb";
 
 import validateNodeInput from "../validators/validateNodeInput";
 
+import { addSource } from "../util/addSource";
+import { addSubtopic } from "../util/addSubtopic";
+
 // Highlight Array Legend
 // 0: Nothing
 // 1: Speculation
@@ -21,7 +24,6 @@ import validateNodeInput from "../validators/validateNodeInput";
  */
 export async function createNode(req, res) {
   try {
-    console.log(req.body);
     const { isValid, errors } = validateNodeInput(req.body);
     if (!isValid) {
       console.log(errors);
@@ -53,16 +55,34 @@ export async function createNode(req, res) {
 
     node = await node.save();
 
-    if (node.sources && node.sources.length > 0) {
-      node.sources.forEach(async source => {
-        // ADD THIS NODE AS SUBTOPIC TO SOURCE NODES
-        await Node.findByIdAndUpdate(
-          source,
-          { $push: { subtopics: ObjectId(node._id) } },
-          { new: true }
-        );
-      });
-    }
+    addSource(node, req.body.sources);
+    addSubtopic(node, req.body.subtopics);
+
+    res.end();
+  } catch (e) {
+    console.log(e);
+    let errors = {};
+    errors.general = e;
+    res.status(500).json(errors);
+  }
+}
+
+/**
+ * Edit a node
+ * @param req
+ * @param res
+ * @returns void
+ */
+export async function editNode(req, res) {
+  try {
+    console.log(req.body);
+    let node = await Node.findById(req.params.id);
+    node.version++;
+
+    node.content.string = req.body.content;
+    addSource(node, req.body.sources);
+    addSubtopic(node, req.body.subtopics);
+    await node.save();
 
     res.end();
   } catch (e) {
@@ -157,7 +177,9 @@ export async function getNodeSubtopics(req, res) {
  */
 export async function getRootNodes(req, res) {
   try {
-    let nodes = await Node.find({ sources: { $eq: [] } });
+    let nodes = await Node.find({
+      sources: { $eq: [] }
+    });
     res.json(nodes);
   } catch (e) {
     console.log(e);

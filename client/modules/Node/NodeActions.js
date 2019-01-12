@@ -21,6 +21,13 @@ export const createNode = node => dispatch => {
     .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
 };
 
+// Edit a node
+export const editNode = node => dispatch => {
+  return callApi(`node/${node.id}/edit`, "post", node)
+    .then(res => location.reload())
+    .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
+};
+
 // Get all root nodes (no sources)
 export const getRootNodes = () => dispatch => {
   dispatch(setNodeLoading());

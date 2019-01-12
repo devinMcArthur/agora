@@ -20,4 +20,7 @@ router.route("/node/:id/subtopics").get(NodeController.getNodeSubtopics);
 // Create a node
 router.route("/node").post(NodeController.createNode);
 
+// Edit a node
+router.route("/node/:id/edit").post(NodeController.editNode);
+
 export default router;

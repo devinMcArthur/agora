@@ -24,7 +24,7 @@ class Node extends Component {
     this.state = {
       editFormToggle: false,
       nodeFormToggle: false
-    }
+    };
 
     this.toggleEditForm = this.toggleEditForm.bind(this);
     this.nodeFormToggle = this.nodeFormToggle.bind(this);
@@ -45,7 +45,6 @@ class Node extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log("Update", this.props);
     if (
       this.props.node.node !== null &&
       this.props.node.node.subtopics &&
@@ -75,28 +74,32 @@ class Node extends Component {
     this.setState({ nodeFormToggle: !this.state.nodeFormToggle });
   }
 
-
   render() {
-    let {editFormToggle} = this.state;
+    let { editFormToggle, nodeFormToggle } = this.state;
     let content;
     if (this.props.node.node !== null) {
-      let sources = [],
-        subtopics = [],
-        editForm;
+      let sourceJSX = [],
+        subtopicJSX = [],
+        editForm,
+        nodeForm;
       let node = this.props.node.node;
 
       if (editFormToggle) {
-        editForm = <div><EditNodeForm node={node} /></div>
+        editForm = (
+          <div>
+            <EditNodeForm node={node} />
+          </div>
+        );
       } else {
-        editForm = ""
+        console.log("hi");
+        editForm = "";
       }
 
-
-      if (this.state.nodeFormToggle) {
+      if (nodeFormToggle) {
         nodeForm = <NodeForm />;
       }
 
-      let { node, subtopics, sources } = this.props.node;
+      let { subtopics, sources } = this.props.node;
 
       // Sources
       if (sources && sources.length > 0) {
@@ -115,9 +118,8 @@ class Node extends Component {
       } else {
         sourceJSX.push(
           <span>
-            #
             <Link to={"/"} style={{ textDecoration: "none" }}>
-              /
+              #root
             </Link>{" "}
           </span>
         );
@@ -149,18 +151,17 @@ class Node extends Component {
       // FINAL CONTENT THAT WILL BE LOADED
       content = (
         <div>
-          <Button variant="contained" onClick={this.nodeFormToggle}>
-            Add an Idea
-          </Button>
+          <div className="row">
+            <Button variant="contained" onClick={this.nodeFormToggle}>
+              Add an Idea
+            </Button>
+            <Button variant="contained" onClick={this.toggleEditForm}>
+              Edit Node
+            </Button>
+          </div>
           {nodeForm}
-          <h1>{node.title}</h1>
-          <p>{sources}</p>
-          <Button variant="contained" onClick={this.toggleEditForm}>
-          Edit Node
-        </Button>
           {editForm}
-          <br />
-          <Paper style={{ padding: "1em" }}>{node.content.string}</Paper>
+          <h1>{node.title}</h1>
           {sourceJSX}
           <br />
           <Paper style={{ padding: "0.5em" }}>
