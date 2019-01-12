@@ -58,6 +58,13 @@ mongoose.Promise = global.Promise;
 
 // MongoDB Connection
 if (process.env.NODE_ENV !== "test") {
+  const db = mongoose.connection;
+
+  db.on("error", console.error);
+  db.once("open", function(res) {
+    dummyData(); //put this here instead of inside mongoose.connect
+  });
+
   mongoose.connect(
     keys.mongoURI,
     error => {
@@ -65,9 +72,6 @@ if (process.env.NODE_ENV !== "test") {
         console.error("Please make sure Mongodb is installed and running!"); // eslint-disable-line no-console
         throw error;
       }
-
-      // feed some dummy data in DB.
-      dummyData();
     }
   );
 }
