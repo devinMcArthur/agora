@@ -7,7 +7,7 @@
     "watch:test": "npm run test -- --watch",
     "cover": "nyc npm run test",
     "check-coverage": "nyc check-coverage --statements 100 --branches 100 --functions 100 --lines 100",
-    "start": "cross-env NODE_ENV=production MONGO_URL=mongodb://devinMcArthur:chaos1@ds139934.mlab.com:39934/agora-dev node index.js",
+    "start": "cross-env BABEL_DISABLE_CACHE=1 NODE_ENV=development nodemon index.js",
     "start:prod": "cross-env NODE_ENV=production node index.js",
     "bs": "npm run clean && npm run build && npm run build:server && npm run start:prod",
     "build": "cross-env NODE_ENV=production webpack --config webpack.config.prod.js",
@@ -61,7 +61,9 @@
     "redux-thunk": "^2.1.0",
     "sanitize-html": "^1.11.4",
     "sigma": "1.2.1",
-    "validator": "10.9.0",
+    "validator": "10.9.0"
+  },
+  "devDependencies": {
     "ava": "^0.15.2",
     "babel-eslint": "^6.0.4",
     "babel-loader": "^7.1.2",
@@ -121,7 +123,6 @@
     "webpack-manifest-plugin": "^1.3.2",
     "webpack2-externals-plugin": "^1.0.0"
   },
-  "devDependencies": {},
   "engines": {
     "node": ">=6"
   },
