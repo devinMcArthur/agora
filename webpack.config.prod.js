@@ -1,37 +1,36 @@
-var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var ManifestPlugin = require('webpack-manifest-plugin');
-var ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
-var cssnext = require('postcss-cssnext');
-var postcssFocus = require('postcss-focus');
-var postcssReporter = require('postcss-reporter');
-var cssnano = require('cssnano');
+var webpack = require("webpack");
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var ManifestPlugin = require("webpack-manifest-plugin");
+var ChunkManifestPlugin = require("chunk-manifest-webpack-plugin");
+var cssnext = require("postcss-cssnext");
+var postcssFocus = require("postcss-focus");
+var postcssReporter = require("postcss-reporter");
+var cssnano = require("cssnano");
 
 module.exports = {
-  devtool: 'hidden-source-map',
+  devtool: "hidden-source-map",
 
-  entry: {
-    app: [
-      './client/index.js',
-    ],
-    vendor: [
-      'react',
-      'react-dom',
-    ]
-  },
+  // entry: {
+  //   app: [
+  //     './client/index.js',
+  //   ],
+  //   vendor: [
+  //     'react',
+  //     'react-dom',
+  //   ]
+  // },
+
+  entry: ["babel-polyfill", __dirname + "/client/index.js"],
 
   output: {
-    path: __dirname + '/dist/client/',
-    filename: '[name].[chunkhash].js',
-    publicPath: '/',
+    path: __dirname + "/dist/client/",
+    filename: "[name].[chunkhash].js",
+    publicPath: "/"
   },
 
   resolve: {
-    extensions: ['.js', '.jsx'],
-    modules: [
-      'client',
-      'node_modules',
-    ],
+    extensions: [".js", ".jsx"],
+    modules: ["client", "node_modules"]
   },
 
   module: {
@@ -40,82 +39,82 @@ module.exports = {
         test: /\.s?css$/,
         exclude: /node_modules/,
         use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
+          fallback: "style-loader",
           use: [
             {
-              loader: 'css-loader',
+              loader: "css-loader",
               options: {
-                localIdentName: '[hash:base64]',
+                localIdentName: "[hash:base64]",
                 modules: true,
-                importLoaders: 1,
-              },
+                importLoaders: 1
+              }
             },
             {
-              loader: 'postcss-loader',
+              loader: "postcss-loader",
               options: {
                 plugins: () => [
                   postcssFocus(),
                   cssnext({
-                    browsers: ['last 2 versions', 'IE > 10'],
+                    browsers: ["last 2 versions", "IE > 10"]
                   }),
                   cssnano({
-                    autoprefixer: false,
+                    autoprefixer: false
                   }),
                   postcssReporter({
-                    clearMessages: true,
-                  }),
-                ],
-              },
-            },
-          ],
-        }),
+                    clearMessages: true
+                  })
+                ]
+              }
+            }
+          ]
+        })
       },
       {
         test: /\.css$/,
         include: /node_modules/,
-        use: ['style-loader', 'css-loader'],
+        use: ["style-loader", "css-loader"]
       },
       {
         test: /\.jsx*$/,
         exclude: /node_modules/,
-        use: 'babel-loader',
+        use: "babel-loader"
       },
       {
         test: /\.(jpe?g|gif|png|svg)$/i,
         use: [
           {
-            loader: 'url-loader',
+            loader: "url-loader",
             options: {
-              limit: 10000,
-            },
-          },
-        ],
-      },
-    ],
+              limit: 10000
+            }
+          }
+        ]
+      }
+    ]
   },
 
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production'),
+      "process.env": {
+        NODE_ENV: JSON.stringify("production")
       }
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
+      name: "vendor",
       minChunks: Infinity,
-      filename: 'vendor.js',
+      filename: "vendor.js"
     }),
     new ExtractTextPlugin({
-      filename: 'app.[contenthash].css',
-      allChunks: true,
+      filename: "app.[contenthash].css",
+      allChunks: true
     }),
     new ManifestPlugin({
-      basePath: '/',
+      basePath: "/"
     }),
     new ChunkManifestPlugin({
       filename: "chunk-manifest.json",
-      manifestVariable: "webpackManifest",
+      manifestVariable: "webpackManifest"
     }),
-    new webpack.optimize.UglifyJsPlugin(),
-  ],
+    new webpack.optimize.UglifyJsPlugin()
+  ]
 };
