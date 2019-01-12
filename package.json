@@ -61,7 +61,8 @@
     "sanitize-html": "^1.11.4",
     "sigma": "1.2.1",
     "validator": "10.9.0",
-    "rimraf": "^2.5.2"
+    "rimraf": "^2.5.2",
+    "webpack": "^3.10.0"
   },
   "devDependencies": {
     "ava": "^0.15.2",
@@ -115,7 +116,6 @@
     "style-loader": "^0.19.1",
     "supertest": "^1.2.0",
     "url-loader": "^0.5.7",
-    "webpack": "^3.10.0",
     "webpack-dev-middleware": "^1.12.2",
     "webpack-dev-server": "^2.9.7",
     "webpack-hot-middleware": "^2.21.0",
