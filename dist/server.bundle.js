@@ -1,4 +1,5 @@
 /******/ (function(modules) { // webpackBootstrap
+/******/  require("babel-core/register");
 /******/  require("babel-polyfill");
 
 /******/ 	// The module cache
