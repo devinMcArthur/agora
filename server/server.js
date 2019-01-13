@@ -61,9 +61,7 @@ if (process.env.NODE_ENV !== "test") {
   const db = mongoose.connection;
 
   db.on("error", console.error);
-  db.once("open", function(res) {
-    dummyData(); //put this here instead of inside mongoose.connect
-  });
+  db.once("open", function(res) {});
 
   mongoose.connect(
     keys.mongoURI,

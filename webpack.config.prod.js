@@ -7,10 +7,15 @@ var postcssFocus = require("postcss-focus");
 var postcssReporter = require("postcss-reporter");
 var cssnano = require("cssnano");
 
+require("babel-core/register");
+require("babel-polyfill");
+
 module.exports = {
   devtool: "hidden-source-map",
 
-  entry: ["babel-polyfill", __dirname + "/client/index.js"],
+  entry: {
+    index: ["babel-polyfill", __dirname + "/client/index.js"]
+  },
 
   output: {
     path: __dirname + "/dist/client/",
