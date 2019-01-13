@@ -1,5 +1,5 @@
 /******/ (function(modules) { // webpackBootstrap
-/******/  import "babel-polyfill";
+/******/  require("babel-polyfill");
 
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
