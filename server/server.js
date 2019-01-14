@@ -108,7 +108,7 @@ const renderFullPage = (html, initialState) => {
 
         ${
           isProdMode
-            ? `<link rel='stylesheet' href='${assetsManifest["/app.*.css"]}' />`
+            ? `<link rel='stylesheet' href='${assetsManifest["/app.css"]}' />`
             : ""
         }
         <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'/>

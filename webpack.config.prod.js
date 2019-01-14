@@ -100,7 +100,7 @@ module.exports = {
       filename: "vendor.js"
     }),
     new ExtractTextPlugin({
-      filename: "app.[contenthash].css",
+      filename: "app.css",
       allChunks: true
     }),
     new ManifestPlugin({
