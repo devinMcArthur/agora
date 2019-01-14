@@ -85,7 +85,7 @@ app.use("/api", nodes);
 
 // Render Initial HTML
 const renderFullPage = (html, initialState) => {
-  console.log("RENDERFULLPAGE");
+  console.log(process.env);
 
   const head = Helmet.rewind();
 

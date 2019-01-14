@@ -2333,7 +2333,7 @@ app.use("/api", _node2.default);
 
 // Render Initial HTML
 var renderFullPage = function renderFullPage(html, initialState) {
-  console.log("RENDERFULLPAGE");
+  console.log(process.env);
 
   var head = _reactHelmet2.default.rewind();
 
