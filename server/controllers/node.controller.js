@@ -212,3 +212,32 @@ export async function getAllNodesForSelect(req, res) {
     res.status(500).json(errors);
   }
 }
+
+/**
+ * Remove duplicate sources and subtopics from all nodes
+ * @param req
+ * @param res
+ * @returns void
+ */
+export async function removeDuplicateSourcesAndSubtopics(req, res) {
+  try {
+    let nodes = await Node.find();
+    nodes.forEach(async node => {
+      node.sources = node.sources.filter((elem, index, self) => {
+        return index == self.indexOf(elem);
+      });
+      node.subtopics = node.subtopics.filter((elem, index, self) => {
+        return index == self.indexOf(elem);
+      });
+      await node.save();
+    });
+
+    console.log("Big success");
+    res.end();
+  } catch (e) {
+    console.log(e);
+    let errors = {};
+    errors.general = e;
+    res.status(500).json(errors);
+  }
+}

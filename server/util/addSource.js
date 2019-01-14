@@ -1,11 +1,11 @@
 import Node from "../models/node";
-import { ObjectId } from "mongodb";
+import mongoose from "mongoose";
 
 export async function addSource(node, sources) {
   try {
     let nodeId = ObjectId(node._id);
     if (sources.length > 0) {
-      // Find items that have been removed, remove subtopic relationship in that node
+      // Find items that have been removed, remove subtopic relationship from that node
       let oldSources = node.sources.filter(
         x => !sources.includes(x.toString())
       );
@@ -17,14 +17,17 @@ export async function addSource(node, sources) {
         );
       });
 
-      // Find objects that are new, add subtopic relationship in that node
+      // Find objects that are new, add subtopic relationship from that node
       let newSources = sources.filter(
-        newSource => !node.sources.includes(ObjectId(newSource))
+        newSource =>
+          !node.sources.some(source =>
+            source.equals(mongoose.Types.ObjectId(newSource))
+          )
       );
       newSources.forEach(async source => {
         await Node.findByIdAndUpdate(
           source,
-          { $push: { subtopics: nodeId } },
+          { $addToSet: { subtopics: nodeId } },
           { new: true }
         );
       });

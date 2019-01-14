@@ -74,6 +74,10 @@ class Node extends Component {
     this.setState({ nodeFormToggle: !this.state.nodeFormToggle });
   }
 
+  createMarkup(string) {
+    return { __html: string };
+  }
+
   render() {
     let { editFormToggle, nodeFormToggle } = this.state;
     let content;
@@ -84,6 +88,8 @@ class Node extends Component {
         nodeForm;
       let node = this.props.node.node;
 
+      console.log(node.content.string.split("\n"));
+
       if (editFormToggle) {
         editForm = (
           <div>
@@ -91,7 +97,6 @@ class Node extends Component {
           </div>
         );
       } else {
-        console.log("hi");
         editForm = "";
       }
 
@@ -139,14 +144,26 @@ class Node extends Component {
               {subtopic.content.string === "" ? (
                 "No Content"
               ) : (
-                <p>{subtopic.content.string}</p>
+                <div
+                  dangerouslySetInnerHTML={this.createMarkup(
+                    subtopic.content.string
+                  )}
+                />
               )}
             </Paper>
           );
         });
       } else {
-        subtopicJSX = <p>This Subject does not have any subtopics!</p>;
+        subtopicJSX = "";
       }
+
+      // render new lines
+      let count = 0,
+        nodeContent = [];
+      node.content.string.split("\n").forEach(line => {
+        nodeContent.push(<p key={`line-${count}`}>{line}</p>);
+        count++;
+      });
 
       // FINAL CONTENT THAT WILL BE LOADED
       content = (
@@ -165,7 +182,7 @@ class Node extends Component {
           {sourceJSX}
           <br />
           <Paper style={{ padding: "0.5em" }}>
-            <p>{node.content.string}</p>
+            {nodeContent}
             <div>{subtopicJSX}</div>
           </Paper>
         </div>

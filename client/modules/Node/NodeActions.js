@@ -83,6 +83,13 @@ export const getSubtopics = id => dispatch => {
     .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
 };
 
+// Remove duplicate sources and subtopics from all nodes
+export const clearDuplicateSourceAndSubtopics = dispatch => {
+  return callApi("/node/remove/duplicates/all", "get")
+    .then(res => location.reload())
+    .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
+};
+
 export const clearNodes = () => {
   return {
     type: CLEAR_NODES

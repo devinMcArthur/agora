@@ -1,5 +1,5 @@
 import Node from "../models/node";
-import { ObjectId } from "mongodb";
+import mongoose from "mongoose";
 
 export async function addSubtopic(node, subtopics) {
   try {
@@ -9,6 +9,7 @@ export async function addSubtopic(node, subtopics) {
       let oldSubtopics = node.subtopics.filter(
         x => !subtopics.includes(x.toString())
       );
+      console.log(oldSubtopics);
       oldSubtopics.forEach(async subtopic => {
         await Node.findByIdAndUpdate(
           subtopic,
@@ -19,12 +20,16 @@ export async function addSubtopic(node, subtopics) {
 
       // Find objects that are new, add source relationship in that node
       let newSubtopics = subtopics.filter(
-        newSubtopic => !node.subtopics.includes(ObjectId(newSubtopic))
+        newSubtopic =>
+          !node.subtopics.some(subtopic =>
+            subtopic.equals(mongoose.Types.ObjectId(newSubtopic))
+          )
       );
+      console.log(newSubtopics);
       newSubtopics.forEach(async subtopic => {
         await Node.findByIdAndUpdate(
           subtopic,
-          { $push: { sources: nodeId } },
+          { $addToSet: { sources: nodeId } },
           { new: true }
         );
       });

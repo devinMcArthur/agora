@@ -23,4 +23,9 @@ router.route("/node").post(NodeController.createNode);
 // Edit a node
 router.route("/node/:id/edit").post(NodeController.editNode);
 
+// Remove Duplicate Sources and Subtopics from all Nodes
+router
+  .route("/node/remove/duplicates/all")
+  .get(NodeController.removeDuplicateSourcesAndSubtopics);
+
 export default router;

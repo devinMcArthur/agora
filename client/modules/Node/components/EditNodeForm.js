@@ -76,6 +76,7 @@ class EditNodeForm extends Component {
   }
 
   render() {
+    console.log(this.state);
     let content;
     if (this.props.node !== null && this.props.node.formNodes !== null) {
       let subtopicOptions = [],

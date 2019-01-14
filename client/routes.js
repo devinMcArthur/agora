@@ -25,6 +25,9 @@ if (process.env.NODE_ENV !== "production") {
   require("./modules/App/components/Homepage/Home");
   // Node Components
   require("./modules/Node/pages/Node");
+
+  // Admin
+  require("./modules/App/components/Admin/Admin");
 }
 
 // react-router setup with code-splitting
@@ -63,6 +66,14 @@ export default (
       getComponent={(nextState, cb) => {
         require.ensure([], require => {
           cb(null, require("./modules/Auth/pages/SignupPage").default);
+        });
+      }}
+    />
+    <Route
+      path="/admin"
+      getComponent={(nextState, cb) => {
+        require.ensure([], require => {
+          cb(null, require("./modules/App/components/Admin/Admin").default);
         });
       }}
     />
