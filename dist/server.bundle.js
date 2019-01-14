@@ -2333,8 +2333,6 @@ app.use("/api", _node2.default);
 
 // Render Initial HTML
 var renderFullPage = function renderFullPage(html, initialState) {
-  console.log(process.env);
-
   var head = _reactHelmet2.default.rewind();
 
   // Import Manifests
@@ -2368,7 +2366,6 @@ app.use(function (req, res, next) {
     var store = (0, _store.configureStore)();
 
     return (0, _fetchData.fetchComponentData)(store, renderProps.components, renderProps.params).then(function () {
-      console.log("FETCHCOMPONENTDATA");
       var initialView = (0, _server.renderToString)((0, _jsx3.default)(_reactRedux.Provider, {
         store: store
       }, void 0, (0, _jsx3.default)(_IntlWrapper2.default, {}, void 0, _react2.default.createElement(_reactRouter.RouterContext, renderProps))));
@@ -2386,8 +2383,7 @@ var port = process.env.PORT || 8000;
 // start app
 app.listen(port, function (error) {
   if (!error) {
-    console.log("MERN is running on port: " + port + "! Build something amazing!!!"); // eslint-disable-line
-    console.log("Hello World!");
+    console.log("MERN is running on port: " + port + "! Build something amazing!"); // eslint-disable-line
   }
 });
 
@@ -3439,7 +3435,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Import Style
 function Footer() {
   return (0, _jsx3.default)("div", {
-    style: { background: "#FFF url(" + _headerBk2.default + ") center" },
+    style: { background: "#FFF center" },
     className: _Footer2.default.footer
   }, void 0, (0, _jsx3.default)("p", {
     style: { color: "black" }

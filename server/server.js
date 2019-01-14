@@ -85,8 +85,6 @@ app.use("/api", nodes);
 
 // Render Initial HTML
 const renderFullPage = (html, initialState) => {
-  console.log(process.env);
-
   const head = Helmet.rewind();
 
   // Import Manifests
@@ -172,7 +170,6 @@ app.use((req, res, next) => {
 
     return fetchComponentData(store, renderProps.components, renderProps.params)
       .then(() => {
-        console.log("FETCHCOMPONENTDATA");
         const initialView = renderToString(
           <Provider store={store}>
             <IntlWrapper>
@@ -196,8 +193,7 @@ const port = process.env.PORT || 8000;
 // start app
 app.listen(port, error => {
   if (!error) {
-    console.log(`MERN is running on port: ${port}! Build something amazing!!!`); // eslint-disable-line
-    console.log("Hello World!");
+    console.log(`MERN is running on port: ${port}! Build something amazing!`); // eslint-disable-line
   }
 });
 

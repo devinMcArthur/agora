@@ -9,10 +9,7 @@ import bg from "../../header-bk.png";
 
 export function Footer() {
   return (
-    <div
-      style={{ background: `#FFF url(${bg}) center` }}
-      className={styles.footer}
-    >
+    <div style={{ background: `#FFF center` }} className={styles.footer}>
       <p style={{ color: "black" }}>
         &copy; 2019 &middot; Devin McArthur &middot; Solitaire Design
       </p>
