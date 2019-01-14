@@ -170,6 +170,7 @@ app.use((req, res, next) => {
 
     return fetchComponentData(store, renderProps.components, renderProps.params)
       .then(() => {
+        console.log("FETCHCOMPONENTDATA");
         const initialView = renderToString(
           <Provider store={store}>
             <IntlWrapper>
