@@ -14,7 +14,8 @@ module.exports = {
   devtool: "hidden-source-map",
 
   entry: {
-    index: ["babel-polyfill", __dirname + "/client/index.js"]
+    app: ["./client/index.js"],
+    vendor: ["react", "react-dom"]
   },
 
   output: {
@@ -100,7 +101,7 @@ module.exports = {
       filename: "vendor.js"
     }),
     new ExtractTextPlugin({
-      filename: "app.css",
+      filename: "app.[contenthash].css",
       allChunks: true
     }),
     new ManifestPlugin({
