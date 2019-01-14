@@ -56,6 +56,8 @@ import keys from "./config/keys";
 // Set native promises as mongoose promise
 mongoose.Promise = global.Promise;
 
+console.log("SERVER");
+
 // MongoDB Connection
 if (process.env.NODE_ENV !== "test") {
   const db = mongoose.connection;
