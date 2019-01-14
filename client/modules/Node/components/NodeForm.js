@@ -86,7 +86,6 @@ class NodeForm extends Component {
   }
 
   render() {
-    console.log(this.state);
     let content;
     if (this.props.node.formNodes !== null) {
       content = (

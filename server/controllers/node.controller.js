@@ -75,11 +75,10 @@ export async function createNode(req, res) {
  */
 export async function editNode(req, res) {
   try {
-    console.log(req.body);
     let node = await Node.findById(req.params.id);
     node.version++;
 
-    node.content.string = req.body.content;
+    (node.title = req.body.title), (node.content.string = req.body.content);
     addSource(node, req.body.sources);
     addSubtopic(node, req.body.subtopics);
     await node.save();

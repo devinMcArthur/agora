@@ -15,6 +15,7 @@ class EditNodeForm extends Component {
     super(props);
 
     this.state = {
+      title: this.props.node.node.title,
       content: this.props.node.node.content.string,
       sources: this.props.node.node.sources,
       subtopics: this.props.node.node.subtopics,
@@ -37,6 +38,7 @@ class EditNodeForm extends Component {
     e.preventDefault();
     let newData = {
       id: this.props.node.node._id,
+      title: this.state.title,
       content: this.state.content,
       sources: this.state.sources,
       subtopics: this.state.subtopics,
@@ -101,6 +103,15 @@ class EditNodeForm extends Component {
           <Paper>
             <h4>Edit this Node</h4>
             <form onSubmit={this.onSubmit}>
+              <TextField
+                id="title"
+                label="Title of Idea"
+                name="title"
+                onChange={this.onChange}
+                value={this.state.title}
+                margin="normal"
+                variant="outlined"
+              />
               <TextField
                 id="content"
                 label="Description of Idea"
