@@ -196,7 +196,7 @@ const port = process.env.PORT || 8000;
 // start app
 app.listen(port, error => {
   if (!error) {
-    console.log(`MERN is running on port: ${port}! Build something amazing!`); // eslint-disable-line
+    console.log(`MERN is running on port: ${port}! Build something amazing!!!`); // eslint-disable-line
     console.log("Hello World!");
   }
 });
