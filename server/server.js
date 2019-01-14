@@ -56,8 +56,6 @@ import keys from "./config/keys";
 // Set native promises as mongoose promise
 mongoose.Promise = global.Promise;
 
-console.log("SERVER");
-
 // MongoDB Connection
 if (process.env.NODE_ENV !== "test") {
   const db = mongoose.connection;
@@ -87,6 +85,8 @@ app.use("/api", nodes);
 
 // Render Initial HTML
 const renderFullPage = (html, initialState) => {
+  console.log("RENDERFULLPAGE");
+
   const head = Helmet.rewind();
 
   // Import Manifests
@@ -197,6 +197,7 @@ const port = process.env.PORT || 8000;
 app.listen(port, error => {
   if (!error) {
     console.log(`MERN is running on port: ${port}! Build something amazing!`); // eslint-disable-line
+    console.log("Hello World!");
   }
 });
 
