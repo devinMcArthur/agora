@@ -74,10 +74,6 @@ class Node extends Component {
     this.setState({ nodeFormToggle: !this.state.nodeFormToggle });
   }
 
-  createMarkup(string) {
-    return { __html: string };
-  }
-
   render() {
     let { editFormToggle, nodeFormToggle } = this.state;
     let content;
@@ -144,11 +140,7 @@ class Node extends Component {
               {subtopic.content.string === "" ? (
                 "No Content"
               ) : (
-                <div
-                  dangerouslySetInnerHTML={this.createMarkup(
-                    subtopic.content.string
-                  )}
-                />
+                <p>{subtopic.content.string}</p>
               )}
             </Paper>
           );

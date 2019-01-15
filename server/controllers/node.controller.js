@@ -5,6 +5,7 @@ import validateNodeInput from "../validators/validateNodeInput";
 
 import { addSource } from "../util/addSource";
 import { addSubtopic } from "../util/addSubtopic";
+import { notDeepEqual } from "assert";
 
 // Highlight Array Legend
 // 0: Nothing
@@ -55,8 +56,21 @@ export async function createNode(req, res) {
 
     node = await node.save();
 
-    addSource(node, req.body.sources);
-    addSubtopic(node, req.body.subtopics);
+    node.sources.forEach(async source => {
+      await Node.findByIdAndUpdate(
+        source,
+        { $addToSet: { subtopics: node._id } },
+        { new: true }
+      );
+    });
+
+    node.subtopics.forEach(async subtopic => {
+      await Node.findByIdAndUpdate(
+        subtopic,
+        { $addToSet: { sources: node._id } },
+        { new: true }
+      );
+    });
 
     res.end();
   } catch (e) {
