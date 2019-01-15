@@ -11,14 +11,8 @@ export function Footer() {
   return (
     <div style={{ background: `#FFF center` }} className={styles.footer}>
       <p style={{ color: "black" }}>
-        &copy; 2019 &middot; Devin McArthur &middot; Solitaire Design
+        &copy; 2019 &middot; Solitaire &middot; Alpha 0.1
       </p>
-      {/* <p>
-        <FormattedMessage id="twitterMessage" /> :{" "}
-        <a href="https://twitter.com/@mern_io" target="_Blank">
-          @mern_io
-        </a>
-      </p> */}
     </div>
   );
 }

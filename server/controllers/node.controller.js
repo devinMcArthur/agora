@@ -59,7 +59,7 @@ export async function createNode(req, res) {
     node.sources.forEach(async source => {
       await Node.findByIdAndUpdate(
         source,
-        { $addToSet: { subtopics: node._id } },
+        { $push: { subtopics: node._id } },
         { new: true }
       );
     });
@@ -67,7 +67,7 @@ export async function createNode(req, res) {
     node.subtopics.forEach(async subtopic => {
       await Node.findByIdAndUpdate(
         subtopic,
-        { $addToSet: { sources: node._id } },
+        { $push: { sources: node._id } },
         { new: true }
       );
     });

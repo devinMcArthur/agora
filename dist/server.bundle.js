@@ -3567,7 +3567,7 @@ function Footer() {
     className: _Footer2.default.footer
   }, void 0, (0, _jsx3.default)("p", {
     style: { color: "black" }
-  }, void 0, "\xA9 2019 \xB7 Devin McArthur \xB7 Solitaire Design"));
+  }, void 0, "\xA9 2019 \xB7 Solitaire \xB7 Alpha 0.1"));
 }
 
 // Import Images
@@ -4111,22 +4111,41 @@ var _Button2 = _interopRequireDefault(_Button);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _ref = (0, _jsx3.default)("h4", {}, "title", "Root Subjects");
-
 var NodeForm = function (_Component) {
   (0, _inherits3.default)(NodeForm, _Component);
 
   function NodeForm() {
     (0, _classCallCheck3.default)(this, NodeForm);
-    return (0, _possibleConstructorReturn3.default)(this, (NodeForm.__proto__ || Object.getPrototypeOf(NodeForm)).apply(this, arguments));
+
+    var _this = (0, _possibleConstructorReturn3.default)(this, (NodeForm.__proto__ || Object.getPrototypeOf(NodeForm)).call(this));
+
+    _this.state = {
+      hiCounter: 0
+    };
+
+    // this.iH = this.iH.bind(this);
+    return _this;
   }
+
+  // iH() {
+  //   let { hi } = this.state;
+  //   let content = "hI";
+  //   if (hi > 0) {
+  //     content = "hI" + "hI" * hiCounter;
+  //   }
+  //   alert(content);
+  //   this.setState({ hiCounter: this.state.hiCounter + 1 });
+  // }
 
   (0, _createClass3.default)(NodeForm, [{
     key: "render",
     value: function render() {
       var nodeArray = [];
       if (this.props.nodes.length > 0) {
-        nodeArray.push(_ref);
+        nodeArray.push((0, _jsx3.default)("h4", {}, "title", (0, _jsx3.default)(_reactRouter.Link, {
+          to: "/",
+          style: { textDecoration: "none" }
+        }, void 0, "#root")));
         this.props.nodes.forEach(function (node) {
           nodeArray.push((0, _jsx3.default)("div", {}, node._id, (0, _jsx3.default)(_Paper2.default, {
             style: { margin: "1em", padding: "1em" }
@@ -5219,7 +5238,7 @@ var createNode = exports.createNode = function () {
                     switch (_context.prev = _context.next) {
                       case 0:
                         _context.next = 2;
-                        return _node2.default.findByIdAndUpdate(source, { $addToSet: { subtopics: node._id } }, { new: true });
+                        return _node2.default.findByIdAndUpdate(source, { $push: { subtopics: node._id } }, { new: true });
 
                       case 2:
                       case "end":
@@ -5241,7 +5260,7 @@ var createNode = exports.createNode = function () {
                     switch (_context2.prev = _context2.next) {
                       case 0:
                         _context2.next = 2;
-                        return _node2.default.findByIdAndUpdate(subtopic, { $addToSet: { sources: node._id } }, { new: true });
+                        return _node2.default.findByIdAndUpdate(subtopic, { $push: { sources: node._id } }, { new: true });
 
                       case 2:
                       case "end":
@@ -5818,7 +5837,7 @@ var addSource = exports.addSource = function () {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
-            nodeId = ObjectId(node._id);
+            nodeId = _mongoose2.default.Types.ObjectId(node._id);
 
             if (!(sources.length > 0)) {
               _context4.next = 12;
@@ -5866,7 +5885,7 @@ var addSource = exports.addSource = function () {
                     switch (_context2.prev = _context2.next) {
                       case 0:
                         _context2.next = 2;
-                        return _node2.default.findByIdAndUpdate(source, { $addToSet: { subtopics: nodeId } }, { new: true });
+                        return _node2.default.findByIdAndUpdate(source, { $push: { subtopics: nodeId } }, { new: true });
 
                       case 2:
                       case "end":
@@ -5985,10 +6004,10 @@ var addSubtopic = exports.addSubtopic = function () {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
-            nodeId = ObjectId(node._id);
+            nodeId = _mongoose2.default.Types.ObjectId(node._id);
 
             if (!(subtopics.length > 0)) {
-              _context4.next = 14;
+              _context4.next = 15;
               break;
             }
 
@@ -6054,10 +6073,9 @@ var addSubtopic = exports.addSubtopic = function () {
             return node.save();
 
           case 12:
-            _context4.next = 19;
-            break;
+            return _context4.abrupt("return");
 
-          case 14:
+          case 15:
             // Remove from source of related nodes
             node.subtopics.forEach(function () {
               var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(source) {
@@ -6081,18 +6099,18 @@ var addSubtopic = exports.addSubtopic = function () {
               };
             }());
             node.subtopics = [];
-            _context4.next = 18;
+            _context4.next = 19;
             return node.save();
 
-          case 18:
+          case 19:
             return _context4.abrupt("return");
 
-          case 19:
-            _context4.next = 27;
+          case 20:
+            _context4.next = 28;
             break;
 
-          case 21:
-            _context4.prev = 21;
+          case 22:
+            _context4.prev = 22;
             _context4.t0 = _context4["catch"](0);
 
             console.log(_context4.t0);
@@ -6101,12 +6119,12 @@ var addSubtopic = exports.addSubtopic = function () {
             errors.general = _context4.t0;
             return _context4.abrupt("return", new Error(errors));
 
-          case 27:
+          case 28:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, this, [[0, 21]]);
+    }, _callee4, this, [[0, 22]]);
   }));
 
   return function addSubtopic(_x, _x2) {

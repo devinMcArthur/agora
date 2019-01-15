@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 export async function addSubtopic(node, subtopics) {
   try {
-    let nodeId = ObjectId(node._id);
+    let nodeId = mongoose.Types.ObjectId(node._id);
     if (subtopics.length > 0) {
       // Find items that have been removed, remove source relationship in that node
       let oldSubtopics = node.subtopics.filter(
@@ -35,6 +35,7 @@ export async function addSubtopic(node, subtopics) {
       });
       node.subtopics = subtopics;
       await node.save();
+      return;
     } else {
       // Remove from source of related nodes
       node.subtopics.forEach(async source => {
