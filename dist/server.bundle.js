@@ -115,25 +115,25 @@ module.exports = require("babel-runtime/helpers/inherits");
 /* 8 */
 /***/ (function(module, exports) {
 
-module.exports = require("react-router");
+module.exports = require("react-helmet");
 
 /***/ }),
 /* 9 */
 /***/ (function(module, exports) {
 
-module.exports = require("react-helmet");
+module.exports = require("react-router");
 
 /***/ }),
 /* 10 */
 /***/ (function(module, exports) {
 
-module.exports = require("react-intl");
+module.exports = require("@material-ui/core/Paper");
 
 /***/ }),
 /* 11 */
 /***/ (function(module, exports) {
 
-module.exports = require("@material-ui/core/Paper");
+module.exports = require("react-intl");
 
 /***/ }),
 /* 12 */
@@ -145,7 +145,7 @@ module.exports = require("@material-ui/core/Button");
 /* 13 */
 /***/ (function(module, exports) {
 
-module.exports = require("babel-runtime/helpers/extends");
+module.exports = require("mongoose");
 
 /***/ }),
 /* 14 */
@@ -157,21 +157,21 @@ module.exports = require("babel-runtime/helpers/extends");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.nodeFullClear = exports.setNodeLoading = exports.clearNode = exports.clearNodes = exports.getSubtopics = exports.getSources = exports.getAllNodesForSelect = exports.getNodeByID = exports.getRootNodes = exports.editNode = exports.createNode = exports.NODE_FULL_CLEAR = exports.CLEAR_NODE = exports.CLEAR_NODES = exports.NODE_LOADING = exports.GET_SUBTOPICS = exports.GET_SOURCES = exports.GET_ALL_NODES = exports.GET_NODES = exports.GET_NODE = undefined;
+exports.nodeFullClear = exports.setNodeLoading = exports.clearNode = exports.clearNodes = exports.clearDuplicateSourceAndSubtopics = exports.getSubtopics = exports.getSources = exports.getAllNodesForSelect = exports.getNodeByID = exports.getRootNodes = exports.editNode = exports.createNode = exports.NODE_FULL_CLEAR = exports.CLEAR_NODE = exports.CLEAR_NODES = exports.NODE_LOADING = exports.GET_SUBTOPICS = exports.GET_SOURCES = exports.GET_ALL_NODES = exports.GET_NODES = exports.GET_NODE = undefined;
 
 var _apiCaller = __webpack_require__(26);
 
 var _apiCaller2 = _interopRequireDefault(_apiCaller);
 
-var _setAuthToken = __webpack_require__(34);
+var _setAuthToken = __webpack_require__(33);
 
 var _setAuthToken2 = _interopRequireDefault(_setAuthToken);
 
-var _jwtDecode = __webpack_require__(35);
+var _jwtDecode = __webpack_require__(34);
 
 var _jwtDecode2 = _interopRequireDefault(_jwtDecode);
 
-var _ErrorActions = __webpack_require__(36);
+var _ErrorActions = __webpack_require__(35);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -276,6 +276,15 @@ var getSubtopics = exports.getSubtopics = function getSubtopics(id) {
   };
 };
 
+// Remove duplicate sources and subtopics from all nodes
+var clearDuplicateSourceAndSubtopics = exports.clearDuplicateSourceAndSubtopics = function clearDuplicateSourceAndSubtopics(dispatch) {
+  return (0, _apiCaller2.default)("/node/remove/duplicates/all", "get").then(function (res) {
+    return location.reload();
+  }).catch(function (err) {
+    return dispatch({ type: _ErrorActions.GET_ERRORS, payload: err });
+  });
+};
+
 var clearNodes = exports.clearNodes = function clearNodes() {
   return {
     type: CLEAR_NODES
@@ -310,13 +319,13 @@ module.exports = require("@material-ui/core/TextField");
 /* 16 */
 /***/ (function(module, exports) {
 
-module.exports = require("express");
+module.exports = require("babel-runtime/helpers/extends");
 
 /***/ }),
 /* 17 */
 /***/ (function(module, exports) {
 
-module.exports = require("mongoose");
+module.exports = require("express");
 
 /***/ }),
 /* 18 */
@@ -340,11 +349,11 @@ var _apiCaller = __webpack_require__(26);
 
 var _apiCaller2 = _interopRequireDefault(_apiCaller);
 
-var _setAuthToken = __webpack_require__(34);
+var _setAuthToken = __webpack_require__(33);
 
 var _setAuthToken2 = _interopRequireDefault(_setAuthToken);
 
-var _jwtDecode = __webpack_require__(35);
+var _jwtDecode = __webpack_require__(34);
 
 var _jwtDecode2 = _interopRequireDefault(_jwtDecode);
 
@@ -661,7 +670,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _mongoose = __webpack_require__(17);
+var _mongoose = __webpack_require__(13);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
@@ -718,16 +727,10 @@ exports.default = _mongoose2.default.model("Node", nodeSchema);
 /* 29 */
 /***/ (function(module, exports) {
 
-module.exports = require("mongodb");
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports) {
-
 module.exports = require("redux");
 
 /***/ }),
-/* 31 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -772,7 +775,7 @@ var getShowAddPost = exports.getShowAddPost = function getShowAddPost(state) {
 exports.default = AppReducer;
 
 /***/ }),
-/* 32 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -783,7 +786,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.localizationData = exports.enabledLanguages = undefined;
 
-var _reactIntl = __webpack_require__(10);
+var _reactIntl = __webpack_require__(11);
 
 var _intl = __webpack_require__(65);
 
@@ -875,7 +878,7 @@ localizationData.fr = _fr4.default;
 localizationData.fr.messages = flattenMessages(localizationData.fr.messages);
 
 /***/ }),
-/* 33 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -886,13 +889,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.SWITCH_LANGUAGE = undefined;
 
-var _extends2 = __webpack_require__(13);
+var _extends2 = __webpack_require__(16);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
 exports.switchLanguage = switchLanguage;
 
-var _setup = __webpack_require__(32);
+var _setup = __webpack_require__(31);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -906,7 +909,7 @@ function switchLanguage(newLang) {
 }
 
 /***/ }),
-/* 34 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -935,13 +938,13 @@ var setAuthToken = function setAuthToken(token) {
 exports.default = setAuthToken;
 
 /***/ }),
-/* 35 */
+/* 34 */
 /***/ (function(module, exports) {
 
 module.exports = require("jwt-decode");
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -962,7 +965,7 @@ var clearErrors = exports.clearErrors = function clearErrors() {
 };
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -998,7 +1001,7 @@ exports.default = (0, _reduxDevtools.createDevTools)((0, _jsx3.default)(_reduxDe
 }, void 0, (0, _jsx3.default)(_reduxDevtoolsLogMonitor2.default, {})));
 
 /***/ }),
-/* 38 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1042,27 +1045,27 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _reactHelmet = __webpack_require__(9);
+var _reactHelmet = __webpack_require__(8);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _reactRouter = __webpack_require__(8);
+var _reactRouter = __webpack_require__(9);
 
 var _TextField = __webpack_require__(15);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
-var _Paper = __webpack_require__(11);
+var _Paper = __webpack_require__(10);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
-var _core = __webpack_require__(39);
+var _core = __webpack_require__(38);
 
-var _Switch = __webpack_require__(40);
+var _Switch = __webpack_require__(39);
 
 var _Switch2 = _interopRequireDefault(_Switch);
 
-var _FormControlLabel = __webpack_require__(41);
+var _FormControlLabel = __webpack_require__(40);
 
 var _FormControlLabel2 = _interopRequireDefault(_FormControlLabel);
 
@@ -1202,25 +1205,25 @@ function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { loginUser: _AuthActions.loginUser })(LoginPage);
 
 /***/ }),
-/* 39 */
+/* 38 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core");
 
 /***/ }),
-/* 40 */
+/* 39 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/Switch");
 
 /***/ }),
-/* 41 */
+/* 40 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/FormControlLabel");
 
 /***/ }),
-/* 42 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1264,29 +1267,29 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _reactHelmet = __webpack_require__(9);
+var _reactHelmet = __webpack_require__(8);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _reactIntl = __webpack_require__(10);
+var _reactIntl = __webpack_require__(11);
 
-var _reactRouter = __webpack_require__(8);
+var _reactRouter = __webpack_require__(9);
 
 var _TextField = __webpack_require__(15);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
-var _Paper = __webpack_require__(11);
+var _Paper = __webpack_require__(10);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
-var _core = __webpack_require__(39);
+var _core = __webpack_require__(38);
 
-var _Switch = __webpack_require__(40);
+var _Switch = __webpack_require__(39);
 
 var _Switch2 = _interopRequireDefault(_Switch);
 
-var _FormControlLabel = __webpack_require__(41);
+var _FormControlLabel = __webpack_require__(40);
 
 var _FormControlLabel2 = _interopRequireDefault(_FormControlLabel);
 
@@ -1438,7 +1441,7 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { registerUser: _AuthActions.registerUser })(SignupPage);
 
 /***/ }),
-/* 43 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1478,13 +1481,13 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _reactHelmet = __webpack_require__(9);
+var _reactHelmet = __webpack_require__(8);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _reactRouter = __webpack_require__(8);
+var _reactRouter = __webpack_require__(9);
 
-var _Paper = __webpack_require__(11);
+var _Paper = __webpack_require__(10);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
@@ -1492,7 +1495,7 @@ var _Button = __webpack_require__(12);
 
 var _Button2 = _interopRequireDefault(_Button);
 
-var _NodeForm = __webpack_require__(44);
+var _NodeForm = __webpack_require__(43);
 
 var _NodeForm2 = _interopRequireDefault(_NodeForm);
 
@@ -1588,7 +1591,7 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { getRootNodes: _NodeActions.getRootNodes, clearNodes: _NodeActions.clearNodes })(Home);
 
 /***/ }),
-/* 44 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1632,17 +1635,17 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _reactHelmet = __webpack_require__(9);
+var _reactHelmet = __webpack_require__(8);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
 var _NodeActions = __webpack_require__(14);
 
-var _SelectMultiple = __webpack_require__(45);
+var _SelectMultiple = __webpack_require__(44);
 
 var _SelectMultiple2 = _interopRequireDefault(_SelectMultiple);
 
-var _Paper = __webpack_require__(11);
+var _Paper = __webpack_require__(10);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
@@ -1754,7 +1757,6 @@ var NodeForm = function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      console.log(this.state);
       var content = void 0;
       if (this.props.node.formNodes !== null) {
         content = (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(_Paper2.default, {}, void 0, _ref, (0, _jsx3.default)("form", {
@@ -1809,7 +1811,7 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { createNode: _NodeActions.createNode, getAllNodesForSelect: _NodeActions.getAllNodesForSelect })(NodeForm);
 
 /***/ }),
-/* 45 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1823,7 +1825,7 @@ var _jsx2 = __webpack_require__(1);
 
 var _jsx3 = _interopRequireDefault(_jsx2);
 
-var _extends2 = __webpack_require__(13);
+var _extends2 = __webpack_require__(16);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
@@ -1839,7 +1841,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactSelect = __webpack_require__(46);
+var _reactSelect = __webpack_require__(45);
 
 var _reactSelect2 = _interopRequireDefault(_reactSelect);
 
@@ -1904,13 +1906,13 @@ var SelectMultiple = function SelectMultiple(_ref) {
 exports.default = SelectMultiple;
 
 /***/ }),
-/* 46 */
+/* 45 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-select");
 
 /***/ }),
-/* 47 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1950,9 +1952,9 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _reactRouter = __webpack_require__(8);
+var _reactRouter = __webpack_require__(9);
 
-var _Paper = __webpack_require__(11);
+var _Paper = __webpack_require__(10);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
@@ -1964,7 +1966,7 @@ var _EditNodeForm = __webpack_require__(98);
 
 var _EditNodeForm2 = _interopRequireDefault(_EditNodeForm);
 
-var _NodeForm = __webpack_require__(44);
+var _NodeForm = __webpack_require__(43);
 
 var _NodeForm2 = _interopRequireDefault(_NodeForm);
 
@@ -1974,11 +1976,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var _ref = (0, _jsx3.default)(_NodeForm2.default, {});
 
-var _ref2 = (0, _jsx3.default)("p", {}, void 0, "This Subject does not have any subtopics!");
+var _ref2 = (0, _jsx3.default)("br", {});
 
-var _ref3 = (0, _jsx3.default)("br", {});
-
-var _ref4 = (0, _jsx3.default)("p", {}, void 0, "Loading . . . ");
+var _ref3 = (0, _jsx3.default)("p", {}, void 0, "Loading . . . ");
 
 var Node = function (_Component) {
   (0, _inherits3.default)(Node, _Component);
@@ -2050,12 +2050,13 @@ var Node = function (_Component) {
             nodeForm = void 0;
         var node = this.props.node.node;
 
+        console.log(node.content.string.split("\n"));
+
         if (editFormToggle) {
           editForm = (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(_EditNodeForm2.default, {
             node: node
           }));
         } else {
-          console.log("hi");
           editForm = "";
         }
 
@@ -2094,8 +2095,16 @@ var Node = function (_Component) {
             }, void 0, (0, _jsx3.default)("h3", {}, void 0, subtopic.title)), subtopic.content.string === "" ? "No Content" : (0, _jsx3.default)("p", {}, void 0, subtopic.content.string)));
           });
         } else {
-          subtopicJSX = _ref2;
+          subtopicJSX = "";
         }
+
+        // render new lines
+        var count = 0,
+            nodeContent = [];
+        node.content.string.split("\n").forEach(function (line) {
+          nodeContent.push((0, _jsx3.default)("p", {}, "line-" + count, line));
+          count++;
+        });
 
         // FINAL CONTENT THAT WILL BE LOADED
         content = (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)("div", {
@@ -2106,11 +2115,11 @@ var Node = function (_Component) {
         }, void 0, "Add an Idea"), (0, _jsx3.default)(_Button2.default, {
           variant: "contained",
           onClick: this.toggleEditForm
-        }, void 0, "Edit Node")), nodeForm, editForm, (0, _jsx3.default)("h1", {}, void 0, node.title), sourceJSX, _ref3, (0, _jsx3.default)(_Paper2.default, {
+        }, void 0, "Edit Node")), nodeForm, editForm, (0, _jsx3.default)("h1", {}, void 0, node.title), sourceJSX, _ref2, (0, _jsx3.default)(_Paper2.default, {
           style: { padding: "0.5em" }
-        }, void 0, (0, _jsx3.default)("p", {}, void 0, node.content.string), (0, _jsx3.default)("div", {}, void 0, subtopicJSX)));
+        }, void 0, nodeContent, (0, _jsx3.default)("div", {}, void 0, subtopicJSX)));
       } else {
-        content = _ref4;
+        content = _ref3;
       }
 
       return (0, _jsx3.default)("div", {}, void 0, content);
@@ -2132,6 +2141,115 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { getNodeByID: _NodeActions.getNodeByID, getSubtopics: _NodeActions.getSubtopics, getSources: _NodeActions.getSources, nodeFullClear: _NodeActions.nodeFullClear })(Node);
 
 /***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _jsx2 = __webpack_require__(1);
+
+var _jsx3 = _interopRequireDefault(_jsx2);
+
+var _classCallCheck2 = __webpack_require__(4);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(5);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = __webpack_require__(6);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(7);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _reactRedux = __webpack_require__(3);
+
+var _reactHelmet = __webpack_require__(8);
+
+var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
+
+var _TextField = __webpack_require__(15);
+
+var _TextField2 = _interopRequireDefault(_TextField);
+
+var _Paper = __webpack_require__(10);
+
+var _Paper2 = _interopRequireDefault(_Paper);
+
+var _Button = __webpack_require__(12);
+
+var _Button2 = _interopRequireDefault(_Button);
+
+var _NodeActions = __webpack_require__(14);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _ref = (0, _jsx3.default)(_reactHelmet2.default, {
+  title: "Admin"
+});
+
+var Admin = function (_Component) {
+  (0, _inherits3.default)(Admin, _Component);
+
+  function Admin(props) {
+    (0, _classCallCheck3.default)(this, Admin);
+
+    var _this = (0, _possibleConstructorReturn3.default)(this, (Admin.__proto__ || Object.getPrototypeOf(Admin)).call(this, props));
+
+    _this.state = {
+      errors: {}
+    };
+
+    _this.onDuplicatePress = _this.onDuplicatePress.bind(_this);
+    return _this;
+  }
+
+  (0, _createClass3.default)(Admin, [{
+    key: "onDuplicatePress",
+    value: function onDuplicatePress() {
+      console.log("hello");
+      this.props.clearDuplicateSourceAndSubtopics();
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return (0, _jsx3.default)("div", {}, void 0, _ref, (0, _jsx3.default)(_Paper2.default, {}, void 0, (0, _jsx3.default)(_Button2.default, {
+        onClick: this.onDuplicatePress
+      }, void 0, "Remove Duplicates")));
+    }
+  }]);
+  return Admin;
+}(_react.Component);
+
+// Retrieve data from store as props
+
+
+function mapStateToProps(state) {
+  return {
+    auth: state.auth
+  };
+}
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, { clearDuplicateSourceAndSubtopics: _NodeActions.clearDuplicateSourceAndSubtopics })(Admin);
+
+/***/ }),
 /* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2142,7 +2260,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _mongoose = __webpack_require__(17);
+var _mongoose = __webpack_require__(13);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
@@ -2201,7 +2319,7 @@ var _jsx2 = __webpack_require__(1);
 
 var _jsx3 = _interopRequireDefault(_jsx2);
 
-var _express = __webpack_require__(16);
+var _express = __webpack_require__(17);
 
 var _express2 = _interopRequireDefault(_express);
 
@@ -2209,7 +2327,7 @@ var _compression = __webpack_require__(53);
 
 var _compression2 = _interopRequireDefault(_compression);
 
-var _mongoose = __webpack_require__(17);
+var _mongoose = __webpack_require__(13);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
@@ -2235,9 +2353,9 @@ var _react2 = _interopRequireDefault(_react);
 
 var _server = __webpack_require__(80);
 
-var _reactRouter = __webpack_require__(8);
+var _reactRouter = __webpack_require__(9);
 
-var _reactHelmet = __webpack_require__(9);
+var _reactHelmet = __webpack_require__(8);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
@@ -2259,7 +2377,7 @@ var _node = __webpack_require__(114);
 
 var _node2 = _interopRequireDefault(_node);
 
-var _dummyData = __webpack_require__(119);
+var _dummyData = __webpack_require__(121);
 
 var _dummyData2 = _interopRequireDefault(_dummyData);
 
@@ -2282,11 +2400,11 @@ if (isDevMode) {
   // eslint-disable-next-line global-require
   var webpack = __webpack_require__(51);
   // eslint-disable-next-line global-require
-  var config = __webpack_require__(120);
+  var config = __webpack_require__(122);
   // eslint-disable-next-line global-require
-  var webpackDevMiddleware = __webpack_require__(124);
+  var webpackDevMiddleware = __webpack_require__(126);
   // eslint-disable-next-line global-require
-  var webpackHotMiddleware = __webpack_require__(125);
+  var webpackHotMiddleware = __webpack_require__(127);
   var compiler = webpack(config);
   app.use(webpackDevMiddleware(compiler, {
     noInfo: true,
@@ -2428,7 +2546,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactIntl = __webpack_require__(10);
+var _reactIntl = __webpack_require__(11);
 
 var _reactRedux = __webpack_require__(3);
 
@@ -2463,7 +2581,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.configureStore = configureStore;
 
-var _redux = __webpack_require__(30);
+var _redux = __webpack_require__(29);
 
 var _reduxThunk = __webpack_require__(58);
 
@@ -2481,7 +2599,7 @@ var DevTools = void 0; /**
 
 if (process.env.NODE_ENV === "development") {
   // eslint-disable-next-line global-require
-  DevTools = __webpack_require__(37).default;
+  DevTools = __webpack_require__(36).default;
 }
 
 function configureStore() {
@@ -2526,9 +2644,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _redux = __webpack_require__(30);
+var _redux = __webpack_require__(29);
 
-var _AppReducer = __webpack_require__(31);
+var _AppReducer = __webpack_require__(30);
 
 var _AppReducer2 = _interopRequireDefault(_AppReducer);
 
@@ -2613,13 +2731,13 @@ var _objectWithoutProperties2 = __webpack_require__(64);
 
 var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
 
-var _extends2 = __webpack_require__(13);
+var _extends2 = __webpack_require__(16);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _setup = __webpack_require__(32);
+var _setup = __webpack_require__(31);
 
-var _IntlActions = __webpack_require__(33);
+var _IntlActions = __webpack_require__(32);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2763,7 +2881,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _extends2 = __webpack_require__(13);
+var _extends2 = __webpack_require__(16);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
@@ -2828,7 +2946,7 @@ exports.default = function () {
   }
 };
 
-var _ErrorActions = __webpack_require__(36);
+var _ErrorActions = __webpack_require__(35);
 
 var initialState = {};
 
@@ -2843,7 +2961,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _extends2 = __webpack_require__(13);
+var _extends2 = __webpack_require__(16);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
@@ -2962,7 +3080,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouter = __webpack_require__(8);
+var _reactRouter = __webpack_require__(9);
 
 var _App = __webpack_require__(82);
 
@@ -2987,11 +3105,14 @@ if (process.env.NODE_ENV !== "production") {
   __webpack_require__(91);
   __webpack_require__(95);
   // Auth Components
-  __webpack_require__(38);
-  __webpack_require__(42);
+  __webpack_require__(37);
+  __webpack_require__(41);
   // App Components
-  __webpack_require__(43);
+  __webpack_require__(42);
   // Node Components
+  __webpack_require__(46);
+
+  // Admin
   __webpack_require__(47);
 }
 
@@ -3003,28 +3124,35 @@ exports.default = (0, _jsx3.default)(_reactRouter.Route, {
 }, void 0, (0, _jsx3.default)(_reactRouter.IndexRoute, {
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(43).default);
+      cb(null, __webpack_require__(42).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/login",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(38).default);
+      cb(null, __webpack_require__(37).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/signup",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(42).default);
+      cb(null, __webpack_require__(41).default);
+    }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
+  }
+}), (0, _jsx3.default)(_reactRouter.Route, {
+  path: "/admin",
+  getComponent: function getComponent(nextState, cb) {
+    new Promise(function(resolve) { resolve(); }).then((function (require) {
+      cb(null, __webpack_require__(47).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/node/:nodeID",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(47).default);
+      cb(null, __webpack_require__(46).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }));
@@ -3077,7 +3205,7 @@ var _App = {
 
 var _App2 = _interopRequireDefault(_App);
 
-var _reactHelmet = __webpack_require__(9);
+var _reactHelmet = __webpack_require__(8);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
@@ -3091,7 +3219,7 @@ var _Footer2 = _interopRequireDefault(_Footer);
 
 var _AppActions = __webpack_require__(23);
 
-var _IntlActions = __webpack_require__(33);
+var _IntlActions = __webpack_require__(32);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3105,7 +3233,7 @@ var DevTools = void 0;
 
 if (process.env.NODE_ENV === "development") {
   // eslint-disable-next-line global-require
-  DevTools = __webpack_require__(37).default;
+  DevTools = __webpack_require__(36).default;
 }
 
 var _ref = (0, _jsx3.default)(DevTools, {});
@@ -3216,7 +3344,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactRouter = __webpack_require__(8);
+var _reactRouter = __webpack_require__(9);
 
 var _reactRedux = __webpack_require__(3);
 
@@ -3418,7 +3546,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactIntl = __webpack_require__(10);
+var _reactIntl = __webpack_require__(11);
 
 var _Footer = {
   "footer": "_1oiRVDtQ6fOWkhBVWcRyE_"
@@ -3498,7 +3626,7 @@ var _PostActions = __webpack_require__(25);
 
 var _AppActions = __webpack_require__(23);
 
-var _AppReducer = __webpack_require__(31);
+var _AppReducer = __webpack_require__(30);
 
 var _PostReducer = __webpack_require__(24);
 
@@ -3645,9 +3773,9 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactRouter = __webpack_require__(8);
+var _reactRouter = __webpack_require__(9);
 
-var _reactIntl = __webpack_require__(10);
+var _reactIntl = __webpack_require__(11);
 
 var _PostListItem = {
   "single-post": "_2wFZUrnLLPIM2UvuNgnV1r",
@@ -3737,7 +3865,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactIntl = __webpack_require__(10);
+var _reactIntl = __webpack_require__(11);
 
 var _PostCreateWidget = {
   "form": "_1_WEV3z8MyISJ_IVeQGbfN",
@@ -3849,11 +3977,11 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _reactHelmet = __webpack_require__(9);
+var _reactHelmet = __webpack_require__(8);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _reactIntl = __webpack_require__(10);
+var _reactIntl = __webpack_require__(11);
 
 var _PostListItem = {
   "single-post": "_2wFZUrnLLPIM2UvuNgnV1r",
@@ -3959,17 +4087,17 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _reactHelmet = __webpack_require__(9);
+var _reactHelmet = __webpack_require__(8);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _reactRouter = __webpack_require__(8);
+var _reactRouter = __webpack_require__(9);
 
-var _reactSelect = __webpack_require__(46);
+var _reactSelect = __webpack_require__(45);
 
 var _reactSelect2 = _interopRequireDefault(_reactSelect);
 
-var _Paper = __webpack_require__(11);
+var _Paper = __webpack_require__(10);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
@@ -4068,17 +4196,17 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _reactHelmet = __webpack_require__(9);
+var _reactHelmet = __webpack_require__(8);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
 var _NodeActions = __webpack_require__(14);
 
-var _SelectMultiple = __webpack_require__(45);
+var _SelectMultiple = __webpack_require__(44);
 
 var _SelectMultiple2 = _interopRequireDefault(_SelectMultiple);
 
-var _Paper = __webpack_require__(11);
+var _Paper = __webpack_require__(10);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
@@ -4110,6 +4238,7 @@ var EditNodeForm = function (_Component) {
     var _this = (0, _possibleConstructorReturn3.default)(this, (EditNodeForm.__proto__ || Object.getPrototypeOf(EditNodeForm)).call(this, props));
 
     _this.state = {
+      title: _this.props.node.node.title,
       content: _this.props.node.node.content.string,
       sources: _this.props.node.node.sources,
       subtopics: _this.props.node.node.subtopics,
@@ -4136,6 +4265,7 @@ var EditNodeForm = function (_Component) {
       e.preventDefault();
       var newData = {
         id: this.props.node.node._id,
+        title: this.state.title,
         content: this.state.content,
         sources: this.state.sources,
         subtopics: this.state.subtopics,
@@ -4178,6 +4308,7 @@ var EditNodeForm = function (_Component) {
   }, {
     key: "render",
     value: function render() {
+      console.log(this.state);
       var content = void 0;
       if (this.props.node !== null && this.props.node.formNodes !== null) {
         var subtopicOptions = [],
@@ -4195,6 +4326,14 @@ var EditNodeForm = function (_Component) {
         content = (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(_Paper2.default, {}, void 0, _ref, (0, _jsx3.default)("form", {
           onSubmit: this.onSubmit
         }, void 0, (0, _jsx3.default)(_TextField2.default, {
+          id: "title",
+          label: "Title of Idea",
+          name: "title",
+          onChange: this.onChange,
+          value: this.state.title,
+          margin: "normal",
+          variant: "outlined"
+        }), (0, _jsx3.default)(_TextField2.default, {
           id: "content",
           label: "Description of Idea",
           name: "content",
@@ -4305,7 +4444,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _express = __webpack_require__(16);
+var _express = __webpack_require__(17);
 
 var _post = __webpack_require__(102);
 
@@ -4461,7 +4600,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _express = __webpack_require__(16);
+var _express = __webpack_require__(17);
 
 var _user = __webpack_require__(106);
 
@@ -4781,7 +4920,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _mongoose = __webpack_require__(17);
+var _mongoose = __webpack_require__(13);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
@@ -4951,7 +5090,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _express = __webpack_require__(16);
+var _express = __webpack_require__(17);
 
 var _node = __webpack_require__(115);
 
@@ -4982,6 +5121,9 @@ router.route("/node").post(NodeController.createNode);
 // Edit a node
 router.route("/node/:id/edit").post(NodeController.editNode);
 
+// Remove Duplicate Sources and Subtopics from all Nodes
+router.route("/node/remove/duplicates/all").get(NodeController.removeDuplicateSourcesAndSubtopics);
+
 exports.default = router;
 
 /***/ }),
@@ -4994,7 +5136,7 @@ exports.default = router;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getAllNodesForSelect = exports.getRootNodes = exports.getNodeSubtopics = exports.getNodeSources = exports.getNodeByID = exports.editNode = exports.createNode = undefined;
+exports.removeDuplicateSourcesAndSubtopics = exports.getAllNodesForSelect = exports.getRootNodes = exports.getNodeSubtopics = exports.getNodeSources = exports.getNodeByID = exports.editNode = exports.createNode = undefined;
 
 var _regenerator = __webpack_require__(21);
 
@@ -5021,23 +5163,25 @@ var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
  * @returns void
  */
 var createNode = exports.createNode = function () {
-  var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(req, res) {
+  var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(req, res) {
+    var _this = this;
+
     var _validateNodeInput, isValid, errors, highlightArray, authorArray, nodeContent, node, _errors;
 
-    return _regenerator2.default.wrap(function _callee$(_context) {
+    return _regenerator2.default.wrap(function _callee3$(_context3) {
       while (1) {
-        switch (_context.prev = _context.next) {
+        switch (_context3.prev = _context3.next) {
           case 0:
-            _context.prev = 0;
+            _context3.prev = 0;
             _validateNodeInput = (0, _validateNodeInput3.default)(req.body), isValid = _validateNodeInput.isValid, errors = _validateNodeInput.errors;
 
             if (isValid) {
-              _context.next = 5;
+              _context3.next = 5;
               break;
             }
 
             console.log(errors);
-            return _context.abrupt("return", res.status(400).json(errors));
+            return _context3.abrupt("return", res.status(400).json(errors));
 
           case 5:
             highlightArray = [], authorArray = [];
@@ -5061,36 +5205,77 @@ var createNode = exports.createNode = function () {
               subtopics: req.body.subtopics,
               sources: req.body.sources
             });
-            _context.next = 11;
+            _context3.next = 11;
             return node.save();
 
           case 11:
-            node = _context.sent;
+            node = _context3.sent;
 
 
-            (0, _addSource.addSource)(node, req.body.sources);
-            (0, _addSubtopic.addSubtopic)(node, req.body.subtopics);
+            node.sources.forEach(function () {
+              var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(source) {
+                return _regenerator2.default.wrap(function _callee$(_context) {
+                  while (1) {
+                    switch (_context.prev = _context.next) {
+                      case 0:
+                        _context.next = 2;
+                        return _node2.default.findByIdAndUpdate(source, { $addToSet: { subtopics: node._id } }, { new: true });
+
+                      case 2:
+                      case "end":
+                        return _context.stop();
+                    }
+                  }
+                }, _callee, _this);
+              }));
+
+              return function (_x3) {
+                return _ref2.apply(this, arguments);
+              };
+            }());
+
+            node.subtopics.forEach(function () {
+              var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(subtopic) {
+                return _regenerator2.default.wrap(function _callee2$(_context2) {
+                  while (1) {
+                    switch (_context2.prev = _context2.next) {
+                      case 0:
+                        _context2.next = 2;
+                        return _node2.default.findByIdAndUpdate(subtopic, { $addToSet: { sources: node._id } }, { new: true });
+
+                      case 2:
+                      case "end":
+                        return _context2.stop();
+                    }
+                  }
+                }, _callee2, _this);
+              }));
+
+              return function (_x4) {
+                return _ref3.apply(this, arguments);
+              };
+            }());
 
             res.end();
-            _context.next = 23;
+            _context3.next = 23;
             break;
 
           case 17:
-            _context.prev = 17;
-            _context.t0 = _context["catch"](0);
+            _context3.prev = 17;
+            _context3.t0 = _context3["catch"](0);
 
-            console.log(_context.t0);
+            console.log(_context3.t0);
             _errors = {};
 
-            _errors.general = _context.t0;
+            _errors.general = _context3.t0;
             res.status(500).json(_errors);
 
           case 23:
           case "end":
-            return _context.stop();
+            return _context3.stop();
         }
       }
-    }, _callee, this, [[0, 17]]);
+    }, _callee3, this, [[0, 17]]);
   }));
 
   return function createNode(_x, _x2) {
@@ -5107,55 +5292,53 @@ var createNode = exports.createNode = function () {
 
 
 var editNode = exports.editNode = function () {
-  var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(req, res) {
+  var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(req, res) {
     var node, errors;
-    return _regenerator2.default.wrap(function _callee2$(_context2) {
+    return _regenerator2.default.wrap(function _callee4$(_context4) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context4.prev = _context4.next) {
           case 0:
-            _context2.prev = 0;
-
-            console.log(req.body);
-            _context2.next = 4;
+            _context4.prev = 0;
+            _context4.next = 3;
             return _node2.default.findById(req.params.id);
 
-          case 4:
-            node = _context2.sent;
+          case 3:
+            node = _context4.sent;
 
             node.version++;
 
-            node.content.string = req.body.content;
+            node.title = req.body.title, node.content.string = req.body.content;
             (0, _addSource.addSource)(node, req.body.sources);
             (0, _addSubtopic.addSubtopic)(node, req.body.subtopics);
-            _context2.next = 11;
+            _context4.next = 10;
             return node.save();
 
-          case 11:
+          case 10:
 
             res.end();
-            _context2.next = 20;
+            _context4.next = 19;
             break;
 
-          case 14:
-            _context2.prev = 14;
-            _context2.t0 = _context2["catch"](0);
+          case 13:
+            _context4.prev = 13;
+            _context4.t0 = _context4["catch"](0);
 
-            console.log(_context2.t0);
+            console.log(_context4.t0);
             errors = {};
 
-            errors.general = _context2.t0;
+            errors.general = _context4.t0;
             res.status(500).json(errors);
 
-          case 20:
+          case 19:
           case "end":
-            return _context2.stop();
+            return _context4.stop();
         }
       }
-    }, _callee2, this, [[0, 14]]);
+    }, _callee4, this, [[0, 13]]);
   }));
 
-  return function editNode(_x3, _x4) {
-    return _ref2.apply(this, arguments);
+  return function editNode(_x5, _x6) {
+    return _ref4.apply(this, arguments);
   };
 }();
 
@@ -5168,43 +5351,43 @@ var editNode = exports.editNode = function () {
 
 
 var getNodeByID = exports.getNodeByID = function () {
-  var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(req, res) {
+  var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5(req, res) {
     var node, errors;
-    return _regenerator2.default.wrap(function _callee3$(_context3) {
+    return _regenerator2.default.wrap(function _callee5$(_context5) {
       while (1) {
-        switch (_context3.prev = _context3.next) {
+        switch (_context5.prev = _context5.next) {
           case 0:
-            _context3.prev = 0;
-            _context3.next = 3;
+            _context5.prev = 0;
+            _context5.next = 3;
             return _node2.default.findById(req.params.nodeID);
 
           case 3:
-            node = _context3.sent;
+            node = _context5.sent;
 
             res.json(node);
-            _context3.next = 13;
+            _context5.next = 13;
             break;
 
           case 7:
-            _context3.prev = 7;
-            _context3.t0 = _context3["catch"](0);
+            _context5.prev = 7;
+            _context5.t0 = _context5["catch"](0);
 
-            console.log(_context3.t0);
+            console.log(_context5.t0);
             errors = {};
 
-            errors.general = _context3.t0;
+            errors.general = _context5.t0;
             res.status(500).json(errors);
 
           case 13:
           case "end":
-            return _context3.stop();
+            return _context5.stop();
         }
       }
-    }, _callee3, this, [[0, 7]]);
+    }, _callee5, this, [[0, 7]]);
   }));
 
-  return function getNodeByID(_x5, _x6) {
-    return _ref3.apply(this, arguments);
+  return function getNodeByID(_x7, _x8) {
+    return _ref5.apply(this, arguments);
   };
 }();
 
@@ -5217,71 +5400,71 @@ var getNodeByID = exports.getNodeByID = function () {
 
 
 var getNodeSources = exports.getNodeSources = function () {
-  var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(req, res) {
+  var _ref6 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee6(req, res) {
     var node, sourceArray, src, sources, i, errors;
-    return _regenerator2.default.wrap(function _callee4$(_context4) {
+    return _regenerator2.default.wrap(function _callee6$(_context6) {
       while (1) {
-        switch (_context4.prev = _context4.next) {
+        switch (_context6.prev = _context6.next) {
           case 0:
-            _context4.prev = 0;
-            _context4.next = 3;
+            _context6.prev = 0;
+            _context6.next = 3;
             return _node2.default.findById(req.params.id);
 
           case 3:
-            node = _context4.sent;
+            node = _context6.sent;
             sourceArray = [], src = void 0;
 
             if (!(node.sources && node.sources.length > 0)) {
-              _context4.next = 16;
+              _context6.next = 16;
               break;
             }
 
             sources = node.sources.slice();
-            _context4.t0 = _regenerator2.default.keys(sources);
+            _context6.t0 = _regenerator2.default.keys(sources);
 
           case 8:
-            if ((_context4.t1 = _context4.t0()).done) {
-              _context4.next = 16;
+            if ((_context6.t1 = _context6.t0()).done) {
+              _context6.next = 16;
               break;
             }
 
-            i = _context4.t1.value;
-            _context4.next = 12;
+            i = _context6.t1.value;
+            _context6.next = 12;
             return _node2.default.findById(sources[i]);
 
           case 12:
-            src = _context4.sent;
+            src = _context6.sent;
 
             sourceArray.push(src);
-            _context4.next = 8;
+            _context6.next = 8;
             break;
 
           case 16:
 
             res.json(sourceArray);
-            _context4.next = 25;
+            _context6.next = 25;
             break;
 
           case 19:
-            _context4.prev = 19;
-            _context4.t2 = _context4["catch"](0);
+            _context6.prev = 19;
+            _context6.t2 = _context6["catch"](0);
 
-            console.log(_context4.t2);
+            console.log(_context6.t2);
             errors = {};
 
-            errors.general = _context4.t2;
+            errors.general = _context6.t2;
             res.status(500).json(errors);
 
           case 25:
           case "end":
-            return _context4.stop();
+            return _context6.stop();
         }
       }
-    }, _callee4, this, [[0, 19]]);
+    }, _callee6, this, [[0, 19]]);
   }));
 
-  return function getNodeSources(_x7, _x8) {
-    return _ref4.apply(this, arguments);
+  return function getNodeSources(_x9, _x10) {
+    return _ref6.apply(this, arguments);
   };
 }();
 
@@ -5294,71 +5477,71 @@ var getNodeSources = exports.getNodeSources = function () {
 
 
 var getNodeSubtopics = exports.getNodeSubtopics = function () {
-  var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5(req, res) {
+  var _ref7 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee7(req, res) {
     var node, subtopicArray, src, subtopics, i, errors;
-    return _regenerator2.default.wrap(function _callee5$(_context5) {
+    return _regenerator2.default.wrap(function _callee7$(_context7) {
       while (1) {
-        switch (_context5.prev = _context5.next) {
+        switch (_context7.prev = _context7.next) {
           case 0:
-            _context5.prev = 0;
-            _context5.next = 3;
+            _context7.prev = 0;
+            _context7.next = 3;
             return _node2.default.findById(req.params.id);
 
           case 3:
-            node = _context5.sent;
+            node = _context7.sent;
             subtopicArray = [], src = void 0;
 
             if (!(node.subtopics && node.subtopics.length > 0)) {
-              _context5.next = 16;
+              _context7.next = 16;
               break;
             }
 
             subtopics = node.subtopics.slice();
-            _context5.t0 = _regenerator2.default.keys(subtopics);
+            _context7.t0 = _regenerator2.default.keys(subtopics);
 
           case 8:
-            if ((_context5.t1 = _context5.t0()).done) {
-              _context5.next = 16;
+            if ((_context7.t1 = _context7.t0()).done) {
+              _context7.next = 16;
               break;
             }
 
-            i = _context5.t1.value;
-            _context5.next = 12;
+            i = _context7.t1.value;
+            _context7.next = 12;
             return _node2.default.findById(subtopics[i]);
 
           case 12:
-            src = _context5.sent;
+            src = _context7.sent;
 
             subtopicArray.push(src);
-            _context5.next = 8;
+            _context7.next = 8;
             break;
 
           case 16:
 
             res.json(subtopicArray);
-            _context5.next = 25;
+            _context7.next = 25;
             break;
 
           case 19:
-            _context5.prev = 19;
-            _context5.t2 = _context5["catch"](0);
+            _context7.prev = 19;
+            _context7.t2 = _context7["catch"](0);
 
-            console.log(_context5.t2);
+            console.log(_context7.t2);
             errors = {};
 
-            errors.general = _context5.t2;
+            errors.general = _context7.t2;
             res.status(500).json(errors);
 
           case 25:
           case "end":
-            return _context5.stop();
+            return _context7.stop();
         }
       }
-    }, _callee5, this, [[0, 19]]);
+    }, _callee7, this, [[0, 19]]);
   }));
 
-  return function getNodeSubtopics(_x9, _x10) {
-    return _ref5.apply(this, arguments);
+  return function getNodeSubtopics(_x11, _x12) {
+    return _ref7.apply(this, arguments);
   };
 }();
 
@@ -5371,45 +5554,45 @@ var getNodeSubtopics = exports.getNodeSubtopics = function () {
 
 
 var getRootNodes = exports.getRootNodes = function () {
-  var _ref6 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee6(req, res) {
+  var _ref8 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee8(req, res) {
     var nodes, errors;
-    return _regenerator2.default.wrap(function _callee6$(_context6) {
+    return _regenerator2.default.wrap(function _callee8$(_context8) {
       while (1) {
-        switch (_context6.prev = _context6.next) {
+        switch (_context8.prev = _context8.next) {
           case 0:
-            _context6.prev = 0;
-            _context6.next = 3;
+            _context8.prev = 0;
+            _context8.next = 3;
             return _node2.default.find({
               sources: { $eq: [] }
             });
 
           case 3:
-            nodes = _context6.sent;
+            nodes = _context8.sent;
 
             res.json(nodes);
-            _context6.next = 13;
+            _context8.next = 13;
             break;
 
           case 7:
-            _context6.prev = 7;
-            _context6.t0 = _context6["catch"](0);
+            _context8.prev = 7;
+            _context8.t0 = _context8["catch"](0);
 
-            console.log(_context6.t0);
+            console.log(_context8.t0);
             errors = {};
 
-            errors.general = _context6.t0;
+            errors.general = _context8.t0;
             res.status(500).json(errors);
 
           case 13:
           case "end":
-            return _context6.stop();
+            return _context8.stop();
         }
       }
-    }, _callee6, this, [[0, 7]]);
+    }, _callee8, this, [[0, 7]]);
   }));
 
-  return function getRootNodes(_x11, _x12) {
-    return _ref6.apply(this, arguments);
+  return function getRootNodes(_x13, _x14) {
+    return _ref8.apply(this, arguments);
   };
 }();
 
@@ -5422,18 +5605,18 @@ var getRootNodes = exports.getRootNodes = function () {
 
 
 var getAllNodesForSelect = exports.getAllNodesForSelect = function () {
-  var _ref7 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee7(req, res) {
+  var _ref9 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee9(req, res) {
     var nodes, nodeArray, errors;
-    return _regenerator2.default.wrap(function _callee7$(_context7) {
+    return _regenerator2.default.wrap(function _callee9$(_context9) {
       while (1) {
-        switch (_context7.prev = _context7.next) {
+        switch (_context9.prev = _context9.next) {
           case 0:
-            _context7.prev = 0;
-            _context7.next = 3;
+            _context9.prev = 0;
+            _context9.next = 3;
             return _node2.default.find();
 
           case 3:
-            nodes = _context7.sent;
+            nodes = _context9.sent;
             nodeArray = [];
 
             nodes.forEach(function (node) {
@@ -5443,29 +5626,109 @@ var getAllNodesForSelect = exports.getAllNodesForSelect = function () {
               });
             });
             res.json(nodeArray);
-            _context7.next = 15;
+            _context9.next = 15;
             break;
 
           case 9:
-            _context7.prev = 9;
-            _context7.t0 = _context7["catch"](0);
+            _context9.prev = 9;
+            _context9.t0 = _context9["catch"](0);
 
-            console.log(_context7.t0);
+            console.log(_context9.t0);
             errors = {};
 
-            errors.general = _context7.t0;
+            errors.general = _context9.t0;
             res.status(500).json(errors);
 
           case 15:
           case "end":
-            return _context7.stop();
+            return _context9.stop();
         }
       }
-    }, _callee7, this, [[0, 9]]);
+    }, _callee9, this, [[0, 9]]);
   }));
 
-  return function getAllNodesForSelect(_x13, _x14) {
-    return _ref7.apply(this, arguments);
+  return function getAllNodesForSelect(_x15, _x16) {
+    return _ref9.apply(this, arguments);
+  };
+}();
+
+/**
+ * Remove duplicate sources and subtopics from all nodes
+ * @param req
+ * @param res
+ * @returns void
+ */
+
+
+var removeDuplicateSourcesAndSubtopics = exports.removeDuplicateSourcesAndSubtopics = function () {
+  var _ref10 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee11(req, res) {
+    var _this2 = this;
+
+    var nodes, errors;
+    return _regenerator2.default.wrap(function _callee11$(_context11) {
+      while (1) {
+        switch (_context11.prev = _context11.next) {
+          case 0:
+            _context11.prev = 0;
+            _context11.next = 3;
+            return _node2.default.find();
+
+          case 3:
+            nodes = _context11.sent;
+
+            nodes.forEach(function () {
+              var _ref11 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee10(node) {
+                return _regenerator2.default.wrap(function _callee10$(_context10) {
+                  while (1) {
+                    switch (_context10.prev = _context10.next) {
+                      case 0:
+                        node.sources = node.sources.filter(function (elem, index, self) {
+                          return index == self.indexOf(elem);
+                        });
+                        node.subtopics = node.subtopics.filter(function (elem, index, self) {
+                          return index == self.indexOf(elem);
+                        });
+                        _context10.next = 4;
+                        return node.save();
+
+                      case 4:
+                      case "end":
+                        return _context10.stop();
+                    }
+                  }
+                }, _callee10, _this2);
+              }));
+
+              return function (_x19) {
+                return _ref11.apply(this, arguments);
+              };
+            }());
+
+            console.log("Big success");
+            res.end();
+            _context11.next = 15;
+            break;
+
+          case 9:
+            _context11.prev = 9;
+            _context11.t0 = _context11["catch"](0);
+
+            console.log(_context11.t0);
+            errors = {};
+
+            errors.general = _context11.t0;
+            res.status(500).json(errors);
+
+          case 15:
+          case "end":
+            return _context11.stop();
+        }
+      }
+    }, _callee11, this, [[0, 9]]);
+  }));
+
+  return function removeDuplicateSourcesAndSubtopics(_x17, _x18) {
+    return _ref10.apply(this, arguments);
   };
 }();
 
@@ -5473,20 +5736,28 @@ var _node = __webpack_require__(28);
 
 var _node2 = _interopRequireDefault(_node);
 
-var _mongodb = __webpack_require__(29);
+var _mongodb = __webpack_require__(116);
 
-var _validateNodeInput2 = __webpack_require__(116);
+var _validateNodeInput2 = __webpack_require__(117);
 
 var _validateNodeInput3 = _interopRequireDefault(_validateNodeInput2);
 
-var _addSource = __webpack_require__(117);
+var _addSource = __webpack_require__(118);
 
-var _addSubtopic = __webpack_require__(118);
+var _addSubtopic = __webpack_require__(119);
+
+var _assert = __webpack_require__(120);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
 /* 116 */
+/***/ (function(module, exports) {
+
+module.exports = require("mongodb");
+
+/***/ }),
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5518,7 +5789,7 @@ module.exports = function validateNodeInput(data) {
 };
 
 /***/ }),
-/* 117 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5547,14 +5818,14 @@ var addSource = exports.addSource = function () {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
-            nodeId = (0, _mongodb.ObjectId)(node._id);
+            nodeId = ObjectId(node._id);
 
             if (!(sources.length > 0)) {
               _context4.next = 12;
               break;
             }
 
-            // Find items that have been removed, remove subtopic relationship in that node
+            // Find items that have been removed, remove subtopic relationship from that node
             oldSources = node.sources.filter(function (x) {
               return !sources.includes(x.toString());
             });
@@ -5581,9 +5852,11 @@ var addSource = exports.addSource = function () {
               };
             }());
 
-            // Find objects that are new, add subtopic relationship in that node
+            // Find objects that are new, add subtopic relationship from that node
             newSources = sources.filter(function (newSource) {
-              return !node.sources.includes((0, _mongodb.ObjectId)(newSource));
+              return !node.sources.some(function (source) {
+                return source.equals(_mongoose2.default.Types.ObjectId(newSource));
+              });
             });
 
             newSources.forEach(function () {
@@ -5593,7 +5866,7 @@ var addSource = exports.addSource = function () {
                     switch (_context2.prev = _context2.next) {
                       case 0:
                         _context2.next = 2;
-                        return _node2.default.findByIdAndUpdate(source, { $push: { subtopics: nodeId } }, { new: true });
+                        return _node2.default.findByIdAndUpdate(source, { $addToSet: { subtopics: nodeId } }, { new: true });
 
                       case 2:
                       case "end":
@@ -5676,12 +5949,14 @@ var _node = __webpack_require__(28);
 
 var _node2 = _interopRequireDefault(_node);
 
-var _mongodb = __webpack_require__(29);
+var _mongoose = __webpack_require__(13);
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 118 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5710,10 +5985,10 @@ var addSubtopic = exports.addSubtopic = function () {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
-            nodeId = (0, _mongodb.ObjectId)(node._id);
+            nodeId = ObjectId(node._id);
 
             if (!(subtopics.length > 0)) {
-              _context4.next = 12;
+              _context4.next = 14;
               break;
             }
 
@@ -5722,6 +5997,7 @@ var addSubtopic = exports.addSubtopic = function () {
               return !subtopics.includes(x.toString());
             });
 
+            console.log(oldSubtopics);
             oldSubtopics.forEach(function () {
               var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(subtopic) {
                 return _regenerator2.default.wrap(function _callee$(_context) {
@@ -5746,9 +6022,12 @@ var addSubtopic = exports.addSubtopic = function () {
 
             // Find objects that are new, add source relationship in that node
             newSubtopics = subtopics.filter(function (newSubtopic) {
-              return !node.subtopics.includes((0, _mongodb.ObjectId)(newSubtopic));
+              return !node.subtopics.some(function (subtopic) {
+                return subtopic.equals(_mongoose2.default.Types.ObjectId(newSubtopic));
+              });
             });
 
+            console.log(newSubtopics);
             newSubtopics.forEach(function () {
               var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(subtopic) {
                 return _regenerator2.default.wrap(function _callee2$(_context2) {
@@ -5756,7 +6035,7 @@ var addSubtopic = exports.addSubtopic = function () {
                     switch (_context2.prev = _context2.next) {
                       case 0:
                         _context2.next = 2;
-                        return _node2.default.findByIdAndUpdate(subtopic, { $push: { sources: nodeId } }, { new: true });
+                        return _node2.default.findByIdAndUpdate(subtopic, { $addToSet: { sources: nodeId } }, { new: true });
 
                       case 2:
                       case "end":
@@ -5771,14 +6050,14 @@ var addSubtopic = exports.addSubtopic = function () {
               };
             }());
             node.subtopics = subtopics;
-            _context4.next = 10;
+            _context4.next = 12;
             return node.save();
 
-          case 10:
-            _context4.next = 17;
+          case 12:
+            _context4.next = 19;
             break;
 
-          case 12:
+          case 14:
             // Remove from source of related nodes
             node.subtopics.forEach(function () {
               var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(source) {
@@ -5802,18 +6081,18 @@ var addSubtopic = exports.addSubtopic = function () {
               };
             }());
             node.subtopics = [];
-            _context4.next = 16;
+            _context4.next = 18;
             return node.save();
 
-          case 16:
+          case 18:
             return _context4.abrupt("return");
 
-          case 17:
-            _context4.next = 25;
+          case 19:
+            _context4.next = 27;
             break;
 
-          case 19:
-            _context4.prev = 19;
+          case 21:
+            _context4.prev = 21;
             _context4.t0 = _context4["catch"](0);
 
             console.log(_context4.t0);
@@ -5822,12 +6101,12 @@ var addSubtopic = exports.addSubtopic = function () {
             errors.general = _context4.t0;
             return _context4.abrupt("return", new Error(errors));
 
-          case 25:
+          case 27:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, this, [[0, 19]]);
+    }, _callee4, this, [[0, 21]]);
   }));
 
   return function addSubtopic(_x, _x2) {
@@ -5839,12 +6118,20 @@ var _node = __webpack_require__(28);
 
 var _node2 = _interopRequireDefault(_node);
 
-var _mongodb = __webpack_require__(29);
+var _mongoose = __webpack_require__(13);
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 119 */
+/* 120 */
+/***/ (function(module, exports) {
+
+module.exports = require("assert");
+
+/***/ }),
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5882,16 +6169,16 @@ var _post2 = _interopRequireDefault(_post);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 120 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(__dirname) {
 
 var webpack = __webpack_require__(51);
-var cssnext = __webpack_require__(121);
-var postcssFocus = __webpack_require__(122);
-var postcssReporter = __webpack_require__(123);
+var cssnext = __webpack_require__(123);
+var postcssFocus = __webpack_require__(124);
+var postcssReporter = __webpack_require__(125);
 
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
@@ -5971,31 +6258,31 @@ module.exports = {
 /* WEBPACK VAR INJECTION */}.call(exports, ""))
 
 /***/ }),
-/* 121 */
+/* 123 */
 /***/ (function(module, exports) {
 
 module.exports = require("postcss-cssnext");
 
 /***/ }),
-/* 122 */
+/* 124 */
 /***/ (function(module, exports) {
 
 module.exports = require("postcss-focus");
 
 /***/ }),
-/* 123 */
+/* 125 */
 /***/ (function(module, exports) {
 
 module.exports = require("postcss-reporter");
 
 /***/ }),
-/* 124 */
+/* 126 */
 /***/ (function(module, exports) {
 
 module.exports = require("webpack-dev-middleware");
 
 /***/ }),
-/* 125 */
+/* 127 */
 /***/ (function(module, exports) {
 
 module.exports = require("webpack-hot-middleware");
