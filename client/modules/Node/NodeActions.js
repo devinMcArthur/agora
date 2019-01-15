@@ -83,9 +83,23 @@ export const getSubtopics = id => dispatch => {
     .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
 };
 
+// LEGACY ** Remove duplicate sources and subtopics from all nodes
+export const legacyClearDuplicateSourceAndSubtopics = dispatch => {
+  return callApi("/node/remove/duplicates/all/legacy", "get")
+    .then(res => location.reload())
+    .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
+};
+
 // Remove duplicate sources and subtopics from all nodes
 export const clearDuplicateSourceAndSubtopics = dispatch => {
   return callApi("/node/remove/duplicates/all", "get")
+    .then(res => location.reload())
+    .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
+};
+
+// Change legacy source and subtopic connections to connection object references
+export const updateNodeConnections = dispatch => {
+  return callApi("/node/connections/update/all", "get")
     .then(res => location.reload())
     .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
 };

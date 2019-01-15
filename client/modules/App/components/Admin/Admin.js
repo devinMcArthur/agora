@@ -7,7 +7,10 @@ import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 
-import { clearDuplicateSourceAndSubtopics } from "../../../Node/NodeActions";
+import {
+  clearDuplicateSourceAndSubtopics,
+  updateNodeConnections
+} from "../../../Node/NodeActions";
 
 class Admin extends Component {
   constructor(props) {
@@ -18,11 +21,15 @@ class Admin extends Component {
     };
 
     this.onDuplicatePress = this.onDuplicatePress.bind(this);
+    this.updateConnectionPress = this.updateConnectionPress.bind(this);
   }
 
   onDuplicatePress() {
-    console.log("hello");
     this.props.clearDuplicateSourceAndSubtopics();
+  }
+
+  updateConnectionPress() {
+    this.props.updateNodeConnections();
   }
 
   render() {
@@ -31,6 +38,9 @@ class Admin extends Component {
         <Helmet title="Admin" />
         <Paper>
           <Button onClick={this.onDuplicatePress}>Remove Duplicates</Button>
+          <Button onClick={this.updateConnectionPress}>
+            Update Connections
+          </Button>
         </Paper>
       </div>
     );
@@ -45,10 +55,11 @@ function mapStateToProps(state) {
 }
 
 Admin.propTypes = {
-  clearDuplicateSourceAndSubtopics: PropTypes.func.isRequired
+  clearDuplicateSourceAndSubtopics: PropTypes.func.isRequired,
+  updateNodeConnections: PropTypes.func.isRequired
 };
 
 export default connect(
   mapStateToProps,
-  { clearDuplicateSourceAndSubtopics }
+  { clearDuplicateSourceAndSubtopics, updateNodeConnections }
 )(Admin);

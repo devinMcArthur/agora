@@ -47,8 +47,8 @@ class Node extends Component {
   componentDidUpdate(prevProps) {
     if (
       this.props.node.node !== null &&
-      this.props.node.node.subtopics &&
-      this.props.node.node.subtopics.length > 0 &&
+      this.props.node.node.subtopicConnections &&
+      this.props.node.node.subtopicConnections.length > 0 &&
       this.props.node.subtopics === null &&
       !this.props.node.loading
     ) {
@@ -56,8 +56,8 @@ class Node extends Component {
     }
     if (
       this.props.node.node !== null &&
-      this.props.node.node.sources &&
-      this.props.node.node.sources.length > 0 &&
+      this.props.node.node.sourceConnections &&
+      this.props.node.node.sourceConnections.length > 0 &&
       this.props.node.sources === null &&
       !this.props.node.loading
     ) {
@@ -105,6 +105,7 @@ class Node extends Component {
       // Sources
       if (sources && sources.length > 0) {
         sources.forEach(source => {
+          source = source.source;
           sourceJSX.push(
             <span>
               <Link
@@ -129,6 +130,7 @@ class Node extends Component {
       // Subtopics
       if (subtopics && subtopics.length > 0) {
         subtopics.forEach(subtopic => {
+          subtopic = subtopic.subtopic;
           subtopicJSX.push(
             <Paper style={{ padding: "0.5em", marginTop: "0.5em" }}>
               <Link

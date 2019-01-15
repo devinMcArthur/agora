@@ -23,9 +23,19 @@ router.route("/node").post(NodeController.createNode);
 // Edit a node
 router.route("/node/:id/edit").post(NodeController.editNode);
 
+// LEGACY ** Remove Duplicate Sources and Subtopics from all Nodes
+router
+  .route("/node/remove/duplicates/all/legacy")
+  .get(NodeController.legacyRemoveDuplicateSourcesAndSubtopics);
+
 // Remove Duplicate Sources and Subtopics from all Nodes
 router
   .route("/node/remove/duplicates/all")
   .get(NodeController.removeDuplicateSourcesAndSubtopics);
+
+// Replace legacy node connections with connection objects
+router
+  .route("/node/connections/update/all")
+  .get(NodeController.updateNodeConnections);
 
 export default router;

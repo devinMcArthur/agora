@@ -10,26 +10,6 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 
 class NodeForm extends Component {
-  constructor() {
-    super();
-
-    this.state = {
-      hiCounter: 0
-    };
-
-    // this.iH = this.iH.bind(this);
-  }
-
-  // iH() {
-  //   let { hi } = this.state;
-  //   let content = "hI";
-  //   if (hi > 0) {
-  //     content = "hI" + "hI" * hiCounter;
-  //   }
-  //   alert(content);
-  //   this.setState({ hiCounter: this.state.hiCounter + 1 });
-  // }
-
   render() {
     let nodeArray = [];
     if (this.props.nodes.length > 0) {

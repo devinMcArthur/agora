@@ -1,11 +1,12 @@
 import Node from "../models/node";
+import Connection from "../models/connection";
+import User from "../models/user";
 import { ObjectId } from "mongodb";
 
 import validateNodeInput from "../validators/validateNodeInput";
 
 import { addSource } from "../util/addSource";
 import { addSubtopic } from "../util/addSubtopic";
-import { notDeepEqual } from "assert";
 
 // Highlight Array Legend
 // 0: Nothing
@@ -133,18 +134,20 @@ export async function getNodeByID(req, res) {
 export async function getNodeSources(req, res) {
   try {
     let node = await Node.findById(req.params.id);
-    let sourceArray = [],
-      src;
+    let returnArray = [];
 
-    if (node.sources && node.sources.length > 0) {
-      let sources = node.sources.slice();
-      for (var i in sources) {
-        src = await Node.findById(sources[i]);
-        sourceArray.push(src);
+    if (node.sourceConnections && node.sourceConnections.length > 0) {
+      for (var i = 0; i < node.sourceConnections.length; i++) {
+        let connection = await Connection.findById(node.sourceConnections[i]);
+        let sourceNode = await Node.findById(connection.sourceNode);
+        returnArray.push({
+          connection,
+          source: sourceNode
+        });
       }
     }
 
-    res.json(sourceArray);
+    res.json(returnArray);
   } catch (e) {
     console.log(e);
     let errors = {};
@@ -162,18 +165,21 @@ export async function getNodeSources(req, res) {
 export async function getNodeSubtopics(req, res) {
   try {
     let node = await Node.findById(req.params.id);
-    let subtopicArray = [],
-      src;
+    let returnArray = [];
 
-    if (node.subtopics && node.subtopics.length > 0) {
-      let subtopics = node.subtopics.slice();
-      for (var i in subtopics) {
-        src = await Node.findById(subtopics[i]);
-        subtopicArray.push(src);
+    if (node.subtopicConnections && node.subtopicConnections.length > 0) {
+      for (var i = 0; i < node.subtopicConnections.length; i++) {
+        let connection = await Connection.findById(node.subtopicConnections[i]);
+        let subtopicNode = await Node.findById(connection.subtopicNode);
+        returnArray.push({
+          connection,
+          subtopic: subtopicNode
+        });
       }
     }
 
-    res.json(subtopicArray);
+    console.log(returnArray);
+    res.json(returnArray);
   } catch (e) {
     console.log(e);
     let errors = {};
@@ -191,7 +197,10 @@ export async function getNodeSubtopics(req, res) {
 export async function getRootNodes(req, res) {
   try {
     let nodes = await Node.find({
-      sources: { $eq: [] }
+      $or: [
+        { sourceConnections: { $eq: [] } },
+        { sourceConnections: { $eq: null } }
+      ]
     });
     res.json(nodes);
   } catch (e) {
@@ -228,12 +237,88 @@ export async function getAllNodesForSelect(req, res) {
 }
 
 /**
- * Remove duplicate sources and subtopics from all nodes
+ * Remove legacy duplicate sources and subtopics from all nodes
  * @param req
  * @param res
  * @returns void
  */
 export async function removeDuplicateSourcesAndSubtopics(req, res) {
+  try {
+    let nodes = await Node.find();
+    nodes.forEach(async node => {
+      if (node.sourceConnections.length > 0) {
+        for (var i = 0; i < node.sourceConnections.length; i++) {
+          let connection = await Connection.findById(node.sourceConnections[i]);
+          let connections = await Connection.find({
+            sourceNode: connection.sourceNode,
+            subtopicNode: node._id
+          });
+          if (connections.length > 1) {
+            for (var j = 1; j < connections.length; j++) {
+              if (connections[j]) {
+                await Node.findByIdAndUpdate(
+                  connections[j].sourceNode,
+                  { $pull: { subtopicConnections: connections[j]._id } },
+                  { new: true }
+                );
+                await Node.findByIdAndUpdate(
+                  connections[j].subtopicNode,
+                  { $pull: { sourceConnections: connections[j]._id } },
+                  { new: true }
+                );
+                await Connection.findByIdAndRemove(connections[j]._id);
+              }
+            }
+          }
+        }
+      }
+      if (node.subtopicConnections.length > 0) {
+        for (var i = 0; i < node.subtopicConnections.length; i++) {
+          let connection = await Connection.findById(
+            node.subtopicConnections[i]
+          );
+          let connections = await Connection.find({
+            subtopicNode: connection.subtopicNode,
+            sourceNode: node._id
+          });
+          if (connections.length > 1) {
+            for (var j = 1; j < connections.length; j++) {
+              if (connections[j]) {
+                await Node.findByIdAndUpdate(
+                  connections[j].sourceNode,
+                  { $pull: { subtopicConnections: connections[j]._id } },
+                  { new: true }
+                );
+                await Node.findByIdAndUpdate(
+                  connections[j].subtopicNode,
+                  { $pull: { sourceConnections: connections[j]._id } },
+                  { new: true }
+                );
+                await Connection.findByIdAndRemove(connections[j]._id);
+              }
+            }
+          }
+        }
+      }
+    });
+
+    console.log("Big success");
+    res.end();
+  } catch (e) {
+    console.log(e);
+    let errors = {};
+    errors.general = e;
+    res.status(500).json(errors);
+  }
+}
+
+/**
+ * LEGACY ** Remove legacy duplicate sources and subtopics from all nodes
+ * @param req
+ * @param res
+ * @returns void
+ */
+export async function legacyRemoveDuplicateSourcesAndSubtopics(req, res) {
   try {
     let nodes = await Node.find();
     nodes.forEach(async node => {
@@ -247,6 +332,86 @@ export async function removeDuplicateSourcesAndSubtopics(req, res) {
     });
 
     console.log("Big success");
+    res.end();
+  } catch (e) {
+    console.log(e);
+    let errors = {};
+    errors.general = e;
+    res.status(500).json(errors);
+  }
+}
+
+/**
+ * Replace legacy node connections with connection objects
+ * @param req
+ * @param res
+ * @returns void
+ */
+export async function updateNodeConnections(req, res) {
+  try {
+    let nodes = await Node.find();
+    let author = await User.find({ admin: true });
+    author = author[0];
+    nodes.forEach(async node => {
+      if (node.sources.length > 0) {
+        node.sources.forEach(async source => {
+          let connection = new Connection({
+            sourceNode: source,
+            subtopicNode: node._id,
+            author: author._id
+          });
+          // Update related node
+          await Node.findByIdAndUpdate(
+            source,
+            {
+              $pull: { subtopics: node._id },
+              $push: { subtopicConnections: connection._id }
+            },
+            { new: true }
+          );
+          // Update node
+          await Node.findByIdAndUpdate(
+            node._id,
+            {
+              $pull: { sources: source },
+              $push: { sourceConnections: connection._id }
+            },
+            { new: true }
+          );
+          await connection.save();
+        });
+      }
+      if (node.subtopics.length > 0) {
+        node.subtopics.forEach(async subtopic => {
+          let connection = new Connection({
+            sourceNode: node._id,
+            subtopicNode: subtopic,
+            author: author._id
+          });
+          // Update related node
+          await Node.findByIdAndUpdate(
+            subtopic,
+            {
+              $pull: { sources: node._id },
+              $push: { sourceConnections: connection._id }
+            },
+            { new: true }
+          );
+          // Update node
+          await Node.findByIdAndUpdate(
+            node._id,
+            {
+              $pull: { subtopics: subtopic },
+              $push: { subtopicConnections: connection._id }
+            },
+            { new: true }
+          );
+          await connection.save();
+        });
+      }
+    });
+
+    console.log("Large success");
     res.end();
   } catch (e) {
     console.log(e);

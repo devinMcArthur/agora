@@ -60,7 +60,7 @@ class Home extends Component {
 
     return (
       <div>
-        <h1>Welcome to the Homepage!</h1>
+        <h1>Please do not edit or add any nodes for the time being</h1>
         <Button variant="contained" onClick={this.nodeFormToggle}>
           Add an Idea
         </Button>
