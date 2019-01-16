@@ -76,7 +76,6 @@ class EditNodeForm extends Component {
   }
 
   render() {
-    console.log(this.state);
     let content;
     if (this.props.node !== null && this.props.node.formNodes !== null) {
       let subtopicOptions = [],
@@ -145,6 +144,9 @@ class EditNodeForm extends Component {
     } else {
       content = <p>Loading . . . </p>;
     }
+
+    content =
+      "This feature is currently is development, sorry for any inconvenience";
 
     return <div>{content}</div>;
   }

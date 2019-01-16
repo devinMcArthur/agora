@@ -45,33 +45,46 @@ export async function createNode(req, res) {
     let nodeContent = {
       string: req.body.content,
       highlightArray,
-      authorArray
+      authorArray,
+      author: req.body.author
     };
 
     let node = new Node({
       title: req.body.title,
-      content: nodeContent,
-      subtopics: req.body.subtopics,
-      sources: req.body.sources
+      content: nodeContent
     });
 
+    let sourceConnections = [];
+    for (var i in req.body.sources) {
+      let connection = new Connection({
+        sourceNode: req.body.sources[i],
+        subtopicNode: node._id,
+        author: req.body.author
+      });
+      connection = await connection.save();
+      await Node.findByIdAndUpdate(req.body.sources[i], {
+        $push: { subtopicConnections: connection._id }
+      });
+      sourceConnections.push(connection._id);
+    }
+
+    let subtopicConnections = [];
+    for (var i in req.body.subtopics) {
+      let connection = new Connection({
+        sourceNode: node._id,
+        subtopicNode: req.body.subtopic[i],
+        author: req.body.author
+      });
+      connection = await connection.save();
+      await Node.findByIdAndUpdate(req.body.subtopic[i], {
+        $push: { sourceConnections: connection._id }
+      });
+      subtopicConnections.push(connection._id);
+    }
+
+    node.sourceConnections = sourceConnections;
+    node.subtopicConnections = subtopicConnections;
     node = await node.save();
-
-    node.sources.forEach(async source => {
-      await Node.findByIdAndUpdate(
-        source,
-        { $push: { subtopics: node._id } },
-        { new: true }
-      );
-    });
-
-    node.subtopics.forEach(async subtopic => {
-      await Node.findByIdAndUpdate(
-        subtopic,
-        { $push: { sources: node._id } },
-        { new: true }
-      );
-    });
 
     res.end();
   } catch (e) {
@@ -178,7 +191,6 @@ export async function getNodeSubtopics(req, res) {
       }
     }
 
-    console.log(returnArray);
     res.json(returnArray);
   } catch (e) {
     console.log(e);
