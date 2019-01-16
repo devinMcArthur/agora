@@ -5,8 +5,8 @@ import { ObjectId } from "mongodb";
 
 import validateNodeInput from "../validators/validateNodeInput";
 
-import { addSource } from "../util/addSource";
-import { addSubtopic } from "../util/addSubtopic";
+import { addSourceConnections } from "../util/addSourceConnections";
+import { addSubtopicConnections } from "../util/addSubtopicConnections";
 
 // Highlight Array Legend
 // 0: Nothing
@@ -107,8 +107,8 @@ export async function editNode(req, res) {
     node.version++;
 
     (node.title = req.body.title), (node.content.string = req.body.content);
-    addSource(node, req.body.sources);
-    addSubtopic(node, req.body.subtopics);
+    addSourceConnections(node, req.body);
+    addSubtopicConnections(node, req.body);
     await node.save();
 
     res.end();

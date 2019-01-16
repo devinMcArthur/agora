@@ -145,9 +145,6 @@ class EditNodeForm extends Component {
       content = <p>Loading . . . </p>;
     }
 
-    content =
-      "This feature is currently is development, sorry for any inconvenience";
-
     return <div>{content}</div>;
   }
 }

@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 53);
+/******/ 	return __webpack_require__(__webpack_require__.s = 54);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -163,15 +163,15 @@ var _apiCaller = __webpack_require__(26);
 
 var _apiCaller2 = _interopRequireDefault(_apiCaller);
 
-var _setAuthToken = __webpack_require__(33);
+var _setAuthToken = __webpack_require__(34);
 
 var _setAuthToken2 = _interopRequireDefault(_setAuthToken);
 
-var _jwtDecode = __webpack_require__(34);
+var _jwtDecode = __webpack_require__(35);
 
 var _jwtDecode2 = _interopRequireDefault(_jwtDecode);
 
-var _ErrorActions = __webpack_require__(35);
+var _ErrorActions = __webpack_require__(36);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -367,11 +367,11 @@ var _apiCaller = __webpack_require__(26);
 
 var _apiCaller2 = _interopRequireDefault(_apiCaller);
 
-var _setAuthToken = __webpack_require__(33);
+var _setAuthToken = __webpack_require__(34);
 
 var _setAuthToken2 = _interopRequireDefault(_setAuthToken);
 
-var _jwtDecode = __webpack_require__(34);
+var _jwtDecode = __webpack_require__(35);
 
 var _jwtDecode2 = _interopRequireDefault(_jwtDecode);
 
@@ -473,7 +473,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getPost = exports.getPosts = undefined;
 
-var _toConsumableArray2 = __webpack_require__(61);
+var _toConsumableArray2 = __webpack_require__(62);
 
 var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 
@@ -631,11 +631,11 @@ Object.defineProperty(exports, "__esModule", {
 exports.API_URL = undefined;
 exports.default = callApi;
 
-var _isomorphicFetch = __webpack_require__(62);
+var _isomorphicFetch = __webpack_require__(63);
 
 var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
 
-var _config = __webpack_require__(63);
+var _config = __webpack_require__(64);
 
 var _config2 = _interopRequireDefault(_config);
 
@@ -780,12 +780,66 @@ exports.default = _mongoose2.default.model("Node", nodeSchema);
 
 /***/ }),
 /* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _mongoose = __webpack_require__(11);
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Schema = _mongoose2.default.Schema;
+
+// Defines source/subtopic connection between nodes
+
+var connectionSchema = new Schema({
+  sourceNode: {
+    type: Schema.Types.ObjectId,
+    ref: "node"
+  },
+  // To determine if this connection transcends universes
+  // Can limit subtopic/source viewing so not to link to private universe from public
+  sourceNodePrivate: {
+    type: Boolean,
+    default: false
+  },
+  subtopicNode: {
+    type: Schema.Types.ObjectId,
+    ref: "node"
+  },
+  subtopicNodePrivate: {
+    type: Boolean,
+    default: false
+  },
+  // Upvote/Downvote ratio of connection
+  // Allows ranking of subtopic node in a given context
+  value: {
+    type: Number,
+    default: 0
+  },
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: "user"
+  }
+});
+
+exports.default = _mongoose2.default.model("Connection", connectionSchema);
+
+/***/ }),
+/* 30 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux");
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -830,7 +884,7 @@ var getShowAddPost = exports.getShowAddPost = function getShowAddPost(state) {
 exports.default = AppReducer;
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -843,31 +897,31 @@ exports.localizationData = exports.enabledLanguages = undefined;
 
 var _reactIntl = __webpack_require__(12);
 
-var _intl = __webpack_require__(66);
+var _intl = __webpack_require__(67);
 
 var _intl2 = _interopRequireDefault(_intl);
 
-var _intlLocalesSupported = __webpack_require__(67);
+var _intlLocalesSupported = __webpack_require__(68);
 
 var _intlLocalesSupported2 = _interopRequireDefault(_intlLocalesSupported);
 
-__webpack_require__(68);
+__webpack_require__(69);
 
-var _en = __webpack_require__(69);
+var _en = __webpack_require__(70);
 
 var _en2 = _interopRequireDefault(_en);
 
-var _en3 = __webpack_require__(70);
+var _en3 = __webpack_require__(71);
 
 var _en4 = _interopRequireDefault(_en3);
 
-__webpack_require__(71);
+__webpack_require__(72);
 
-var _fr = __webpack_require__(72);
+var _fr = __webpack_require__(73);
 
 var _fr2 = _interopRequireDefault(_fr);
 
-var _fr3 = __webpack_require__(73);
+var _fr3 = __webpack_require__(74);
 
 var _fr4 = _interopRequireDefault(_fr3);
 
@@ -933,7 +987,7 @@ localizationData.fr = _fr4.default;
 localizationData.fr.messages = flattenMessages(localizationData.fr.messages);
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -950,7 +1004,7 @@ var _extends3 = _interopRequireDefault(_extends2);
 
 exports.switchLanguage = switchLanguage;
 
-var _setup = __webpack_require__(31);
+var _setup = __webpack_require__(32);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -964,7 +1018,7 @@ function switchLanguage(newLang) {
 }
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -974,7 +1028,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _axios = __webpack_require__(75);
+var _axios = __webpack_require__(76);
 
 var _axios2 = _interopRequireDefault(_axios);
 
@@ -993,13 +1047,13 @@ var setAuthToken = function setAuthToken(token) {
 exports.default = setAuthToken;
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports) {
 
 module.exports = require("jwt-decode");
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1020,7 +1074,7 @@ var clearErrors = exports.clearErrors = function clearErrors() {
 };
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1038,13 +1092,13 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reduxDevtools = __webpack_require__(78);
+var _reduxDevtools = __webpack_require__(79);
 
-var _reduxDevtoolsLogMonitor = __webpack_require__(79);
+var _reduxDevtoolsLogMonitor = __webpack_require__(80);
 
 var _reduxDevtoolsLogMonitor2 = _interopRequireDefault(_reduxDevtoolsLogMonitor);
 
-var _reduxDevtoolsDockMonitor = __webpack_require__(80);
+var _reduxDevtoolsDockMonitor = __webpack_require__(81);
 
 var _reduxDevtoolsDockMonitor2 = _interopRequireDefault(_reduxDevtoolsDockMonitor);
 
@@ -1056,7 +1110,7 @@ exports.default = (0, _reduxDevtools.createDevTools)((0, _jsx3.default)(_reduxDe
 }, void 0, (0, _jsx3.default)(_reduxDevtoolsLogMonitor2.default, {})));
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1114,13 +1168,13 @@ var _Paper = __webpack_require__(10);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
-var _core = __webpack_require__(38);
+var _core = __webpack_require__(39);
 
-var _Switch = __webpack_require__(39);
+var _Switch = __webpack_require__(40);
 
 var _Switch2 = _interopRequireDefault(_Switch);
 
-var _FormControlLabel = __webpack_require__(40);
+var _FormControlLabel = __webpack_require__(41);
 
 var _FormControlLabel2 = _interopRequireDefault(_FormControlLabel);
 
@@ -1260,25 +1314,25 @@ function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { loginUser: _AuthActions.loginUser })(LoginPage);
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core");
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/Switch");
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/FormControlLabel");
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1338,13 +1392,13 @@ var _Paper = __webpack_require__(10);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
-var _core = __webpack_require__(38);
+var _core = __webpack_require__(39);
 
-var _Switch = __webpack_require__(39);
+var _Switch = __webpack_require__(40);
 
 var _Switch2 = _interopRequireDefault(_Switch);
 
-var _FormControlLabel = __webpack_require__(40);
+var _FormControlLabel = __webpack_require__(41);
 
 var _FormControlLabel2 = _interopRequireDefault(_FormControlLabel);
 
@@ -1496,7 +1550,7 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { registerUser: _AuthActions.registerUser })(SignupPage);
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1550,11 +1604,11 @@ var _Button = __webpack_require__(13);
 
 var _Button2 = _interopRequireDefault(_Button);
 
-var _NodeForm = __webpack_require__(43);
+var _NodeForm = __webpack_require__(44);
 
 var _NodeForm2 = _interopRequireDefault(_NodeForm);
 
-var _NodeList = __webpack_require__(98);
+var _NodeList = __webpack_require__(99);
 
 var _NodeList2 = _interopRequireDefault(_NodeList);
 
@@ -1646,7 +1700,7 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { getRootNodes: _NodeActions.getRootNodes, clearNodes: _NodeActions.clearNodes })(Home);
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1696,7 +1750,7 @@ var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
 var _NodeActions = __webpack_require__(14);
 
-var _SelectMultiple = __webpack_require__(44);
+var _SelectMultiple = __webpack_require__(45);
 
 var _SelectMultiple2 = _interopRequireDefault(_SelectMultiple);
 
@@ -1866,7 +1920,7 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { createNode: _NodeActions.createNode, getAllNodesForSelect: _NodeActions.getAllNodesForSelect })(NodeForm);
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1888,7 +1942,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _classnames = __webpack_require__(97);
+var _classnames = __webpack_require__(98);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -1896,7 +1950,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactSelect = __webpack_require__(45);
+var _reactSelect = __webpack_require__(46);
 
 var _reactSelect2 = _interopRequireDefault(_reactSelect);
 
@@ -1961,13 +2015,13 @@ var SelectMultiple = function SelectMultiple(_ref) {
 exports.default = SelectMultiple;
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-select");
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2017,11 +2071,11 @@ var _Button = __webpack_require__(13);
 
 var _Button2 = _interopRequireDefault(_Button);
 
-var _EditNodeForm = __webpack_require__(99);
+var _EditNodeForm = __webpack_require__(100);
 
 var _EditNodeForm2 = _interopRequireDefault(_EditNodeForm);
 
-var _NodeForm = __webpack_require__(43);
+var _NodeForm = __webpack_require__(44);
 
 var _NodeForm2 = _interopRequireDefault(_NodeForm);
 
@@ -2198,7 +2252,7 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { getNodeByID: _NodeActions.getNodeByID, getSubtopics: _NodeActions.getSubtopics, getSources: _NodeActions.getSources, nodeFullClear: _NodeActions.nodeFullClear })(Node);
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2314,7 +2368,7 @@ function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { clearDuplicateSourceAndSubtopics: _NodeActions.clearDuplicateSourceAndSubtopics, updateNodeConnections: _NodeActions.updateNodeConnections })(Admin);
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2344,13 +2398,13 @@ var postSchema = new Schema({
 exports.default = _mongoose2.default.model('Post', postSchema);
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports) {
 
 module.exports = require("sanitize-html");
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2380,26 +2434,26 @@ var userSchema = new Schema({
 exports.default = _mongoose2.default.model("User", userSchema);
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 if (process.env.NODE_ENV === "production") {
-  module.exports = __webpack_require__(112);
-} else {
   module.exports = __webpack_require__(113);
+} else {
+  module.exports = __webpack_require__(114);
 }
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports) {
 
 module.exports = require("webpack");
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2417,7 +2471,7 @@ var _express = __webpack_require__(17);
 
 var _express2 = _interopRequireDefault(_express);
 
-var _compression = __webpack_require__(54);
+var _compression = __webpack_require__(55);
 
 var _compression2 = _interopRequireDefault(_compression);
 
@@ -2425,19 +2479,19 @@ var _mongoose = __webpack_require__(11);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _bodyParser = __webpack_require__(55);
+var _bodyParser = __webpack_require__(56);
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
-var _path = __webpack_require__(56);
+var _path = __webpack_require__(57);
 
 var _path2 = _interopRequireDefault(_path);
 
-var _IntlWrapper = __webpack_require__(57);
+var _IntlWrapper = __webpack_require__(58);
 
 var _IntlWrapper2 = _interopRequireDefault(_IntlWrapper);
 
-var _store = __webpack_require__(58);
+var _store = __webpack_require__(59);
 
 var _reactRedux = __webpack_require__(3);
 
@@ -2445,7 +2499,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _server = __webpack_require__(81);
+var _server = __webpack_require__(82);
 
 var _reactRouter = __webpack_require__(9);
 
@@ -2453,21 +2507,21 @@ var _reactHelmet = __webpack_require__(8);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _routes = __webpack_require__(82);
+var _routes = __webpack_require__(83);
 
 var _routes2 = _interopRequireDefault(_routes);
 
-var _fetchData = __webpack_require__(100);
+var _fetchData = __webpack_require__(101);
 
-var _post = __webpack_require__(102);
+var _post = __webpack_require__(103);
 
 var _post2 = _interopRequireDefault(_post);
 
-var _user = __webpack_require__(106);
+var _user = __webpack_require__(107);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _node = __webpack_require__(114);
+var _node = __webpack_require__(115);
 
 var _node2 = _interopRequireDefault(_node);
 
@@ -2475,7 +2529,7 @@ var _dummyData = __webpack_require__(121);
 
 var _dummyData2 = _interopRequireDefault(_dummyData);
 
-var _keys = __webpack_require__(51);
+var _keys = __webpack_require__(52);
 
 var _keys2 = _interopRequireDefault(_keys);
 
@@ -2492,7 +2546,7 @@ var isProdMode = process.env.NODE_ENV === "production" || false;
 if (isDevMode) {
   // Webpack Requirements
   // eslint-disable-next-line global-require
-  var webpack = __webpack_require__(52);
+  var webpack = __webpack_require__(53);
   // eslint-disable-next-line global-require
   var config = __webpack_require__(122);
   // eslint-disable-next-line global-require
@@ -2603,25 +2657,25 @@ exports.default = app;
 /* WEBPACK VAR INJECTION */}.call(exports, "server"))
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports) {
 
 module.exports = require("compression");
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports) {
 
 module.exports = require("body-parser");
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports) {
 
 module.exports = require("path");
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2664,7 +2718,7 @@ function mapStateToProps(store) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(IntlWrapper);
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2675,13 +2729,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.configureStore = configureStore;
 
-var _redux = __webpack_require__(29);
+var _redux = __webpack_require__(30);
 
-var _reduxThunk = __webpack_require__(59);
+var _reduxThunk = __webpack_require__(60);
 
 var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
-var _reducers = __webpack_require__(60);
+var _reducers = __webpack_require__(61);
 
 var _reducers2 = _interopRequireDefault(_reducers);
 
@@ -2693,7 +2747,7 @@ var DevTools = void 0; /**
 
 if (process.env.NODE_ENV === "development") {
   // eslint-disable-next-line global-require
-  DevTools = __webpack_require__(36).default;
+  DevTools = __webpack_require__(37).default;
 }
 
 function configureStore() {
@@ -2722,13 +2776,13 @@ function configureStore() {
 }
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux-thunk");
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2738,9 +2792,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _redux = __webpack_require__(29);
+var _redux = __webpack_require__(30);
 
-var _AppReducer = __webpack_require__(30);
+var _AppReducer = __webpack_require__(31);
 
 var _AppReducer2 = _interopRequireDefault(_AppReducer);
 
@@ -2748,19 +2802,19 @@ var _PostReducer = __webpack_require__(24);
 
 var _PostReducer2 = _interopRequireDefault(_PostReducer);
 
-var _IntlReducer = __webpack_require__(64);
+var _IntlReducer = __webpack_require__(65);
 
 var _IntlReducer2 = _interopRequireDefault(_IntlReducer);
 
-var _AuthReducer = __webpack_require__(74);
+var _AuthReducer = __webpack_require__(75);
 
 var _AuthReducer2 = _interopRequireDefault(_AuthReducer);
 
-var _ErrorReducer = __webpack_require__(76);
+var _ErrorReducer = __webpack_require__(77);
 
 var _ErrorReducer2 = _interopRequireDefault(_ErrorReducer);
 
-var _NodeReducer = __webpack_require__(77);
+var _NodeReducer = __webpack_require__(78);
 
 var _NodeReducer2 = _interopRequireDefault(_NodeReducer);
 
@@ -2782,19 +2836,19 @@ exports.default = (0, _redux.combineReducers)({
      */
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports) {
 
 module.exports = require("babel-runtime/helpers/toConsumableArray");
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports) {
 
 module.exports = require("isomorphic-fetch");
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2811,7 +2865,7 @@ var config = {
 exports.default = config;
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2821,7 +2875,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _objectWithoutProperties2 = __webpack_require__(65);
+var _objectWithoutProperties2 = __webpack_require__(66);
 
 var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
 
@@ -2829,9 +2883,9 @@ var _extends2 = __webpack_require__(16);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _setup = __webpack_require__(31);
+var _setup = __webpack_require__(32);
 
-var _IntlActions = __webpack_require__(32);
+var _IntlActions = __webpack_require__(33);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2863,37 +2917,37 @@ var IntlReducer = function IntlReducer() {
 exports.default = IntlReducer;
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports) {
 
 module.exports = require("babel-runtime/helpers/objectWithoutProperties");
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports) {
 
 module.exports = require("intl");
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports) {
 
 module.exports = require("intl-locales-supported");
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports) {
 
 module.exports = require("intl/locale-data/jsonp/en");
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-intl/locale-data/en");
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2923,19 +2977,19 @@ exports.default = {
 };
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports) {
 
 module.exports = require("intl/locale-data/jsonp/fr");
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-intl/locale-data/fr");
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2965,7 +3019,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3010,13 +3064,13 @@ var AuthReducer = function AuthReducer() {
 exports.default = AuthReducer;
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports) {
 
 module.exports = require("axios");
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3040,12 +3094,12 @@ exports.default = function () {
   }
 };
 
-var _ErrorActions = __webpack_require__(35);
+var _ErrorActions = __webpack_require__(36);
 
 var initialState = {};
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3132,31 +3186,31 @@ var NodeReducer = function NodeReducer() {
 exports.default = NodeReducer;
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux-devtools");
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux-devtools-log-monitor");
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux-devtools-dock-monitor");
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-dom/server");
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3176,7 +3230,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouter = __webpack_require__(9);
 
-var _App = __webpack_require__(83);
+var _App = __webpack_require__(84);
 
 var _App2 = _interopRequireDefault(_App);
 
@@ -3196,18 +3250,18 @@ if (false) {
 /* eslint-disable global-require */
 if (process.env.NODE_ENV !== "production") {
   // Require async routes only in development for react-hot-reloader to work.
-  __webpack_require__(92);
-  __webpack_require__(96);
+  __webpack_require__(93);
+  __webpack_require__(97);
   // Auth Components
-  __webpack_require__(37);
-  __webpack_require__(41);
-  // App Components
+  __webpack_require__(38);
   __webpack_require__(42);
+  // App Components
+  __webpack_require__(43);
   // Node Components
-  __webpack_require__(46);
+  __webpack_require__(47);
 
   // Admin
-  __webpack_require__(47);
+  __webpack_require__(48);
 }
 
 // react-router setup with code-splitting
@@ -3218,41 +3272,41 @@ exports.default = (0, _jsx3.default)(_reactRouter.Route, {
 }, void 0, (0, _jsx3.default)(_reactRouter.IndexRoute, {
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(42).default);
+      cb(null, __webpack_require__(43).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/login",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(37).default);
+      cb(null, __webpack_require__(38).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/signup",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(41).default);
+      cb(null, __webpack_require__(42).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/admin",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(47).default);
+      cb(null, __webpack_require__(48).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/node/:nodeID",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(46).default);
+      cb(null, __webpack_require__(47).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }));
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3303,17 +3357,17 @@ var _reactHelmet = __webpack_require__(8);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _Header = __webpack_require__(84);
+var _Header = __webpack_require__(85);
 
 var _Header2 = _interopRequireDefault(_Header);
 
-var _Footer = __webpack_require__(91);
+var _Footer = __webpack_require__(92);
 
 var _Footer2 = _interopRequireDefault(_Footer);
 
 var _AppActions = __webpack_require__(23);
 
-var _IntlActions = __webpack_require__(32);
+var _IntlActions = __webpack_require__(33);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3327,7 +3381,7 @@ var DevTools = void 0;
 
 if (process.env.NODE_ENV === "development") {
   // eslint-disable-next-line global-require
-  DevTools = __webpack_require__(36).default;
+  DevTools = __webpack_require__(37).default;
 }
 
 var _ref = (0, _jsx3.default)(DevTools, {});
@@ -3400,7 +3454,7 @@ function mapStateToProps(store) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(App);
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3442,17 +3496,17 @@ var _reactRouter = __webpack_require__(9);
 
 var _reactRedux = __webpack_require__(3);
 
-var _styles = __webpack_require__(85);
+var _styles = __webpack_require__(86);
 
-var _AppBar = __webpack_require__(86);
+var _AppBar = __webpack_require__(87);
 
 var _AppBar2 = _interopRequireDefault(_AppBar);
 
-var _Toolbar = __webpack_require__(87);
+var _Toolbar = __webpack_require__(88);
 
 var _Toolbar2 = _interopRequireDefault(_Toolbar);
 
-var _Typography = __webpack_require__(88);
+var _Typography = __webpack_require__(89);
 
 var _Typography2 = _interopRequireDefault(_Typography);
 
@@ -3460,11 +3514,11 @@ var _Button = __webpack_require__(13);
 
 var _Button2 = _interopRequireDefault(_Button);
 
-var _IconButton = __webpack_require__(89);
+var _IconButton = __webpack_require__(90);
 
 var _IconButton2 = _interopRequireDefault(_IconButton);
 
-var _Menu = __webpack_require__(90);
+var _Menu = __webpack_require__(91);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
@@ -3584,43 +3638,43 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { logoutUser: _AuthActions.logoutUser })((0, _styles.withStyles)(matStyles)(Header));
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/styles");
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/AppBar");
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/Toolbar");
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/Typography");
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/IconButton");
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/icons/Menu");
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3661,14 +3715,14 @@ function Footer() {
     className: _Footer2.default.footer
   }, void 0, (0, _jsx3.default)("p", {
     style: { color: "black" }
-  }, void 0, "\xA9 2019 \xB7 Solitaire \xB7 Alpha 0.1"));
+  }, void 0, "\xA9 2019 \xB7 Solitaire \xB7 Alpha 0.1.2"));
 }
 
 // Import Images
 exports.default = Footer;
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3708,11 +3762,11 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _PostList = __webpack_require__(93);
+var _PostList = __webpack_require__(94);
 
 var _PostList2 = _interopRequireDefault(_PostList);
 
-var _PostCreateWidget = __webpack_require__(95);
+var _PostCreateWidget = __webpack_require__(96);
 
 var _PostCreateWidget2 = _interopRequireDefault(_PostCreateWidget);
 
@@ -3720,7 +3774,7 @@ var _PostActions = __webpack_require__(25);
 
 var _AppActions = __webpack_require__(23);
 
-var _AppReducer = __webpack_require__(30);
+var _AppReducer = __webpack_require__(31);
 
 var _PostReducer = __webpack_require__(24);
 
@@ -3800,7 +3854,7 @@ PostListPage.contextTypes = {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(PostListPage);
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3822,7 +3876,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _PostListItem = __webpack_require__(94);
+var _PostListItem = __webpack_require__(95);
 
 var _PostListItem2 = _interopRequireDefault(_PostListItem);
 
@@ -3845,7 +3899,7 @@ function PostList(props) {
 exports.default = PostList;
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3920,7 +3974,7 @@ function PostListItem(props) {
 exports.default = PostListItem;
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4045,7 +4099,7 @@ var PostCreateWidget = exports.PostCreateWidget = function (_Component) {
 exports.default = (0, _reactIntl.injectIntl)(PostCreateWidget);
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4135,13 +4189,13 @@ function mapStateToProps(state, props) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(PostDetailPage);
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports) {
 
 module.exports = require("classnames");
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4187,7 +4241,7 @@ var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
 var _reactRouter = __webpack_require__(9);
 
-var _reactSelect = __webpack_require__(45);
+var _reactSelect = __webpack_require__(46);
 
 var _reactSelect2 = _interopRequireDefault(_reactSelect);
 
@@ -4247,7 +4301,7 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, {})(NodeForm);
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4297,7 +4351,7 @@ var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
 var _NodeActions = __webpack_require__(14);
 
-var _SelectMultiple = __webpack_require__(44);
+var _SelectMultiple = __webpack_require__(45);
 
 var _SelectMultiple2 = _interopRequireDefault(_SelectMultiple);
 
@@ -4451,8 +4505,6 @@ var EditNodeForm = function (_Component) {
         content = _ref3;
       }
 
-      content = "This feature is currently is development, sorry for any inconvenience";
-
       return (0, _jsx3.default)("div", {}, void 0, content);
     }
   }]);
@@ -4472,7 +4524,7 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { editNode: _NodeActions.editNode, getAllNodesForSelect: _NodeActions.getAllNodesForSelect })(EditNodeForm);
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4483,7 +4535,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.fetchComponentData = fetchComponentData;
 
-var _promiseUtils = __webpack_require__(101);
+var _promiseUtils = __webpack_require__(102);
 
 function fetchComponentData(store, components, params) {
   var needs = components.reduce(function (prev, current) {
@@ -4499,7 +4551,7 @@ function fetchComponentData(store, components, params) {
   */
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4530,7 +4582,7 @@ function sequence(items, consumer) {
 }
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4542,7 +4594,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _express = __webpack_require__(17);
 
-var _post = __webpack_require__(103);
+var _post = __webpack_require__(104);
 
 var PostController = _interopRequireWildcard(_post);
 
@@ -4565,7 +4617,7 @@ router.route('/posts/:cuid').delete(PostController.deletePost);
 exports.default = router;
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4579,19 +4631,19 @@ exports.addPost = addPost;
 exports.getPost = getPost;
 exports.deletePost = deletePost;
 
-var _post = __webpack_require__(48);
+var _post = __webpack_require__(49);
 
 var _post2 = _interopRequireDefault(_post);
 
-var _cuid = __webpack_require__(104);
+var _cuid = __webpack_require__(105);
 
 var _cuid2 = _interopRequireDefault(_cuid);
 
-var _limax = __webpack_require__(105);
+var _limax = __webpack_require__(106);
 
 var _limax2 = _interopRequireDefault(_limax);
 
-var _sanitizeHtml = __webpack_require__(49);
+var _sanitizeHtml = __webpack_require__(50);
 
 var _sanitizeHtml2 = _interopRequireDefault(_sanitizeHtml);
 
@@ -4674,19 +4726,19 @@ function deletePost(req, res) {
 }
 
 /***/ }),
-/* 104 */
+/* 105 */
 /***/ (function(module, exports) {
 
 module.exports = require("cuid");
 
 /***/ }),
-/* 105 */
+/* 106 */
 /***/ (function(module, exports) {
 
 module.exports = require("limax");
 
 /***/ }),
-/* 106 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4698,7 +4750,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _express = __webpack_require__(17);
 
-var _user = __webpack_require__(107);
+var _user = __webpack_require__(108);
 
 var UserController = _interopRequireWildcard(_user);
 
@@ -4724,7 +4776,7 @@ router.route("/user/login").post(UserController.loginUser);
 exports.default = router;
 
 /***/ }),
-/* 107 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4960,31 +5012,31 @@ var loginUser = exports.loginUser = function () {
 
 exports.getUsers = getUsers;
 
-var _user = __webpack_require__(50);
+var _user = __webpack_require__(51);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _sanitizeHtml = __webpack_require__(49);
+var _sanitizeHtml = __webpack_require__(50);
 
 var _sanitizeHtml2 = _interopRequireDefault(_sanitizeHtml);
 
-var _bcryptjs = __webpack_require__(108);
+var _bcryptjs = __webpack_require__(109);
 
 var _bcryptjs2 = _interopRequireDefault(_bcryptjs);
 
-var _jsonwebtoken = __webpack_require__(109);
+var _jsonwebtoken = __webpack_require__(110);
 
 var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
 
-var _validateUserSignupInputs = __webpack_require__(110);
+var _validateUserSignupInputs = __webpack_require__(111);
 
 var _validateUserSignupInputs2 = _interopRequireDefault(_validateUserSignupInputs);
 
-var _validateLoginInput2 = __webpack_require__(111);
+var _validateLoginInput2 = __webpack_require__(112);
 
 var _validateLoginInput3 = _interopRequireDefault(_validateLoginInput2);
 
-var _keys = __webpack_require__(51);
+var _keys = __webpack_require__(52);
 
 var _keys2 = _interopRequireDefault(_keys);
 
@@ -5006,19 +5058,19 @@ function getUsers(req, res) {
 }
 
 /***/ }),
-/* 108 */
+/* 109 */
 /***/ (function(module, exports) {
 
 module.exports = require("bcryptjs");
 
 /***/ }),
-/* 109 */
+/* 110 */
 /***/ (function(module, exports) {
 
 module.exports = require("jsonwebtoken");
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5083,7 +5135,7 @@ module.exports = function validateWebAdminSignupInput(data) {
 };
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5120,7 +5172,7 @@ module.exports = function validateLoginInput(data) {
 };
 
 /***/ }),
-/* 112 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5134,7 +5186,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 113 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5148,7 +5200,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 114 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5160,7 +5212,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _express = __webpack_require__(17);
 
-var _node = __webpack_require__(115);
+var _node = __webpack_require__(116);
 
 var NodeController = _interopRequireWildcard(_node);
 
@@ -5201,7 +5253,7 @@ router.route("/node/connections/update/all").get(NodeController.updateNodeConnec
 exports.default = router;
 
 /***/ }),
-/* 115 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5400,8 +5452,8 @@ var editNode = exports.editNode = function () {
             node.version++;
 
             node.title = req.body.title, node.content.string = req.body.content;
-            (0, _addSource.addSource)(node, req.body.sources);
-            (0, _addSubtopic.addSubtopic)(node, req.body.subtopics);
+            (0, _addSourceConnections.addSourceConnections)(node, req.body);
+            (0, _addSubtopicConnections.addSubtopicConnections)(node, req.body);
             _context2.next = 10;
             return node.save();
 
@@ -6220,11 +6272,11 @@ var _node = __webpack_require__(28);
 
 var _node2 = _interopRequireDefault(_node);
 
-var _connection3 = __webpack_require__(116);
+var _connection3 = __webpack_require__(29);
 
 var _connection4 = _interopRequireDefault(_connection3);
 
-var _user = __webpack_require__(50);
+var _user = __webpack_require__(51);
 
 var _user2 = _interopRequireDefault(_user);
 
@@ -6234,65 +6286,11 @@ var _validateNodeInput2 = __webpack_require__(118);
 
 var _validateNodeInput3 = _interopRequireDefault(_validateNodeInput2);
 
-var _addSource = __webpack_require__(119);
+var _addSourceConnections = __webpack_require__(119);
 
-var _addSubtopic = __webpack_require__(120);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/***/ }),
-/* 116 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _mongoose = __webpack_require__(11);
-
-var _mongoose2 = _interopRequireDefault(_mongoose);
+var _addSubtopicConnections = __webpack_require__(120);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Schema = _mongoose2.default.Schema;
-
-// Defines source/subtopic connection between nodes
-
-var connectionSchema = new Schema({
-  sourceNode: {
-    type: Schema.Types.ObjectId,
-    ref: "node"
-  },
-  // To determine if this connection transcends universes
-  // Can limit subtopic/source viewing so not to link to private universe from public
-  sourceNodePrivate: {
-    type: Boolean,
-    default: false
-  },
-  subtopicNode: {
-    type: Schema.Types.ObjectId,
-    ref: "node"
-  },
-  subtopicNodePrivate: {
-    type: Boolean,
-    default: false
-  },
-  // Upvote/Downvote ratio of connection
-  // Allows ranking of subtopic node in a given context
-  value: {
-    type: Number,
-    default: 0
-  },
-  author: {
-    type: Schema.Types.ObjectId,
-    ref: "user"
-  }
-});
-
-exports.default = _mongoose2.default.model("Connection", connectionSchema);
 
 /***/ }),
 /* 117 */
@@ -6342,7 +6340,7 @@ module.exports = function validateNodeInput(data) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.addSource = undefined;
+exports.addSourceConnections = undefined;
 
 var _regenerator = __webpack_require__(21);
 
@@ -6352,38 +6350,54 @@ var _asyncToGenerator2 = __webpack_require__(22);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
-var addSource = exports.addSource = function () {
-  var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(node, sources) {
+var addSourceConnections = exports.addSourceConnections = function () {
+  var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(node, data) {
     var _this = this;
 
-    var nodeId, oldSources, newSources, errors;
+    var sourceConnections, author, nodeId, oldSourcesConnections, newSourceConnections, errors;
     return _regenerator2.default.wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
+            sourceConnections = data.sources;
+            author = data.author;
             nodeId = _mongoose2.default.Types.ObjectId(node._id);
 
-            if (!(sources.length > 0)) {
-              _context4.next = 12;
+            if (!(sourceConnections.length > 0)) {
+              _context4.next = 14;
               break;
             }
 
             // Find items that have been removed, remove subtopic relationship from that node
-            oldSources = node.sources.filter(function (x) {
-              return !sources.includes(x.toString());
+            oldSourcesConnections = node.sourceConnections.filter(function (existingConnection) {
+              return !sourceConnections.includes(existingConnection.toString());
             });
 
-            oldSources.forEach(function () {
-              var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(source) {
+            oldSourcesConnections.forEach(function () {
+              var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(sourceConnection) {
+                var connection;
                 return _regenerator2.default.wrap(function _callee$(_context) {
                   while (1) {
                     switch (_context.prev = _context.next) {
                       case 0:
                         _context.next = 2;
-                        return _node2.default.findByIdAndUpdate(source, { $pull: { subtopics: nodeId } }, { new: true });
+                        return _connection2.default.findById(sourceConnection);
 
                       case 2:
+                        connection = _context.sent;
+                        _context.next = 5;
+                        return _node2.default.findByIdAndUpdate(nodeId, { $pull: { sourceConnections: connection._id } }, { new: true });
+
+                      case 5:
+                        _context.next = 7;
+                        return _node2.default.findByIdAndUpdate(connection.sourceNode, { $pull: { subtopicConnections: connection._id } }, { new: true });
+
+                      case 7:
+                        _context.next = 9;
+                        return _connection2.default.findByIdAndRemove(sourceConnection);
+
+                      case 9:
                       case "end":
                         return _context.stop();
                     }
@@ -6397,22 +6411,39 @@ var addSource = exports.addSource = function () {
             }());
 
             // Find objects that are new, add subtopic relationship from that node
-            newSources = sources.filter(function (newSource) {
-              return !node.sources.some(function (source) {
-                return source.equals(_mongoose2.default.Types.ObjectId(newSource));
+            newSourceConnections = sourceConnections.filter(function (newSourceConnection) {
+              return !node.sourceConnections.some(function (existingSourceConnection) {
+                return existingSourceConnection.equals(_mongoose2.default.Types.ObjectId(newSourceConnection));
               });
             });
 
-            newSources.forEach(function () {
-              var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(source) {
+            newSourceConnections.forEach(function () {
+              var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(sourceConnection) {
+                var connection;
                 return _regenerator2.default.wrap(function _callee2$(_context2) {
                   while (1) {
                     switch (_context2.prev = _context2.next) {
                       case 0:
-                        _context2.next = 2;
-                        return _node2.default.findByIdAndUpdate(source, { $push: { subtopics: nodeId } }, { new: true });
+                        // Create Connection Object
+                        connection = new _connection2.default({
+                          sourceNode: sourceConnection,
+                          subtopicNode: nodeId,
+                          author: author
+                        });
+                        // Add Connection to this node (subtopic node)
 
-                      case 2:
+                        _context2.next = 3;
+                        return _node2.default.findByIdAndUpdate(nodeId, { $push: { sourceConnections: connection._id } }, { new: true });
+
+                      case 3:
+                        _context2.next = 5;
+                        return _node2.default.findByIdAndUpdate(sourceConnection, { $push: { subtopicConnections: connection._id } }, { new: true });
+
+                      case 5:
+                        _context2.next = 7;
+                        return connection.save();
+
+                      case 7:
                       case "end":
                         return _context2.stop();
                     }
@@ -6424,15 +6455,13 @@ var addSource = exports.addSource = function () {
                 return _ref3.apply(this, arguments);
               };
             }());
-            node.sources = sources;
-            _context4.next = 10;
+            _context4.next = 11;
             return node.save();
 
-          case 10:
-            _context4.next = 17;
-            break;
+          case 11:
+            return _context4.abrupt("return");
 
-          case 12:
+          case 14:
             // Remove from subtopic of related nodes
             node.sources.forEach(function () {
               var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(source) {
@@ -6456,18 +6485,18 @@ var addSource = exports.addSource = function () {
               };
             }());
             node.sources = [];
-            _context4.next = 16;
+            _context4.next = 18;
             return node.save();
 
-          case 16:
+          case 18:
             return _context4.abrupt("return");
 
-          case 17:
-            _context4.next = 25;
+          case 19:
+            _context4.next = 27;
             break;
 
-          case 19:
-            _context4.prev = 19;
+          case 21:
+            _context4.prev = 21;
             _context4.t0 = _context4["catch"](0);
 
             console.log(_context4.t0);
@@ -6476,15 +6505,15 @@ var addSource = exports.addSource = function () {
             errors.general = _context4.t0;
             return _context4.abrupt("return", new Error(errors));
 
-          case 25:
+          case 27:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, this, [[0, 19]]);
+    }, _callee4, this, [[0, 21]]);
   }));
 
-  return function addSource(_x, _x2) {
+  return function addSourceConnections(_x, _x2) {
     return _ref.apply(this, arguments);
   };
 }();
@@ -6492,6 +6521,10 @@ var addSource = exports.addSource = function () {
 var _node = __webpack_require__(28);
 
 var _node2 = _interopRequireDefault(_node);
+
+var _connection = __webpack_require__(29);
+
+var _connection2 = _interopRequireDefault(_connection);
 
 var _mongoose = __webpack_require__(11);
 
@@ -6509,7 +6542,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.addSubtopic = undefined;
+exports.addSubtopicConnections = undefined;
 
 var _regenerator = __webpack_require__(21);
 
@@ -6519,39 +6552,55 @@ var _asyncToGenerator2 = __webpack_require__(22);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
-var addSubtopic = exports.addSubtopic = function () {
-  var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(node, subtopics) {
+var addSubtopicConnections = exports.addSubtopicConnections = function () {
+  var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(node, data) {
     var _this = this;
 
-    var nodeId, oldSubtopics, newSubtopics, errors;
+    var subtopicConnections, author, nodeId, oldSubtopicConnections, newSubtopicConnections, errors;
     return _regenerator2.default.wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
+            subtopicConnections = data.subtopics;
+            author = data.author;
             nodeId = _mongoose2.default.Types.ObjectId(node._id);
 
-            if (!(subtopics.length > 0)) {
-              _context4.next = 15;
+            if (!(subtopicConnections.length > 0)) {
+              _context4.next = 14;
               break;
             }
 
             // Find items that have been removed, remove source relationship in that node
-            oldSubtopics = node.subtopics.filter(function (x) {
-              return !subtopics.includes(x.toString());
+            oldSubtopicConnections = node.subtopicConnections.filter(function (existingConnection) {
+              return !subtopicConnections.includes(existingConnection.toString());
             });
+            // Remove oldSubtopicConnections from both nodes involved, and delete connection object
 
-            console.log(oldSubtopics);
-            oldSubtopics.forEach(function () {
-              var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(subtopic) {
+            oldSubtopicConnections.forEach(function () {
+              var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(subtopicConnection) {
+                var connection;
                 return _regenerator2.default.wrap(function _callee$(_context) {
                   while (1) {
                     switch (_context.prev = _context.next) {
                       case 0:
                         _context.next = 2;
-                        return _node2.default.findByIdAndUpdate(subtopic, { $pull: { sources: nodeId } }, { new: true });
+                        return _connection2.default.findById(subtopicConnection);
 
                       case 2:
+                        connection = _context.sent;
+                        _context.next = 5;
+                        return _node2.default.findByIdAndUpdate(nodeId, { $pull: { subtopicConnections: connection._id } }, { new: true });
+
+                      case 5:
+                        _context.next = 7;
+                        return _node2.default.findByIdAndUpdate(connection.subtopicNode, { $pull: { sourceConnections: connection._id } }, { new: true });
+
+                      case 7:
+                        _context.next = 9;
+                        return _connection2.default.findByIdAndRemove(subtopicConnection);
+
+                      case 9:
                       case "end":
                         return _context.stop();
                     }
@@ -6565,23 +6614,39 @@ var addSubtopic = exports.addSubtopic = function () {
             }());
 
             // Find objects that are new, add source relationship in that node
-            newSubtopics = subtopics.filter(function (newSubtopic) {
-              return !node.subtopics.some(function (subtopic) {
-                return subtopic.equals(_mongoose2.default.Types.ObjectId(newSubtopic));
+            newSubtopicConnections = subtopicConnections.filter(function (newSubtopicConnection) {
+              return !node.subtopicConnections.some(function (existingSubtopicConnection) {
+                return existingSubtopicConnection.equals(_mongoose2.default.Types.ObjectId(newSubtopicConnection));
               });
             });
 
-            console.log(newSubtopics);
-            newSubtopics.forEach(function () {
-              var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(subtopic) {
+            newSubtopicConnections.forEach(function () {
+              var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(subtopicConnection) {
+                var connection;
                 return _regenerator2.default.wrap(function _callee2$(_context2) {
                   while (1) {
                     switch (_context2.prev = _context2.next) {
                       case 0:
-                        _context2.next = 2;
-                        return _node2.default.findByIdAndUpdate(subtopic, { $addToSet: { sources: nodeId } }, { new: true });
+                        // Create Connection Object
+                        connection = new _connection2.default({
+                          sourceNode: nodeId,
+                          subtopicNode: subtopicConnection,
+                          author: author
+                        });
+                        // Add connection to this node
 
-                      case 2:
+                        _context2.next = 3;
+                        return _node2.default.findByIdAndUpdate(nodeId, { $push: { subtopicConnections: connection._id } }, { new: true });
+
+                      case 3:
+                        _context2.next = 5;
+                        return _node2.default.findByIdAndUpdate(subtopicConnection, { $push: { sourceConnections: connection._id } }, { new: true });
+
+                      case 5:
+                        _context2.next = 7;
+                        return connection.save();
+
+                      case 7:
                       case "end":
                         return _context2.stop();
                     }
@@ -6593,14 +6658,13 @@ var addSubtopic = exports.addSubtopic = function () {
                 return _ref3.apply(this, arguments);
               };
             }());
-            node.subtopics = subtopics;
-            _context4.next = 12;
+            _context4.next = 11;
             return node.save();
 
-          case 12:
+          case 11:
             return _context4.abrupt("return");
 
-          case 15:
+          case 14:
             // Remove from source of related nodes
             node.subtopics.forEach(function () {
               var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(source) {
@@ -6624,18 +6688,18 @@ var addSubtopic = exports.addSubtopic = function () {
               };
             }());
             node.subtopics = [];
-            _context4.next = 19;
+            _context4.next = 18;
             return node.save();
 
-          case 19:
+          case 18:
             return _context4.abrupt("return");
 
-          case 20:
-            _context4.next = 28;
+          case 19:
+            _context4.next = 27;
             break;
 
-          case 22:
-            _context4.prev = 22;
+          case 21:
+            _context4.prev = 21;
             _context4.t0 = _context4["catch"](0);
 
             console.log(_context4.t0);
@@ -6644,15 +6708,15 @@ var addSubtopic = exports.addSubtopic = function () {
             errors.general = _context4.t0;
             return _context4.abrupt("return", new Error(errors));
 
-          case 28:
+          case 27:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, this, [[0, 22]]);
+    }, _callee4, this, [[0, 21]]);
   }));
 
-  return function addSubtopic(_x, _x2) {
+  return function addSubtopicConnections(_x, _x2) {
     return _ref.apply(this, arguments);
   };
 }();
@@ -6660,6 +6724,10 @@ var addSubtopic = exports.addSubtopic = function () {
 var _node = __webpack_require__(28);
 
 var _node2 = _interopRequireDefault(_node);
+
+var _connection = __webpack_require__(29);
+
+var _connection2 = _interopRequireDefault(_connection);
 
 var _mongoose = __webpack_require__(11);
 
@@ -6699,7 +6767,7 @@ exports.default = function () {
   });
 };
 
-var _post = __webpack_require__(48);
+var _post = __webpack_require__(49);
 
 var _post2 = _interopRequireDefault(_post);
 
@@ -6712,7 +6780,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 "use strict";
 /* WEBPACK VAR INJECTION */(function(__dirname) {
 
-var webpack = __webpack_require__(52);
+var webpack = __webpack_require__(53);
 var cssnext = __webpack_require__(123);
 var postcssFocus = __webpack_require__(124);
 var postcssReporter = __webpack_require__(125);

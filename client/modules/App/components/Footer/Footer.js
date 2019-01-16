@@ -11,7 +11,7 @@ export function Footer() {
   return (
     <div style={{ background: `#FFF center` }} className={styles.footer}>
       <p style={{ color: "black" }}>
-        &copy; 2019 &middot; Solitaire &middot; Alpha 0.1
+        &copy; 2019 &middot; Solitaire &middot; Alpha 0.1.2
       </p>
     </div>
   );
