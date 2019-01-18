@@ -5,8 +5,10 @@ const router = new Router();
 // Get Node by ID
 router.route("/node/:nodeID").get(NodeController.getNodeByID);
 
-// Get all root Nodes
-router.route("/nodes/root").get(NodeController.getRootNodes);
+// Get all root Nodes for a given universe
+router
+  .route("/nodes/universe/:id/root")
+  .get(NodeController.getUniverseRootNodes);
 
 // Get all Nodes for Forms (returns ID and Title)
 router.route("/nodes/form/all").get(NodeController.getAllNodesForSelect);
@@ -23,10 +25,7 @@ router.route("/node").post(NodeController.createNode);
 // Edit a node
 router.route("/node/:id/edit").post(NodeController.editNode);
 
-// LEGACY ** Remove Duplicate Sources and Subtopics from all Nodes
-router
-  .route("/node/remove/duplicates/all/legacy")
-  .get(NodeController.legacyRemoveDuplicateSourcesAndSubtopics);
+// FOR DEVELOPMENT - Used to make edits to the database
 
 // Remove Duplicate Sources and Subtopics from all Nodes
 router
@@ -37,5 +36,10 @@ router
 router
   .route("/node/connections/update/all")
   .get(NodeController.updateNodeConnections);
+
+// LEGACY ** Remove Duplicate Sources and Subtopics from all Nodes
+router
+  .route("/node/remove/duplicates/all/legacy")
+  .get(NodeController.legacyRemoveDuplicateSourcesAndSubtopics);
 
 export default router;

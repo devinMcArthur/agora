@@ -30,6 +30,7 @@ class NodeForm extends Component {
       subtopics: [],
       sources,
       defaultSources,
+      universe: null,
       errors: {}
     };
 
@@ -43,6 +44,9 @@ class NodeForm extends Component {
     if (this.props.node.allNodes == null && !this.props.node.loading) {
       this.props.getAllNodesForSelect();
     }
+    if (this.props.private === true) {
+      this.setState({ universe: this.props.universe.universe._id });
+    }
   }
 
   onSubmit(e) {
@@ -52,7 +56,9 @@ class NodeForm extends Component {
       content: this.state.content,
       subtopics: this.state.subtopics,
       sources: this.state.sources,
-      author: this.props.auth.user.id
+      author: this.props.auth.user.id,
+      private: this.props.private,
+      universe: this.state.universe
     };
     this.props.createNode(newData);
   }
@@ -86,6 +92,7 @@ class NodeForm extends Component {
   }
 
   render() {
+    console.log(this.props);
     let content;
     if (this.props.node.formNodes !== null) {
       content = (
@@ -111,8 +118,10 @@ class NodeForm extends Component {
                 margin="normal"
                 variant="outlined"
                 multiline
+                fullWidth
               />
               <SelectMultiple
+                label="Sources"
                 placeholder="Select sources for this subject"
                 onChange={this.onSourceSelect}
                 options={this.props.node.formNodes}
@@ -141,12 +150,18 @@ class NodeForm extends Component {
 // Retrieve data from store as props
 const mapStateToProps = state => ({
   auth: state.auth,
-  node: state.node
+  node: state.node,
+  universe: state.universe
 });
+
+NodeForm.defaultProps = {
+  private: false
+};
 
 NodeForm.propTypes = {
   auth: PropTypes.object.isRequired,
-  createNode: PropTypes.func.isRequired
+  createNode: PropTypes.func.isRequired,
+  private: PropTypes.bool
 };
 
 export default connect(

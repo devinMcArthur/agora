@@ -1,6 +1,7 @@
 import Node from "../models/node";
 import Connection from "../models/connection";
 import User from "../models/user";
+import Universe from "../models/universe";
 import { ObjectId } from "mongodb";
 
 import validateNodeInput from "../validators/validateNodeInput";
@@ -49,44 +50,98 @@ export async function createNode(req, res) {
       author: req.body.author
     };
 
-    let node = new Node({
-      title: req.body.title,
-      content: nodeContent
-    });
+    if (req.body.private) {
+      // Private Nodes
+      let node = new Node({
+        title: req.body.title,
+        content: nodeContent,
+        public: false,
+        originUniverse: req.body.universe
+      });
 
-    let sourceConnections = [];
-    for (var i in req.body.sources) {
-      let connection = new Connection({
-        sourceNode: req.body.sources[i],
-        subtopicNode: node._id,
-        author: req.body.author
+      let sourceConnections = [];
+      for (var i in req.body.sources) {
+        let sourceNodePrivate = !(await Node.findById(req.body.sources[i])
+          .public);
+        console.log(sourceNodePrivate);
+        let connection = new Connection({
+          sourceNode: req.body.sources[i],
+          sourceNodePrivate,
+          subtopicNode: node._id,
+          subtopicNodePrivate: true,
+          author: req.body.author
+        });
+        connection = await connection.save();
+        await Node.findByIdAndUpdate(req.body.sources[i], {
+          $push: { subtopicConnections: connection._id }
+        });
+        sourceConnections.push(connection._id);
+      }
+
+      let subtopicConnections = [];
+      for (var i in req.body.subtopics) {
+        let subtopicNodePrivate = !(await Node.findById(req.body.subtopics[i])
+          .public);
+        let connection = new Connection({
+          sourceNode: node._id,
+          sourceNodePrivate: true,
+          subtopicNode: req.body.subtopic[i],
+          subtopicNodePrivate,
+          author: req.body.author
+        });
+        connection = await connection.save();
+        await Node.findByIdAndUpdate(req.body.subtopic[i], {
+          $push: { sourceConnections: connection._id }
+        });
+        subtopicConnections.push(connection._id);
+      }
+
+      node.sourceConnections = sourceConnections;
+      node.subtopicConnections = subtopicConnections;
+      node = await node.save();
+
+      res.end();
+    } else {
+      // Public Nodes
+      let node = new Node({
+        title: req.body.title,
+        content: nodeContent
       });
-      connection = await connection.save();
-      await Node.findByIdAndUpdate(req.body.sources[i], {
-        $push: { subtopicConnections: connection._id }
-      });
-      sourceConnections.push(connection._id);
+
+      let sourceConnections = [];
+      for (var i in req.body.sources) {
+        let connection = new Connection({
+          sourceNode: req.body.sources[i],
+          subtopicNode: node._id,
+          author: req.body.author
+        });
+        connection = await connection.save();
+        await Node.findByIdAndUpdate(req.body.sources[i], {
+          $push: { subtopicConnections: connection._id }
+        });
+        sourceConnections.push(connection._id);
+      }
+
+      let subtopicConnections = [];
+      for (var i in req.body.subtopics) {
+        let connection = new Connection({
+          sourceNode: node._id,
+          subtopicNode: req.body.subtopic[i],
+          author: req.body.author
+        });
+        connection = await connection.save();
+        await Node.findByIdAndUpdate(req.body.subtopic[i], {
+          $push: { sourceConnections: connection._id }
+        });
+        subtopicConnections.push(connection._id);
+      }
+
+      node.sourceConnections = sourceConnections;
+      node.subtopicConnections = subtopicConnections;
+      node = await node.save();
+
+      res.end();
     }
-
-    let subtopicConnections = [];
-    for (var i in req.body.subtopics) {
-      let connection = new Connection({
-        sourceNode: node._id,
-        subtopicNode: req.body.subtopic[i],
-        author: req.body.author
-      });
-      connection = await connection.save();
-      await Node.findByIdAndUpdate(req.body.subtopic[i], {
-        $push: { sourceConnections: connection._id }
-      });
-      subtopicConnections.push(connection._id);
-    }
-
-    node.sourceConnections = sourceConnections;
-    node.subtopicConnections = subtopicConnections;
-    node = await node.save();
-
-    res.end();
   } catch (e) {
     console.log(e);
     let errors = {};
@@ -201,17 +256,23 @@ export async function getNodeSubtopics(req, res) {
 }
 
 /**
- * Get all root nodes
+ * Get all root nodes of a given universe
  * @param req
  * @param res
  * @returns void
  */
-export async function getRootNodes(req, res) {
+export async function getUniverseRootNodes(req, res) {
   try {
+    let universe = await Universe.findById(req.params.id);
     let nodes = await Node.find({
-      $or: [
-        { sourceConnections: { $eq: [] } },
-        { sourceConnections: { $eq: null } }
+      $and: [
+        {
+          $or: [
+            { sourceConnections: { $eq: [] } },
+            { sourceConnections: { $eq: null } }
+          ]
+        },
+        { originUniverse: universe._id }
       ]
     });
     res.json(nodes);

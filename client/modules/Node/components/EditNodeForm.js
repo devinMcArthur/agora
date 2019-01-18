@@ -19,6 +19,8 @@ class EditNodeForm extends Component {
       content: this.props.node.node.content.string,
       sources: this.props.node.node.sources,
       subtopics: this.props.node.node.subtopics,
+      sourceOptions: [],
+      subtopicOptions: [],
       errors: {}
     };
 
@@ -26,12 +28,63 @@ class EditNodeForm extends Component {
     this.onChange = this.onChange.bind(this);
     this.onSourceSelect = this.onSourceSelect.bind(this);
     this.onSubtopicSelect = this.onSubtopicSelect.bind(this);
+    this.createDefaultConnections = this.createDefaultConnections.bind(this);
   }
 
   componentDidMount() {
     if (this.props.node.formNodes === null && !this.props.node.loading) {
       this.props.getAllNodesForSelect();
     }
+    if (
+      (this.state.subtopicOptions.length === 0 && this.props.node.subtopics) ||
+      (this.state.sourceOptions.length === 0 && this.props.node.sources)
+    ) {
+      this.createDefaultConnections();
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    // Setup existing connections
+    if (
+      this.props.node.formNodes !== null &&
+      prevProps.node.formNodes === null
+    ) {
+      this.createDefaultConnections();
+    }
+  }
+
+  createDefaultConnections() {
+    let { subtopicOptions, sourceOptions } = this.state,
+      existingSuptopicConnections = [],
+      existingSourceConnections = [];
+    for (var i in this.props.node.formNodes) {
+      // Find existing subtopic connections
+      if (this.props.node.subtopics) {
+        this.props.node.subtopics.forEach(subtopicObject => {
+          existingSuptopicConnections.push(subtopicObject.subtopic._id);
+        });
+        if (
+          existingSuptopicConnections.includes(
+            this.props.node.formNodes[i].value
+          )
+        ) {
+          subtopicOptions.push(this.props.node.formNodes[i]);
+        }
+      }
+
+      // Find existing source connections
+      if (this.props.node.sources) {
+        this.props.node.sources.forEach(sourceObject => {
+          existingSourceConnections.push(sourceObject.source._id);
+        });
+        if (
+          existingSourceConnections.includes(this.props.node.formNodes[i].value)
+        ) {
+          sourceOptions.push(this.props.node.formNodes[i]);
+        }
+      }
+    }
+    this.setState({ subtopicOptions, sourceOptions });
   }
 
   onSubmit(e) {
@@ -77,26 +130,13 @@ class EditNodeForm extends Component {
 
   render() {
     let content;
-    if (this.props.node !== null && this.props.node.formNodes !== null) {
-      let subtopicOptions = [],
-        sourceOptions = [];
-
-      for (var i in this.props.node.formNodes) {
-        if (
-          this.props.node.node.subtopics.includes(
-            this.props.node.formNodes[i].value
-          )
-        ) {
-          subtopicOptions.push(this.props.node.formNodes[i]);
-        }
-        if (
-          this.props.node.node.sources.includes(
-            this.props.node.formNodes[i].value
-          )
-        ) {
-          sourceOptions.push(this.props.node.formNodes[i]);
-        }
-      }
+    if (
+      this.props.node !== null &&
+      this.props.node.formNodes !== null &&
+      (this.props.node.sources && this.state.sourceOptions.length > 0) &&
+      (this.props.node.subtopics && this.state.subtopicOptions.length > 0)
+    ) {
+      const { subtopicOptions, sourceOptions } = this.state;
 
       content = (
         <div>
@@ -112,6 +152,7 @@ class EditNodeForm extends Component {
                 margin="normal"
                 variant="outlined"
               />
+              <br />
               <TextField
                 id="content"
                 label="Description of Idea"
@@ -120,6 +161,7 @@ class EditNodeForm extends Component {
                 value={this.state.content}
                 margin="normal"
                 variant="outlined"
+                fullWidth
                 multiline
               />
               <SelectMultiple

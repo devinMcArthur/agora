@@ -7,6 +7,8 @@ const userSchema = new Schema({
   password: { type: String, required: true },
   active: { type: Boolean, default: false },
   admin: { type: Boolean, default: false },
+  personalUniverse: { type: Schema.Types.ObjectId, ref: "universes" },
+  universes: { type: [Schema.Types.ObjectId] },
   dateCreated: { type: Date, default: Date.now, required: true }
 });
 

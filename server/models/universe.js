@@ -12,6 +12,7 @@ const universeSchema = new Schema({
     type: Boolean,
     default: false
   },
+  // List all users that belong to a private Universe
   users: {
     type: [Schema.Types.ObjectId]
   },

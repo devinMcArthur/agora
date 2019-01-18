@@ -9,26 +9,16 @@ import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 
-class NodeForm extends Component {
+import Node from "./Node";
+
+class RootNodeList extends Component {
   render() {
     let nodeArray = [];
     if (this.props.nodes.length > 0) {
-      nodeArray.push(
-        <h4 key="title">
-          <Link to="/" style={{ textDecoration: "none" }}>
-            #root
-          </Link>
-        </h4>
-      );
       this.props.nodes.forEach(node => {
         nodeArray.push(
           <div key={node._id}>
-            <Paper style={{ margin: "1em", padding: "1em" }}>
-              <Link to={`/node/${node._id}`} style={{ textDecoration: "none" }}>
-                <h5>{node.title}</h5>
-              </Link>
-              <p>{node.content.string}</p>
-            </Paper>
+            <Node onNavigation={this.props.onNavigation} singleNode={node} />
           </div>
         );
       });
@@ -40,11 +30,12 @@ class NodeForm extends Component {
 // Retrieve data from store as props
 const mapStateToProps = state => ({});
 
-NodeForm.propTypes = {
-  nodes: PropTypes.array.isRequired
+RootNodeList.propTypes = {
+  nodes: PropTypes.array.isRequired,
+  onNavigation: PropTypes.func.isRequired
 };
 
 export default connect(
   mapStateToProps,
   {}
-)(NodeForm);
+)(RootNodeList);

@@ -5,8 +5,11 @@ import {
   GET_SOURCES,
   GET_SUBTOPICS,
   NODE_LOADING,
+  SET_NODE,
   CLEAR_NODES,
   CLEAR_NODE,
+  CLEAR_SOURCES,
+  CLEAR_SUBTOPICS,
   NODE_FULL_CLEAR
 } from "./NodeActions";
 
@@ -57,6 +60,11 @@ const NodeReducer = (state = initialState, action) => {
         ...state,
         loading: true
       };
+    case SET_NODE:
+      return {
+        ...state,
+        node: action.payload
+      };
     case CLEAR_NODES:
       return {
         ...state,
@@ -66,6 +74,16 @@ const NodeReducer = (state = initialState, action) => {
       return {
         ...state,
         node: null
+      };
+    case CLEAR_SOURCES:
+      return {
+        ...state,
+        sources: null
+      };
+    case CLEAR_SUBTOPICS:
+      return {
+        ...state,
+        subtopics: null
       };
     case NODE_FULL_CLEAR:
       return {

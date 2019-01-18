@@ -50,6 +50,7 @@ import { fetchComponentData } from "./util/fetchData";
 import posts from "./routes/post.routes";
 import users from "./routes/user.routes";
 import nodes from "./routes/node.routes";
+import universes from "./routes/universe.routes";
 import dummyData from "./dummyData";
 import keys from "./config/keys";
 
@@ -82,6 +83,7 @@ app.use(Express.static(path.resolve(__dirname, "../dist/client")));
 app.use("/api", posts);
 app.use("/api", users);
 app.use("/api", nodes);
+app.use("/api", universes);
 
 // Render Initial HTML
 const renderFullPage = (html, initialState) => {

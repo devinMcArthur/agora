@@ -55,9 +55,16 @@ class Header extends Component {
 
     if (this.props.auth.isAuthenticated) {
       buttons = (
-        <Button color="inherit" onClick={this.onLogoutClick.bind(this)}>
-          Logout
-        </Button>
+        <div>
+          <Button color="inherit">
+            <Link to="/home" style={{ textDecoration: "none", color: "white" }}>
+              Home
+            </Link>
+          </Button>
+          <Button color="inherit" onClick={this.onLogoutClick.bind(this)}>
+            Logout
+          </Button>
+        </div>
       );
     } else {
       buttons = (

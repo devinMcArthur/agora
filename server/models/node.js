@@ -17,6 +17,10 @@ const nodeSchema = new Schema({
     required: true,
     trim: true
   },
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: "users"
+  },
   content: {
     string: {
       type: String
@@ -63,7 +67,7 @@ const nodeSchema = new Schema({
     type: Boolean,
     default: true
   },
-  // If Private: this is the universe that this node exists in
+  // this is the universe that this node exists in (Public Universe if Public)
   originUniverse: {
     type: Schema.Types.ObjectId,
     ref: "universe"

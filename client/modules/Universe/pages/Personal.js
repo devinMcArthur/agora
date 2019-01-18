@@ -4,19 +4,16 @@ import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import { browserHistory } from "react-router";
 
-import Paper from "@material-ui/core/Paper";
-import Button from "@material-ui/core/Button";
+import UniverseRoot from "../components/UniverseRoot";
 
-import NodeForm from "../../../Node/components/NodeForm";
-import UniverseRoot from "../../../Universe/components/UniverseRoot";
-
-import { clearNodes } from "../../../Node/NodeActions";
+import { clearNodes } from "../../Node/NodeActions";
 import {
-  clearUniverse,
-  getPublicUniverse
-} from "../../../Universe/UniverseActions";
+  createPersonalUniverse,
+  getUniverse,
+  clearUniverse
+} from "../UniverseActions";
 
-class Home extends Component {
+class Personal extends Component {
   constructor() {
     super();
 
@@ -37,7 +34,11 @@ class Home extends Component {
     if (!this.props.auth.isAuthenticated) {
       browserHistory.push("/login");
     }
-    this.props.getPublicUniverse();
+    if (this.props.auth.user.personalUniverse) {
+      this.props.getUniverse(this.props.auth.user.personalUniverse);
+    } else {
+      this.props.createPersonalUniverse(this.props.auth.user.id);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -50,8 +51,8 @@ class Home extends Component {
   }
 
   componentWillUnmount() {
-    this.props.clearNodes();
     this.props.clearUniverse();
+    this.props.clearNodes();
   }
 
   nodeFormToggle() {
@@ -59,36 +60,14 @@ class Home extends Component {
   }
 
   render() {
-    let nodeForm,
-      nodeFormComp = <NodeForm />;
-
-    if (this.state.nodeFormToggle) {
-      nodeForm = nodeFormComp;
-    } else {
-      nodeForm = "";
-    }
-
-    let rootNodeList;
+    let content;
     if (this.state.universe !== null) {
-      rootNodeList = (
-        <UniverseRoot
-          universe={this.state.universe}
-          onNavigation={this.onNavigation}
-          title="Welcome to Agora!"
-        />
-      );
+      content = <UniverseRoot universe={this.state.universe} />;
+    } else {
+      content = "Loading . . . ";
     }
 
-    return (
-      <div>
-        {/* <h1>Welcome to the Homepage!</h1>
-        <Button variant="contained" onClick={this.nodeFormToggle}>
-          Add an Idea
-        </Button>
-        {nodeForm} */}
-        {rootNodeList}
-      </div>
-    );
+    return <div>{content}</div>;
   }
 }
 
@@ -99,11 +78,16 @@ const mapStateToProps = state => ({
   universe: state.universe
 });
 
-Home.propTypes = {
+Personal.propTypes = {
   auth: PropTypes.object.isRequired
 };
 
 export default connect(
   mapStateToProps,
-  { clearNodes, clearUniverse, getPublicUniverse }
-)(Home);
+  {
+    clearNodes,
+    createPersonalUniverse,
+    getUniverse,
+    clearUniverse
+  }
+)(Personal);

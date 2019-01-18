@@ -10,8 +10,11 @@ export const GET_ALL_NODES = "GET_ALL_NODES";
 export const GET_SOURCES = "GET_SOURCES";
 export const GET_SUBTOPICS = "GET_SUBTOPICS";
 export const NODE_LOADING = "NODE_LOADING";
+export const SET_NODE = "SET_NODE";
 export const CLEAR_NODES = "CLEAR_NODES";
 export const CLEAR_NODE = "CLEAR_NODE";
+export const CLEAR_SOURCES = "CLEAR_SOURCES";
+export const CLEAR_SUBTOPICS = "CLEAR_SUBTOPICS";
 export const NODE_FULL_CLEAR = "NODE_FULL_CLEAR";
 
 // Create a node
@@ -28,10 +31,10 @@ export const editNode = node => dispatch => {
     .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
 };
 
-// Get all root nodes (no sources)
-export const getRootNodes = () => dispatch => {
+// Get all root nodes for a given universe (no sources)
+export const getUniverseRootNodes = id => dispatch => {
   dispatch(setNodeLoading());
-  return callApi("nodes/root", "get")
+  return callApi(`nodes/universe/${id}/root`, "get")
     .then(res =>
       dispatch({
         type: GET_NODES,
@@ -104,6 +107,13 @@ export const updateNodeConnections = dispatch => {
     .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
 };
 
+export const setNode = node => {
+  return {
+    type: SET_NODE,
+    payload: node
+  };
+};
+
 export const clearNodes = () => {
   return {
     type: CLEAR_NODES
@@ -113,6 +123,18 @@ export const clearNodes = () => {
 export const clearNode = () => {
   return {
     type: CLEAR_NODE
+  };
+};
+
+export const clearSources = () => {
+  return {
+    type: CLEAR_SOURCES
+  };
+};
+
+export const clearSubtopics = () => {
+  return {
+    type: CLEAR_SUBTOPICS
   };
 };
 

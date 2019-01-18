@@ -12,6 +12,8 @@ import {
   updateNodeConnections
 } from "../../../Node/NodeActions";
 
+import { createPublicUniverse } from "../../../Universe/UniverseActions";
+
 class Admin extends Component {
   constructor(props) {
     super(props);
@@ -22,6 +24,7 @@ class Admin extends Component {
 
     this.onDuplicatePress = this.onDuplicatePress.bind(this);
     this.updateConnectionPress = this.updateConnectionPress.bind(this);
+    this.createPublicUniverse = this.createPublicUniverse.bind(this);
   }
 
   onDuplicatePress() {
@@ -30,6 +33,10 @@ class Admin extends Component {
 
   updateConnectionPress() {
     this.props.updateNodeConnections();
+  }
+
+  createPublicUniverse() {
+    this.props.createPublicUniverse();
   }
 
   render() {
@@ -41,6 +48,9 @@ class Admin extends Component {
           <Button onClick={this.updateConnectionPress}>
             Update Connections
           </Button>
+          {/* <Button onClick={this.createPublicUniverse}>
+            Create Public Universe
+          </Button> */}
         </Paper>
       </div>
     );
@@ -61,5 +71,9 @@ Admin.propTypes = {
 
 export default connect(
   mapStateToProps,
-  { clearDuplicateSourceAndSubtopics, updateNodeConnections }
+  {
+    clearDuplicateSourceAndSubtopics,
+    updateNodeConnections,
+    createPublicUniverse
+  }
 )(Admin);

@@ -24,7 +24,10 @@ if (process.env.NODE_ENV !== "production") {
   // App Components
   require("./modules/App/components/Homepage/Home");
   // Node Components
-  require("./modules/Node/pages/Node");
+  require("./modules/Node/components/Node");
+  // Universe Components
+  require("./modules/Universe/pages/Personal");
+  require("./modules/Universe/pages/Universe");
 
   // Admin
   require("./modules/App/components/Admin/Admin");
@@ -70,6 +73,14 @@ export default (
       }}
     />
     <Route
+      path="/home"
+      getComponent={(nextState, cb) => {
+        require.ensure([], require => {
+          cb(null, require("./modules/Universe/pages/Personal").default);
+        });
+      }}
+    />
+    <Route
       path="/admin"
       getComponent={(nextState, cb) => {
         require.ensure([], require => {
@@ -81,7 +92,15 @@ export default (
       path="/node/:nodeID"
       getComponent={(nextState, cb) => {
         require.ensure([], require => {
-          cb(null, require("./modules/Node/pages/Node").default);
+          cb(null, require("./modules/Node/components/Node").default);
+        });
+      }}
+    />
+    <Route
+      path="/universe/:universeID"
+      getComponent={(nextState, cb) => {
+        require.ensure([], require => {
+          cb(null, require("./modules/Universe/pages/Universe").default);
         });
       }}
     />
