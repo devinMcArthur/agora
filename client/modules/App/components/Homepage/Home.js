@@ -34,17 +34,11 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.auth.isAuthenticated) {
-      browserHistory.push("/login");
-    }
     this.props.getPublicUniverse();
   }
 
   componentDidUpdate(prevProps) {
-    if (
-      this.props.universe.universe !== null &&
-      prevProps.universe.universe === null
-    ) {
+    if (this.props.universe.universe !== null && prevProps.universe.loading) {
       this.setState({ universe: this.props.universe.universe });
     }
   }

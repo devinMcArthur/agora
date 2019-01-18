@@ -30,9 +30,6 @@ class Universe extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.auth.isAuthenticated) {
-      browserHistory.push("/login");
-    }
     this.props.getUniverse(this.props.routeParams.universeID);
   }
 
@@ -50,6 +47,11 @@ class Universe extends Component {
       // Redirect if public Universe
       if (this.props.universe.universe.public) {
         browserHistory.push("/");
+      } else {
+        // If not a public universe, and user is not logged in, redirect
+        if (!this.props.auth.isAuthenticated) {
+          browserHistory.push("/login");
+        }
       }
       // Redirect if this is your personal Universe
       if (

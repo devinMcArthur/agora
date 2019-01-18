@@ -40,16 +40,6 @@ class Header extends Component {
   }
 
   render() {
-    // const languageNodes = props.intl.enabledLanguages.map(lang => (
-    //   <li
-    //     key={lang}
-    //     onClick={() => props.switchLanguage(lang)}
-    //     className={lang === props.intl.locale ? styles.selected : ""}
-    //   >
-    //     {lang}
-    //   </li>
-    // ));
-
     let { classes } = this.props,
       buttons;
 
@@ -91,12 +81,6 @@ class Header extends Component {
 
     return (
       <div className={classes.root}>
-        {/* <div className={styles['language-switcher']}>
-          <ul>
-            <li><FormattedMessage id="switchLanguage" /></li>
-            {languageNodes}
-          </ul>
-        </div> */}
         <AppBar position="static">
           <Toolbar>
             <IconButton
@@ -114,22 +98,6 @@ class Header extends Component {
             {buttons}
           </Toolbar>
         </AppBar>
-        {/* <div className={styles.content}>
-          <h1 className={styles["site-title"]}>
-            <Link to="/">
-              <FormattedMessage id="siteTitle" />
-            </Link>
-          </h1>
-          {context.router.isActive("/", true) ? (
-            <a
-              className={styles["add-post-button"]}
-              href="#"
-              onClick={props.toggleAddPost}
-            >
-              <FormattedMessage id="addPost" />
-            </a>
-          ) : null}
-        </div> */}
       </div>
     );
   }

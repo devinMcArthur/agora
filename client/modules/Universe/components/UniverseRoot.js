@@ -39,9 +39,6 @@ class UniverseRoot extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.auth.isAuthenticated) {
-      browserHistory.push("/login");
-    }
     if (this.props.universe.universe._id !== null) {
       this.props.clearNodes();
       this.props.clearNode();
@@ -127,7 +124,7 @@ class UniverseRoot extends Component {
     return (
       <div>
         <Grid container spacing={24}>
-          <Grid item xs={20}>
+          <Grid item xs={"auto"}>
             <h1
               onClick={() => {
                 this.universeNavigation(this.props.universe.universe._id);
@@ -136,15 +133,19 @@ class UniverseRoot extends Component {
               {title}
             </h1>
           </Grid>
-          <Grid item xs={4}>
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={this.nodeFormToggle}
-            >
-              Add a new Node
-            </Button>
-          </Grid>
+          {this.props.auth.isAuthenticated ? (
+            <Grid item xs={4}>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={this.nodeFormToggle}
+              >
+                Add a new Node
+              </Button>
+            </Grid>
+          ) : (
+            ""
+          )}
         </Grid>
 
         {nodeForm}

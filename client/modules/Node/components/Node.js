@@ -29,11 +29,16 @@ class Node extends Component {
   constructor(props) {
     super(props);
 
+    let subtopicToggle;
+    this.props.subtopicToggle !== undefined
+      ? (subtopicToggle = this.props.subtopicToggle)
+      : (subtopicToggle = true);
+
     this.state = {
       node: this.props.singleNode || null,
       editFormToggle: false,
       toggleNodeForm: false,
-      subtopicToggle: false,
+      subtopicToggle,
       subtopics: null,
       sources: null
     };
@@ -73,7 +78,6 @@ class Node extends Component {
   }
 
   toggleSubtopics() {
-    console.log(this.state.subtopicToggle);
     this.setState({ subtopicToggle: !this.state.subtopicToggle });
   }
 
@@ -102,7 +106,9 @@ class Node extends Component {
     }
     // Grab loaded node if necessary
     if (this.props.node.node !== null && this.state.node === null) {
-      this.setState({ node: this.props.node.node });
+      this.setState({
+        node: this.props.node.node
+      });
       this.props.getUniverse(this.props.node.node.originUniverse);
       if (
         this.props.node.node.subtopicConnections &&
@@ -116,6 +122,10 @@ class Node extends Component {
       ) {
         this.props.getSources(this.props.node.node._id);
       }
+    }
+    // Update subtopicToggle
+    if (this.props.subtopicToggle !== prevProps.subtopicToggle) {
+      this.setState({ subtopicToggle: this.props.subtopicToggle });
     }
   }
 
@@ -264,6 +274,8 @@ class Node extends Component {
                 marginTop: "0.5em",
                 backgroundColor: "gray"
               }}
+              square={true}
+              key={"node-content"}
             >
               <p style={{ color: "white" }} key={`line-${count}`}>
                 {line}
@@ -285,7 +297,10 @@ class Node extends Component {
               variant="outlined"
               color="secondary"
               onClick={() => {
-                this.props.deleteNode(node._id);
+                if (
+                  window.confirm("Are you sure you want to delete this Node?")
+                )
+                  this.props.deleteNode(node._id);
               }}
             >
               Delete Node
@@ -313,22 +328,28 @@ class Node extends Component {
             </h1>
             <div className="row">
               <div className="col">
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  style={{ marginRight: "0.5em" }}
-                  onClick={this.toggleEditForm}
-                >
-                  Edit Node
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={this.toggleNodeForm}
-                >
-                  Add Node
-                </Button>
-                {deleteButton}
+                {this.props.auth.isAuthenticated ? (
+                  <span>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      style={{ marginRight: "0.5em" }}
+                      onClick={this.toggleEditForm}
+                    >
+                      Edit Node
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={this.toggleNodeForm}
+                    >
+                      Add Node
+                    </Button>
+                    {deleteButton}
+                  </span>
+                ) : (
+                  ""
+                )}
               </div>
             </div>
             {nodeForm}
@@ -371,7 +392,8 @@ Node.defaultProps = {
 Node.propTypes = {
   auth: PropTypes.object.isRequired,
   onNavigation: PropTypes.func,
-  singleNode: PropTypes.object
+  singleNode: PropTypes.object,
+  subtopicToggle: PropTypes.bool
 };
 
 export default connect(
