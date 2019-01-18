@@ -6,6 +6,7 @@ import { browserHistory } from "react-router";
 
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
 
 import NodeForm from "../../Node/components/NodeForm";
 import RootNodeList from "../../Node/components/RootNodeList";
@@ -125,17 +126,33 @@ class UniverseRoot extends Component {
 
     return (
       <div>
-        <h1
-          onClick={() => {
-            this.universeNavigation(this.props.universe.universe._id);
-          }}
-        >
-          {title}
-        </h1>
-        <Button variant="contained" onClick={this.nodeFormToggle}>
-          Add an Idea
-        </Button>
+        <Grid container spacing={24}>
+          <Grid item xs={20}>
+            <h1
+              onClick={() => {
+                this.universeNavigation(this.props.universe.universe._id);
+              }}
+            >
+              {title}
+            </h1>
+          </Grid>
+          <Grid item xs={4}>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={this.nodeFormToggle}
+            >
+              Add a new Node
+            </Button>
+          </Grid>
+        </Grid>
+
         {nodeForm}
+        <p>
+          This is a platform to aggregate all information, this is the public
+          Universe which is shared among all users, if you wish to access your
+          own Universe, press "Home" in the Top Navigation Bar
+        </p>
         {content}
       </div>
     );

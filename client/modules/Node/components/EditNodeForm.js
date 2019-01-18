@@ -6,7 +6,11 @@ import Helmet from "react-helmet";
 import {
   editNode,
   getAllPublicNodesForSelect,
-  getAllPrivateNodesForSelect
+  getAllPrivateNodesForSelect,
+  getSources,
+  getSubtopics,
+  clearSources,
+  clearSubtopics
 } from "../NodeActions";
 
 import Spinner from "../../App/components/Common/Spinner";
@@ -24,8 +28,8 @@ class EditNodeForm extends Component {
       node: this.props.singleNode,
       title: this.props.singleNode.title,
       content: this.props.singleNode.content.string,
-      sources: this.props.singleNode.sources,
-      subtopics: this.props.singleNode.subtopics,
+      sources: null,
+      subtopics: null,
       sourceOptions: [],
       subtopicOptions: [],
       errors: {}
@@ -35,10 +39,16 @@ class EditNodeForm extends Component {
     this.onChange = this.onChange.bind(this);
     this.onSourceSelect = this.onSourceSelect.bind(this);
     this.onSubtopicSelect = this.onSubtopicSelect.bind(this);
-    this.createDefaultConnections = this.createDefaultConnections.bind(this);
+    this.createDefaultSubtopicConnections = this.createDefaultSubtopicConnections.bind(
+      this
+    );
+    this.createDefaultSourceConnections = this.createDefaultSourceConnections.bind(
+      this
+    );
   }
 
   componentDidMount() {
+    console.log("mount");
     if (this.props.node.formNodes === null && !this.props.node.loading) {
       if (this.props.private) {
         this.props.getAllPrivateNodesForSelect(
@@ -47,57 +57,72 @@ class EditNodeForm extends Component {
       } else {
         this.props.getAllPublicNodesForSelect();
       }
+      if (this.state.node.sourceConnections.length > 0) {
+        this.props.getSources(this.state.node._id);
+      }
+      if (this.state.node.subtopicConnections.length > 0) {
+        this.props.getSubtopics(this.state.node._id);
+      }
+    } else if (this.props.node.formNodes !== null) {
+      if (this.state.node.sourceConnections.length > 0) {
+        this.props.getSources(this.state.node._id);
+      }
+      if (this.state.node.subtopicConnections.length > 0) {
+        this.props.getSubtopics(this.state.node._id);
+      }
     }
-    // if (
-    //   (this.state.subtopicOptions.length === 0 && this.props.node.subtopics) ||
-    //   (this.state.sourceOptions.length === 0 && this.props.node.sources)
-    // ) {
-    //   this.createDefaultConnections();
-    // }
   }
 
   componentDidUpdate(prevProps) {
-    // Setup existing connections
-    if (
-      this.props.node.formNodes !== null &&
-      prevProps.node.formNodes === null
-    ) {
-      this.createDefaultConnections();
+    // Place source and subtopic connections into state
+    if (this.props.node.subtopics !== null && this.state.subtopics === null) {
+      this.setState({ subtopics: this.props.node.subtopics }, () => {
+        this.createDefaultSubtopicConnections();
+      });
+      this.props.clearSubtopics();
+    }
+    if (this.props.node.sources !== null && this.state.sources === null) {
+      this.setState({ sources: this.props.node.sources }, () => {
+        this.createDefaultSourceConnections();
+      });
+      this.props.clearSources();
     }
   }
 
-  createDefaultConnections() {
-    let { subtopicOptions, sourceOptions } = this.state,
-      existingSuptopicConnections = [],
-      existingSourceConnections = [];
+  createDefaultSubtopicConnections() {
+    let { subtopicOptions } = this.state;
     for (var i in this.props.node.formNodes) {
       // Find existing subtopic connections
-      if (this.state.node.subtopics) {
-        this.state.node.subtopics.forEach(subtopicObject => {
-          existingSuptopicConnections.push(subtopicObject.subtopic._id);
-        });
-        if (
-          existingSuptopicConnections.includes(
+      if (this.state.subtopics) {
+        this.state.subtopics.forEach(connectionObject => {
+          if (
+            connectionObject.subtopic._id.toString() ===
             this.props.node.formNodes[i].value
-          )
-        ) {
-          subtopicOptions.push(this.props.node.formNodes[i]);
-        }
-      }
-
-      // Find existing source connections
-      if (this.state.node.sources) {
-        this.state.node.sources.forEach(sourceObject => {
-          existingSourceConnections.push(sourceObject.source._id);
+          ) {
+            subtopicOptions.push(this.props.node.formNodes[i]);
+          }
         });
-        if (
-          existingSourceConnections.includes(this.props.node.formNodes[i].value)
-        ) {
-          sourceOptions.push(this.props.node.formNodes[i]);
-        }
       }
     }
-    this.setState({ subtopicOptions, sourceOptions });
+    this.setState({ subtopicOptions });
+  }
+
+  createDefaultSourceConnections() {
+    let { sourceOptions } = this.state;
+    for (var i in this.props.node.formNodes) {
+      // Find existing source connections
+      if (this.state.sources) {
+        this.state.sources.forEach(connectionObject => {
+          if (
+            connectionObject.source._id.toString() ===
+            this.props.node.formNodes[i].value
+          ) {
+            sourceOptions.push(this.props.node.formNodes[i]);
+          }
+        });
+      }
+    }
+    this.setState({ sourceOptions });
   }
 
   onSubmit(e) {
@@ -142,15 +167,17 @@ class EditNodeForm extends Component {
   }
 
   render() {
-    console.log(this.state.subtopicOptions);
     let content;
+    console.log(this.state);
     if (
       this.state.node !== null &&
-      this.state.node.formNodes !== null &&
-      ((this.state.node.sources && this.state.sourceOptions.length > 0) ||
-        this.state.node.sources === null) &&
-      ((this.state.node.subtopics && this.state.subtopicOptions.length > 0) ||
-        this.state.node.subtopics === null)
+      this.props.node.formNodes !== null &&
+      ((this.state.node.sourceConnections &&
+        this.state.sourceOptions.length > 0) ||
+        this.state.node.sourceConnections.length === 0) &&
+      ((this.state.node.subtopicConnections &&
+        this.state.subtopicOptions.length > 0) ||
+        this.state.node.subtopicConnections.length === 0)
     ) {
       const { subtopicOptions, sourceOptions } = this.state;
 
@@ -226,5 +253,13 @@ EditNodeForm.propTypes = {
 
 export default connect(
   mapStateToProps,
-  { editNode, getAllPublicNodesForSelect, getAllPrivateNodesForSelect }
+  {
+    editNode,
+    getAllPublicNodesForSelect,
+    getAllPrivateNodesForSelect,
+    getSources,
+    getSubtopics,
+    clearSources,
+    clearSubtopics
+  }
 )(EditNodeForm);

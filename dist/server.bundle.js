@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 54);
+/******/ 	return __webpack_require__(__webpack_require__.s = 61);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -125,30 +125,6 @@ module.exports = require("react-router");
 
 /***/ }),
 /* 10 */
-/***/ (function(module, exports) {
-
-module.exports = require("@material-ui/core/Paper");
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports) {
-
-module.exports = require("mongoose");
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
-module.exports = require("react-intl");
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports) {
-
-module.exports = require("@material-ui/core/Button");
-
-/***/ }),
-/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -157,32 +133,36 @@ module.exports = require("@material-ui/core/Button");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.nodeFullClear = exports.setNodeLoading = exports.clearNode = exports.clearNodes = exports.updateNodeConnections = exports.clearDuplicateSourceAndSubtopics = exports.legacyClearDuplicateSourceAndSubtopics = exports.getSubtopics = exports.getSources = exports.getAllNodesForSelect = exports.getNodeByID = exports.getRootNodes = exports.editNode = exports.createNode = exports.NODE_FULL_CLEAR = exports.CLEAR_NODE = exports.CLEAR_NODES = exports.NODE_LOADING = exports.GET_SUBTOPICS = exports.GET_SOURCES = exports.GET_ALL_NODES = exports.GET_NODES = exports.GET_NODE = undefined;
+exports.nodeFullClear = exports.setNodeLoading = exports.clearSubtopics = exports.clearSources = exports.clearNode = exports.clearNodes = exports.setNode = exports.updateNodeConnections = exports.clearDuplicateSourceAndSubtopics = exports.legacyClearDuplicateSourceAndSubtopics = exports.getSubtopics = exports.getSources = exports.getAllPrivateNodesForSelect = exports.getAllPublicNodesForSelect = exports.deleteNode = exports.getNodeByID = exports.getUniverseRootNodes = exports.editNode = exports.createNode = exports.NODE_FULL_CLEAR = exports.CLEAR_SUBTOPICS = exports.CLEAR_SOURCES = exports.CLEAR_NODE = exports.CLEAR_NODES = exports.SET_NODE = exports.NODE_LOADING = exports.GET_SUBTOPICS = exports.GET_SOURCES = exports.GET_ALL_PRIVATE_NODES = exports.GET_ALL_PUBLIC_NODES = exports.GET_NODES = exports.GET_NODE = undefined;
 
-var _apiCaller = __webpack_require__(26);
+var _apiCaller = __webpack_require__(22);
 
 var _apiCaller2 = _interopRequireDefault(_apiCaller);
 
-var _setAuthToken = __webpack_require__(34);
+var _setAuthToken = __webpack_require__(40);
 
 var _setAuthToken2 = _interopRequireDefault(_setAuthToken);
 
-var _jwtDecode = __webpack_require__(35);
+var _jwtDecode = __webpack_require__(41);
 
 var _jwtDecode2 = _interopRequireDefault(_jwtDecode);
 
-var _ErrorActions = __webpack_require__(36);
+var _ErrorActions = __webpack_require__(29);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var GET_NODE = exports.GET_NODE = "GET_NODE";
 var GET_NODES = exports.GET_NODES = "GET_NODES";
-var GET_ALL_NODES = exports.GET_ALL_NODES = "GET_ALL_NODES";
+var GET_ALL_PUBLIC_NODES = exports.GET_ALL_PUBLIC_NODES = "GET_ALL_PUBLIC_NODES";
+var GET_ALL_PRIVATE_NODES = exports.GET_ALL_PRIVATE_NODES = "GET_ALL_PRIVATE_NODES";
 var GET_SOURCES = exports.GET_SOURCES = "GET_SOURCES";
 var GET_SUBTOPICS = exports.GET_SUBTOPICS = "GET_SUBTOPICS";
 var NODE_LOADING = exports.NODE_LOADING = "NODE_LOADING";
+var SET_NODE = exports.SET_NODE = "SET_NODE";
 var CLEAR_NODES = exports.CLEAR_NODES = "CLEAR_NODES";
 var CLEAR_NODE = exports.CLEAR_NODE = "CLEAR_NODE";
+var CLEAR_SOURCES = exports.CLEAR_SOURCES = "CLEAR_SOURCES";
+var CLEAR_SUBTOPICS = exports.CLEAR_SUBTOPICS = "CLEAR_SUBTOPICS";
 var NODE_FULL_CLEAR = exports.NODE_FULL_CLEAR = "NODE_FULL_CLEAR";
 
 // Create a node
@@ -207,11 +187,11 @@ var editNode = exports.editNode = function editNode(node) {
   };
 };
 
-// Get all root nodes (no sources)
-var getRootNodes = exports.getRootNodes = function getRootNodes() {
+// Get all root nodes for a given universe (no sources)
+var getUniverseRootNodes = exports.getUniverseRootNodes = function getUniverseRootNodes(id) {
   return function (dispatch) {
     dispatch(setNodeLoading());
-    return (0, _apiCaller2.default)("nodes/root", "get").then(function (res) {
+    return (0, _apiCaller2.default)("nodes/universe/" + id + "/root", "get").then(function (res) {
       return dispatch({
         type: GET_NODES,
         payload: res
@@ -240,12 +220,35 @@ var getNodeByID = exports.getNodeByID = function getNodeByID(id) {
   };
 };
 
-// Retrieve an ID and Title for all Nodes
-var getAllNodesForSelect = exports.getAllNodesForSelect = function getAllNodesForSelect() {
+// Remove duplicate sources and subtopics from all nodes
+var deleteNode = exports.deleteNode = function deleteNode(id) {
+  return function (dispatch) {
+    return (0, _apiCaller2.default)("/node/" + id + "/delete", "get").then(function (res) {
+      return location.reload();
+    }).catch(function (err) {
+      return dispatch({ type: _ErrorActions.GET_ERRORS, payload: err });
+    });
+  };
+};
+
+// Retrieve an ID and Title for all Public Nodes
+var getAllPublicNodesForSelect = exports.getAllPublicNodesForSelect = function getAllPublicNodesForSelect() {
   return function (dispatch) {
     dispatch(setNodeLoading());
-    return (0, _apiCaller2.default)("/nodes/form/all", "get").then(function (res) {
-      return dispatch({ type: GET_ALL_NODES, payload: res });
+    return (0, _apiCaller2.default)("/nodes/form/public/all", "get").then(function (res) {
+      return dispatch({ type: GET_ALL_PUBLIC_NODES, payload: res });
+    }).catch(function (err) {
+      return dispatch({ type: _ErrorActions.GET_ERRORS, payload: err });
+    });
+  };
+};
+
+// Retrieve an ID and Title for all Private Nodes
+var getAllPrivateNodesForSelect = exports.getAllPrivateNodesForSelect = function getAllPrivateNodesForSelect(id) {
+  return function (dispatch) {
+    dispatch(setNodeLoading());
+    return (0, _apiCaller2.default)("/nodes/form/private/" + id + "/all", "get").then(function (res) {
+      return dispatch({ type: GET_ALL_PRIVATE_NODES, payload: res });
     }).catch(function (err) {
       return dispatch({ type: _ErrorActions.GET_ERRORS, payload: err });
     });
@@ -303,6 +306,13 @@ var updateNodeConnections = exports.updateNodeConnections = function updateNodeC
   });
 };
 
+var setNode = exports.setNode = function setNode(node) {
+  return {
+    type: SET_NODE,
+    payload: node
+  };
+};
+
 var clearNodes = exports.clearNodes = function clearNodes() {
   return {
     type: CLEAR_NODES
@@ -312,6 +322,18 @@ var clearNodes = exports.clearNodes = function clearNodes() {
 var clearNode = exports.clearNode = function clearNode() {
   return {
     type: CLEAR_NODE
+  };
+};
+
+var clearSources = exports.clearSources = function clearSources() {
+  return {
+    type: CLEAR_SOURCES
+  };
+};
+
+var clearSubtopics = exports.clearSubtopics = function clearSubtopics() {
+  return {
+    type: CLEAR_SUBTOPICS
   };
 };
 
@@ -328,10 +350,111 @@ var nodeFullClear = exports.nodeFullClear = function nodeFullClear() {
 };
 
 /***/ }),
-/* 15 */
+/* 11 */
 /***/ (function(module, exports) {
 
-module.exports = require("@material-ui/core/TextField");
+module.exports = require("@material-ui/core/Paper");
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports) {
+
+module.exports = require("mongoose");
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports) {
+
+module.exports = require("@material-ui/core/Button");
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports) {
+
+module.exports = require("react-intl");
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.setUniverseLoading = exports.clearUniverse = exports.createPublicUniverse = exports.createPersonalUniverse = exports.getPublicUniverse = exports.getUniverse = exports.CLEAR_UNIVERSE = exports.UNIVERSE_LOADING = exports.GET_UNIVERSE = undefined;
+
+var _apiCaller = __webpack_require__(22);
+
+var _apiCaller2 = _interopRequireDefault(_apiCaller);
+
+var _ErrorActions = __webpack_require__(29);
+
+var _AuthActions = __webpack_require__(19);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var GET_UNIVERSE = exports.GET_UNIVERSE = "GET_UNIVERSE";
+var UNIVERSE_LOADING = exports.UNIVERSE_LOADING = "UNIVERSE_LOADING";
+var CLEAR_UNIVERSE = exports.CLEAR_UNIVERSE = "CLEAR_UNIVERSE";
+
+// Get universe by id
+var getUniverse = exports.getUniverse = function getUniverse(id) {
+  return function (dispatch) {
+    dispatch(setUniverseLoading());
+    return (0, _apiCaller2.default)("/universe/" + id, "get").then(function (res) {
+      return dispatch({ type: GET_UNIVERSE, payload: res });
+    }).catch(function (err) {
+      return dispatch({ type: _ErrorActions.GET_ERRORS, payload: err });
+    });
+  };
+};
+
+// Get public universe
+var getPublicUniverse = exports.getPublicUniverse = function getPublicUniverse() {
+  return function (dispatch) {
+    dispatch(setUniverseLoading());
+    return (0, _apiCaller2.default)("/universe/public/get", "get").then(function (res) {
+      return dispatch({ type: GET_UNIVERSE, payload: res });
+    }).catch(function (err) {
+      return dispatch({ type: _ErrorActions.GET_ERRORS, payload: err });
+    });
+  };
+};
+
+// Create a personal universe for a given user that does not already have one
+var createPersonalUniverse = exports.createPersonalUniverse = function createPersonalUniverse(id) {
+  return function (dispatch) {
+    return (0, _apiCaller2.default)("/universe/create/personal/" + id, "get").then(function (res) {
+      dispatch((0, _AuthActions.setCurrentUser)());
+      location.reload();
+    }).catch(function (err) {
+      return dispatch({ type: _ErrorActions.GET_ERRORS, payload: err });
+    });
+  };
+};
+
+// Change legacy source and subtopic connections to connection object references
+var createPublicUniverse = exports.createPublicUniverse = function createPublicUniverse(dispatch) {
+  return (0, _apiCaller2.default)("/universe/create/public", "get").then(function (res) {
+    return location.reload();
+  }).catch(function (err) {
+    return dispatch({ type: _ErrorActions.GET_ERRORS, payload: err });
+  });
+};
+
+var clearUniverse = exports.clearUniverse = function clearUniverse() {
+  return {
+    type: CLEAR_UNIVERSE
+  };
+};
+
+var setUniverseLoading = exports.setUniverseLoading = function setUniverseLoading() {
+  return {
+    type: UNIVERSE_LOADING
+  };
+};
 
 /***/ }),
 /* 16 */
@@ -343,13 +466,13 @@ module.exports = require("babel-runtime/helpers/extends");
 /* 17 */
 /***/ (function(module, exports) {
 
-module.exports = require("express");
+module.exports = require("@material-ui/core/TextField");
 
 /***/ }),
 /* 18 */
 /***/ (function(module, exports) {
 
-module.exports = require("lodash");
+module.exports = require("express");
 
 /***/ }),
 /* 19 */
@@ -363,15 +486,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.logoutUser = exports.setCurrentUser = exports.loginUser = exports.registerUser = exports.GET_ERRORS = exports.SET_CURRENT_USER = undefined;
 
-var _apiCaller = __webpack_require__(26);
+var _apiCaller = __webpack_require__(22);
 
 var _apiCaller2 = _interopRequireDefault(_apiCaller);
 
-var _setAuthToken = __webpack_require__(34);
+var _setAuthToken = __webpack_require__(40);
 
 var _setAuthToken2 = _interopRequireDefault(_setAuthToken);
 
-var _jwtDecode = __webpack_require__(35);
+var _jwtDecode = __webpack_require__(41);
 
 var _jwtDecode2 = _interopRequireDefault(_jwtDecode);
 
@@ -426,22 +549,186 @@ var logoutUser = exports.logoutUser = function logoutUser() {
 /* 20 */
 /***/ (function(module, exports) {
 
-module.exports = require("babel-runtime/helpers/defineProperty");
+module.exports = require("babel-runtime/regenerator");
 
 /***/ }),
 /* 21 */
 /***/ (function(module, exports) {
 
-module.exports = require("babel-runtime/regenerator");
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports) {
-
 module.exports = require("babel-runtime/helpers/asyncToGenerator");
 
 /***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.API_URL = undefined;
+exports.default = callApi;
+
+var _isomorphicFetch = __webpack_require__(70);
+
+var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
+
+var _config = __webpack_require__(71);
+
+var _config2 = _interopRequireDefault(_config);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var API_URL = exports.API_URL = typeof window === "undefined" || process.env.NODE_ENV === "test" ? process.env.BASE_URL || "http://localhost:" + (process.env.PORT || _config2.default.port) + "/api" : "/api";
+
+function callApi(endpoint) {
+  var method = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "get";
+  var body = arguments[2];
+
+  return (0, _isomorphicFetch2.default)(API_URL + "/" + endpoint, {
+    headers: { "content-type": "application/json" },
+    method: method,
+    body: JSON.stringify(body)
+  }).then(function (response) {
+    return response.json().then(function (json) {
+      return { json: json, response: response };
+    });
+  }).then(function (_ref) {
+    var json = _ref.json,
+        response = _ref.response;
+
+    if (!response.ok) {
+      return Promise.reject(json);
+    }
+
+    return json;
+  }).then(function (response) {
+    return response;
+  }, function (error) {
+    return error;
+  });
+}
+
+/***/ }),
 /* 23 */
+/***/ (function(module, exports) {
+
+module.exports = require("lodash");
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports) {
+
+module.exports = require("babel-runtime/helpers/defineProperty");
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _mongoose = __webpack_require__(12);
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Schema = _mongoose2.default.Schema;
+
+// Highlight Array Legend
+// 0: Nothing
+// 1: Speculation
+// 2: Opinion
+// 3: Fact
+// 4: Incorrect Statement
+// 5: Question
+// 6: Command
+// 7: Axiom
+
+var nodeSchema = new Schema({
+  title: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: "users"
+  },
+  content: {
+    string: {
+      type: String
+    },
+    highlightArray: {
+      type: [Number]
+    },
+    // Can be used to have a set of words reference multiple other nodes
+    nodeReferenceArray: [{
+      type: [Schema.Types.ObjectId]
+    }],
+    authorArray: {
+      type: [Schema.Types.ObjectId]
+    },
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: "user"
+    },
+    version: {
+      type: Number,
+      default: 0
+    }
+  },
+  versionsReference: {
+    type: Schema.Types.ObjectId,
+    ref: "nodeVersions"
+  },
+  subtopics: {
+    type: [Schema.Types.ObjectId]
+  },
+  subtopicConnections: {
+    type: [Schema.Types.ObjectId]
+  },
+  sources: {
+    type: [Schema.Types.ObjectId]
+  },
+  sourceConnections: {
+    type: [Schema.Types.ObjectId]
+  },
+  // Determine whether this is a public or private node
+  public: {
+    type: Boolean,
+    default: true
+  },
+  // this is the universe that this node exists in (Public Universe if Public)
+  originUniverse: {
+    type: Schema.Types.ObjectId,
+    ref: "universe"
+  },
+  // Universes that this node is shared in, can be used if this node is public
+  sharedUniverses: {
+    type: [Schema.Types.ObjectId]
+  },
+  // Can be toggled to only show this node to particular users even within a Private Universe
+  hidden: {
+    type: Boolean,
+    default: false
+  },
+  // List of users that can view this node when hidden
+  hiddenWhitelist: {
+    type: [Schema.Types.ObjectId]
+  }
+});
+
+exports.default = _mongoose2.default.model("Node", nodeSchema);
+
+/***/ }),
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -462,7 +749,7 @@ function toggleAddPost() {
 }
 
 /***/ }),
-/* 24 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -473,11 +760,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getPost = exports.getPosts = undefined;
 
-var _toConsumableArray2 = __webpack_require__(62);
+var _toConsumableArray2 = __webpack_require__(69);
 
 var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 
-var _PostActions = __webpack_require__(25);
+var _PostActions = __webpack_require__(28);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -529,7 +816,7 @@ var getPost = exports.getPost = function getPost(state, cuid) {
 exports.default = PostReducer;
 
 /***/ }),
-/* 25 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -547,7 +834,7 @@ exports.fetchPost = fetchPost;
 exports.deletePost = deletePost;
 exports.deletePostRequest = deletePostRequest;
 
-var _apiCaller = __webpack_require__(26);
+var _apiCaller = __webpack_require__(22);
 
 var _apiCaller2 = _interopRequireDefault(_apiCaller);
 
@@ -619,166 +906,6 @@ function deletePostRequest(cuid) {
 }
 
 /***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.API_URL = undefined;
-exports.default = callApi;
-
-var _isomorphicFetch = __webpack_require__(63);
-
-var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
-
-var _config = __webpack_require__(64);
-
-var _config2 = _interopRequireDefault(_config);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var API_URL = exports.API_URL = typeof window === "undefined" || process.env.NODE_ENV === "test" ? process.env.BASE_URL || "http://localhost:" + (process.env.PORT || _config2.default.port) + "/api" : "/api";
-
-function callApi(endpoint) {
-  var method = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "get";
-  var body = arguments[2];
-
-  return (0, _isomorphicFetch2.default)(API_URL + "/" + endpoint, {
-    headers: { "content-type": "application/json" },
-    method: method,
-    body: JSON.stringify(body)
-  }).then(function (response) {
-    return response.json().then(function (json) {
-      return { json: json, response: response };
-    });
-  }).then(function (_ref) {
-    var json = _ref.json,
-        response = _ref.response;
-
-    if (!response.ok) {
-      return Promise.reject(json);
-    }
-
-    return json;
-  }).then(function (response) {
-    return response;
-  }, function (error) {
-    return error;
-  });
-}
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports) {
-
-module.exports = require("validator");
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _mongoose = __webpack_require__(11);
-
-var _mongoose2 = _interopRequireDefault(_mongoose);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Schema = _mongoose2.default.Schema;
-
-// Highlight Array Legend
-// 0: Nothing
-// 1: Speculation
-// 2: Opinion
-// 3: Fact
-// 4: Incorrect Statement
-// 5: Question
-// 6: Command
-// 7: Axiom
-
-var nodeSchema = new Schema({
-  title: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  content: {
-    string: {
-      type: String
-    },
-    highlightArray: {
-      type: [Number]
-    },
-    // Can be used to have a set of words reference multiple other nodes
-    nodeReferenceArray: [{
-      type: [Schema.Types.ObjectId]
-    }],
-    authorArray: {
-      type: [Schema.Types.ObjectId]
-    },
-    author: {
-      type: Schema.Types.ObjectId,
-      ref: "user"
-    },
-    version: {
-      type: Number,
-      default: 0
-    }
-  },
-  versionsReference: {
-    type: Schema.Types.ObjectId,
-    ref: "nodeVersions"
-  },
-  subtopics: {
-    type: [Schema.Types.ObjectId]
-  },
-  subtopicConnections: {
-    type: [Schema.Types.ObjectId]
-  },
-  sources: {
-    type: [Schema.Types.ObjectId]
-  },
-  sourceConnections: {
-    type: [Schema.Types.ObjectId]
-  },
-  // Determine whether this is a public or private node
-  public: {
-    type: Boolean,
-    default: true
-  },
-  // If Private: this is the universe that this node exists in
-  originUniverse: {
-    type: Schema.Types.ObjectId,
-    ref: "universe"
-  },
-  // Universes that this node is shared in, can be used if this node is public
-  sharedUniverses: {
-    type: [Schema.Types.ObjectId]
-  },
-  // Can be toggled to only show this node to particular users even within a Private Universe
-  hidden: {
-    type: Boolean,
-    default: false
-  },
-  // List of users that can view this node when hidden
-  hiddenWhitelist: {
-    type: [Schema.Types.ObjectId]
-  }
-});
-
-exports.default = _mongoose2.default.model("Node", nodeSchema);
-
-/***/ }),
 /* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -788,8 +915,893 @@ exports.default = _mongoose2.default.model("Node", nodeSchema);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+var CLEAR_ERRORS = exports.CLEAR_ERRORS = "CLEAR_ERRORS";
+var GET_ERRORS = exports.GET_ERRORS = "GET_ERRORS";
 
-var _mongoose = __webpack_require__(11);
+// Clear all errors
+var clearErrors = exports.clearErrors = function clearErrors() {
+  return {
+    type: CLEAR_ERRORS,
+    payload: {}
+  };
+};
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _jsx2 = __webpack_require__(1);
+
+var _jsx3 = _interopRequireDefault(_jsx2);
+
+var _defineProperty2 = __webpack_require__(24);
+
+var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
+var _classCallCheck2 = __webpack_require__(4);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(5);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = __webpack_require__(6);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(7);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _reactRedux = __webpack_require__(3);
+
+var _reactHelmet = __webpack_require__(8);
+
+var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
+
+var _NodeActions = __webpack_require__(10);
+
+var _SelectMultiple = __webpack_require__(49);
+
+var _SelectMultiple2 = _interopRequireDefault(_SelectMultiple);
+
+var _Paper = __webpack_require__(11);
+
+var _Paper2 = _interopRequireDefault(_Paper);
+
+var _TextField = __webpack_require__(17);
+
+var _TextField2 = _interopRequireDefault(_TextField);
+
+var _Button = __webpack_require__(13);
+
+var _Button2 = _interopRequireDefault(_Button);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _ref = (0, _jsx3.default)("h4", {}, void 0, "Add a New Idea (Node)");
+
+var _ref2 = (0, _jsx3.default)(_Button2.default, {
+  type: "submit",
+  color: "primary"
+}, void 0, "Submit");
+
+var _ref3 = (0, _jsx3.default)("p", {}, void 0, "Loading . . . ");
+
+var NodeForm = function (_Component) {
+  (0, _inherits3.default)(NodeForm, _Component);
+
+  function NodeForm(props) {
+    (0, _classCallCheck3.default)(this, NodeForm);
+
+    var _this = (0, _possibleConstructorReturn3.default)(this, (NodeForm.__proto__ || Object.getPrototypeOf(NodeForm)).call(this, props));
+
+    var defaultSources = [],
+        sources = [];
+    if (_this.props.node.node !== null) {
+      sources.push(_this.props.node.node._id);
+      defaultSources.push({
+        label: _this.props.node.node.title,
+        value: _this.props.node.node._id.toString()
+      });
+    } else if (_this.props.sourceNode) {
+      sources.push(_this.props.sourceNode._id);
+      defaultSources.push({
+        label: _this.props.sourceNode.title,
+        value: _this.props.sourceNode._id.toString()
+      });
+    }
+
+    _this.state = {
+      title: "",
+      content: "",
+      subtopics: [],
+      sources: sources,
+      defaultSources: defaultSources,
+      universe: null,
+      errors: {}
+    };
+
+    _this.onSubmit = _this.onSubmit.bind(_this);
+    _this.onChange = _this.onChange.bind(_this);
+    _this.onSourceSelect = _this.onSourceSelect.bind(_this);
+    _this.onSubtopicSelect = _this.onSubtopicSelect.bind(_this);
+    return _this;
+  }
+
+  (0, _createClass3.default)(NodeForm, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      if (this.props.node.allNodes == null && !this.props.node.loading) {
+        if (this.props.private) {
+          this.props.getAllPrivateNodesForSelect(this.props.universe.universe._id);
+        } else {
+          this.props.getAllPublicNodesForSelect();
+        }
+      }
+      this.setState({ universe: this.props.universe.universe._id });
+    }
+  }, {
+    key: "onSubmit",
+    value: function onSubmit(e) {
+      e.preventDefault();
+      var newData = {
+        title: this.state.title,
+        content: this.state.content,
+        subtopics: this.state.subtopics,
+        sources: this.state.sources,
+        author: this.props.auth.user.id,
+        private: this.props.private,
+        universe: this.state.universe
+      };
+      this.props.createNode(newData);
+    }
+  }, {
+    key: "onChange",
+    value: function onChange(e) {
+      this.setState((0, _defineProperty3.default)({}, e.target.name, e.target.value));
+    }
+  }, {
+    key: "onSourceSelect",
+    value: function onSourceSelect(selection) {
+      var sources = [];
+      for (var i in selection) {
+        sources[i] = selection[i].value;
+      }
+      this.setState({ sources: sources });
+    }
+  }, {
+    key: "onSubtopicSelect",
+    value: function onSubtopicSelect(selection) {
+      var subtopics = [];
+      for (var i in selection) {
+        subtopics[i] = selection[i].value;
+      }
+      this.setState({ subtopics: subtopics });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var content = void 0;
+      if (this.props.node.formNodes !== null) {
+        content = (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(_Paper2.default, {}, void 0, _ref, (0, _jsx3.default)("form", {
+          onSubmit: this.onSubmit
+        }, void 0, (0, _jsx3.default)(_TextField2.default, {
+          id: "title",
+          label: "Title of Idea",
+          name: "title",
+          onChange: this.onChange,
+          value: this.state.title,
+          margin: "normal",
+          variant: "outlined"
+        }), (0, _jsx3.default)(_TextField2.default, {
+          id: "content",
+          label: "Description of Idea",
+          name: "content",
+          onChange: this.onChange,
+          value: this.state.content,
+          margin: "normal",
+          variant: "outlined",
+          multiline: true,
+          fullWidth: true
+        }), (0, _jsx3.default)(_SelectMultiple2.default, {
+          label: "Sources",
+          placeholder: "Select sources for this subject",
+          onChange: this.onSourceSelect,
+          options: this.props.node.formNodes,
+          defaultValue: this.state.defaultSources
+        }), (0, _jsx3.default)(_SelectMultiple2.default, {
+          placeholder: "Select subtopics that belong to this subject",
+          onChange: this.onSubtopicSelect,
+          options: this.props.node.formNodes
+        }), _ref2)));
+      } else {
+        content = _ref3;
+      }
+
+      return (0, _jsx3.default)("div", {}, void 0, content);
+    }
+  }]);
+  return NodeForm;
+}(_react.Component);
+
+// Retrieve data from store as props
+
+
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+    node: state.node,
+    universe: state.universe
+  };
+};
+
+NodeForm.defaultProps = {
+  private: false
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, { createNode: _NodeActions.createNode, getAllPublicNodesForSelect: _NodeActions.getAllPublicNodesForSelect, getAllPrivateNodesForSelect: _NodeActions.getAllPrivateNodesForSelect })(NodeForm);
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _jsx2 = __webpack_require__(1);
+
+var _jsx3 = _interopRequireDefault(_jsx2);
+
+var _classCallCheck2 = __webpack_require__(4);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(5);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = __webpack_require__(6);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(7);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _reactRedux = __webpack_require__(3);
+
+var _reactHelmet = __webpack_require__(8);
+
+var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
+
+var _reactRouter = __webpack_require__(9);
+
+var _Paper = __webpack_require__(11);
+
+var _Paper2 = _interopRequireDefault(_Paper);
+
+var _Button = __webpack_require__(13);
+
+var _Button2 = _interopRequireDefault(_Button);
+
+var _Grid = __webpack_require__(51);
+
+var _Grid2 = _interopRequireDefault(_Grid);
+
+var _NodeForm = __webpack_require__(30);
+
+var _NodeForm2 = _interopRequireDefault(_NodeForm);
+
+var _RootNodeList = __webpack_require__(107);
+
+var _RootNodeList2 = _interopRequireDefault(_RootNodeList);
+
+var _NodeActions = __webpack_require__(10);
+
+var _UniverseActions = __webpack_require__(15);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _ref = (0, _jsx3.default)("p", {}, void 0, "This is a platform to aggregate all information, this is the public Universe which is shared among all users, if you wish to access your own Universe, press \"Home\" in the Top Navigation Bar");
+
+var UniverseRoot = function (_Component) {
+  (0, _inherits3.default)(UniverseRoot, _Component);
+
+  function UniverseRoot() {
+    (0, _classCallCheck3.default)(this, UniverseRoot);
+
+    var _this = (0, _possibleConstructorReturn3.default)(this, (UniverseRoot.__proto__ || Object.getPrototypeOf(UniverseRoot)).call(this));
+
+    _this.state = {
+      nodeFormToggle: false,
+      universe: null,
+      content: "",
+      subtopics: [],
+      sources: [],
+      errors: {}
+    };
+
+    _this.nodeFormToggle = _this.nodeFormToggle.bind(_this);
+    _this.onNavigation = _this.onNavigation.bind(_this);
+    return _this;
+  }
+
+  (0, _createClass3.default)(UniverseRoot, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      if (!this.props.auth.isAuthenticated) {
+        _reactRouter.browserHistory.push("/login");
+      }
+      if (this.props.universe.universe._id !== null) {
+        this.props.clearNodes();
+        this.props.clearNode();
+        this.props.getUniverseRootNodes(this.props.universe.universe._id);
+      }
+      if (this.props.universe.universe.public === true) {
+        _reactRouter.browserHistory.push("/");
+      }
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      this.props.clearUniverse();
+      this.props.nodeFullClear();
+    }
+  }, {
+    key: "nodeFormToggle",
+    value: function nodeFormToggle() {
+      this.setState({ nodeFormToggle: !this.state.nodeFormToggle });
+    }
+  }, {
+    key: "onNavigation",
+    value: function onNavigation(id) {
+      if (id.includes("root")) {
+        return _reactRouter.browserHistory.push("/universe/" + this.props.universe.universe._id);
+      }
+      var newNode = void 0;
+      if (this.props.node.nodes !== null) {
+        newNode = this.props.node.nodes.filter(function (node) {
+          return node._id.toString() === id;
+        });
+        if (newNode.length === 1) {
+          this.props.setNode(newNode[0]);
+        } else {
+          this.props.getNodeByID(id);
+        }
+      } else {
+        this.props.getNodeByID(id);
+      }
+    }
+  }, {
+    key: "universeNavigation",
+    value: function universeNavigation(id) {
+      _reactRouter.browserHistory.push("/universe/" + id);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var nodeForm = void 0,
+          nodeFormComp = (0, _jsx3.default)(_NodeForm2.default, {
+        "private": !this.props.universe.universe.public
+      });
+
+      if (this.state.nodeFormToggle) {
+        nodeForm = nodeFormComp;
+      } else {
+        nodeForm = "";
+      }
+
+      var content = void 0;
+      if (this.props.node.nodes !== null && this.props.node.nodes.length > 0 && this.props.node.node === null) {
+        content = (0, _jsx3.default)(_RootNodeList2.default, {
+          nodes: this.props.node.nodes,
+          onNavigation: this.onNavigation
+        });
+      } else if (this.props.node.node !== null) {
+        content = (0, _jsx3.default)(_RootNodeList2.default, {
+          nodes: new Array(this.props.node.node),
+          onNavigation: this.onNavigation
+        });
+      }
+
+      var title = void 0;
+      this.props.title ? title = this.props.title : title = this.props.universe.universe.title;
+
+      return (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(_Grid2.default, {
+        container: true,
+        spacing: 24
+      }, void 0, (0, _jsx3.default)(_Grid2.default, {
+        item: true,
+        xs: 20
+      }, void 0, (0, _jsx3.default)("h1", {
+        onClick: function onClick() {
+          _this2.universeNavigation(_this2.props.universe.universe._id);
+        }
+      }, void 0, title)), (0, _jsx3.default)(_Grid2.default, {
+        item: true,
+        xs: 4
+      }, void 0, (0, _jsx3.default)(_Button2.default, {
+        variant: "outlined",
+        color: "primary",
+        onClick: this.nodeFormToggle
+      }, void 0, "Add a new Node"))), nodeForm, _ref, content);
+    }
+  }]);
+  return UniverseRoot;
+}(_react.Component);
+
+// Retrieve data from store as props
+
+
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+    node: state.node,
+    universe: state.universe
+  };
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, {
+  getUniverseRootNodes: _NodeActions.getUniverseRootNodes,
+  clearNodes: _NodeActions.clearNodes,
+  clearNode: _NodeActions.clearNode,
+  setNode: _NodeActions.setNode,
+  getNodeByID: _NodeActions.getNodeByID,
+  nodeFullClear: _NodeActions.nodeFullClear,
+  clearUniverse: _UniverseActions.clearUniverse
+})(UniverseRoot);
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _jsx2 = __webpack_require__(1);
+
+var _jsx3 = _interopRequireDefault(_jsx2);
+
+var _classCallCheck2 = __webpack_require__(4);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(5);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = __webpack_require__(6);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(7);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _reactRedux = __webpack_require__(3);
+
+var _reactRouter = __webpack_require__(9);
+
+var _Paper = __webpack_require__(11);
+
+var _Paper2 = _interopRequireDefault(_Paper);
+
+var _Button = __webpack_require__(13);
+
+var _Button2 = _interopRequireDefault(_Button);
+
+var _Grid = __webpack_require__(51);
+
+var _Grid2 = _interopRequireDefault(_Grid);
+
+var _EditNodeForm = __webpack_require__(108);
+
+var _EditNodeForm2 = _interopRequireDefault(_EditNodeForm);
+
+var _NodeForm = __webpack_require__(30);
+
+var _NodeForm2 = _interopRequireDefault(_NodeForm);
+
+var _Spinner = __webpack_require__(52);
+
+var _Spinner2 = _interopRequireDefault(_Spinner);
+
+var _NodeActions = __webpack_require__(10);
+
+var _UniverseActions = __webpack_require__(15);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _ref = (0, _jsx3.default)(_Spinner2.default, {});
+
+var _ref2 = (0, _jsx3.default)("br", {});
+
+var _ref3 = (0, _jsx3.default)(_Spinner2.default, {});
+
+var Node = function (_Component) {
+  (0, _inherits3.default)(Node, _Component);
+
+  function Node(props) {
+    (0, _classCallCheck3.default)(this, Node);
+
+    var _this = (0, _possibleConstructorReturn3.default)(this, (Node.__proto__ || Object.getPrototypeOf(Node)).call(this, props));
+
+    _this.state = {
+      node: _this.props.singleNode || null,
+      editFormToggle: false,
+      toggleNodeForm: false,
+      subtopicToggle: false,
+      subtopics: null,
+      sources: null
+    };
+
+    _this.toggleEditForm = _this.toggleEditForm.bind(_this);
+    _this.toggleNodeForm = _this.toggleNodeForm.bind(_this);
+    _this.toggleSubtopics = _this.toggleSubtopics.bind(_this);
+    return _this;
+  }
+
+  (0, _createClass3.default)(Node, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      // Handle component loading
+      var node = this.state.node;
+
+      if (node) {
+        if (node.subtopicConnections && node.subtopicConnections.length > 0) {
+          this.props.getSubtopics(node._id);
+        }
+        if (node.sourceConnections && node.sourceConnections.length > 0) {
+          this.props.getSources(node._id);
+        }
+      }
+      // Handle loading node through url
+      if (this.props.singleNode === null && this.props.node.node === null && !this.props.node.loading) {
+        this.props.getNodeByID(this.props.params.nodeID);
+      }
+    }
+  }, {
+    key: "toggleEditForm",
+    value: function toggleEditForm() {
+      this.setState({ editFormToggle: !this.state.editFormToggle });
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      this.props.clearNodes();
+    }
+  }, {
+    key: "toggleSubtopics",
+    value: function toggleSubtopics() {
+      console.log(this.state.subtopicToggle);
+      this.setState({ subtopicToggle: !this.state.subtopicToggle });
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps) {
+      // Grab appropriate subtopics for this node
+      if (this.props.node.subtopics !== null && this.state.subtopics === null && this.state.node !== null && this.state.node._id.toString() === this.props.node.subtopics[0].connection.sourceNode.toString()) {
+        this.setState({ subtopics: this.props.node.subtopics });
+        this.props.clearSubtopics();
+      }
+      // Grab appropriate sources for this node
+      if (this.props.node.sources !== null && this.state.sources === null && this.state.node && this.state.node._id.toString() === this.props.node.sources[0].connection.subtopicNode.toString()) {
+        this.setState({ sources: this.props.node.sources });
+        this.props.clearSources();
+      }
+      // Grab loaded node if necessary
+      if (this.props.node.node !== null && this.state.node === null) {
+        this.setState({ node: this.props.node.node });
+        this.props.getUniverse(this.props.node.node.originUniverse);
+        if (this.props.node.node.subtopicConnections && this.props.node.node.subtopicConnections.length > 0) {
+          this.props.getSubtopics(this.props.node.node._id);
+        }
+        if (this.props.node.node.sourceConnections && this.props.node.node.sourceConnections.length > 0) {
+          this.props.getSources(this.props.node.node._id);
+        }
+      }
+    }
+  }, {
+    key: "toggleNodeForm",
+    value: function toggleNodeForm() {
+      this.setState({ toggleNodeForm: !this.state.toggleNodeForm });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var _state = this.state,
+          editFormToggle = _state.editFormToggle,
+          toggleNodeForm = _state.toggleNodeForm;
+
+      var content = void 0;
+      if (this.state.node !== null) {
+        var sourceJSX = [],
+            subtopicJSX = [],
+            editForm = void 0,
+            nodeForm = void 0,
+            subtopicToggleButtonText = void 0;
+        var node = this.state.node;
+
+        if (editFormToggle) {
+          editForm = (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(_EditNodeForm2.default, {
+            singleNode: node,
+            "private": !this.props.universe.universe.public
+          }));
+        } else {
+          editForm = "";
+        }
+
+        if (toggleNodeForm) {
+          nodeForm = (0, _jsx3.default)(_NodeForm2.default, {
+            "private": !this.props.universe.universe.public,
+            sourceNode: this.state.node
+          });
+        }
+
+        var _state2 = this.state,
+            subtopics = _state2.subtopics,
+            sources = _state2.sources;
+
+        // Sources
+
+        if (sources && sources.length > 0) {
+          sources.forEach(function (source) {
+            source = source.source;
+            sourceJSX.push((0, _jsx3.default)("span", {}, source._id, (0, _jsx3.default)(_Button2.default, {
+              onClick: function onClick() {
+                _this2.props.onNavigation(source._id);
+              }
+            }, void 0, "#", source.title), " "));
+          });
+        } else {
+          if (this.props.universe.universe !== null) {
+            sourceJSX.push((0, _jsx3.default)("span", {}, "root-link", (0, _jsx3.default)(_Button2.default, {
+              onClick: function onClick() {
+                _this2.props.onNavigation("root-" + _this2.props.universe.universe._id);
+              }
+            }, void 0, "#root")));
+          } else {
+            sourceJSX.push("Loading . . .");
+          }
+        }
+
+        // Subtopics
+        if (subtopics && subtopics.length > 0 && this.state.subtopicToggle) {
+          subtopicToggleButtonText = "Hide Subtopics";
+          subtopics.forEach(function (subtopic) {
+            subtopic = subtopic.subtopic;
+            subtopicJSX.push((0, _jsx3.default)(_Paper2.default, {
+              style: {
+                padding: "0.5em",
+                marginTop: "0.5em",
+                border: "solid black 1px"
+              }
+            }, subtopic._id, (0, _jsx3.default)("h3", {
+              onClick: function onClick() {
+                _this2.props.onNavigation(subtopic._id);
+              }
+            }, void 0, subtopic.title), subtopic.content.string === "" ? "No Content" : (0, _jsx3.default)("p", {}, void 0, subtopic.content.string)));
+          });
+        } else if (this.props.node.loading && this.state.node.subtopicConnections.length > 0) {
+          subtopicToggleButtonText = "Subtopics Loading . . .";
+          subtopicJSX = _ref;
+        } else {
+          subtopicToggleButtonText = "Show Subtopics";
+          subtopicJSX = "";
+        }
+
+        var subtopicToggleJSX = void 0;
+        if (subtopics && subtopics.length > 0) {
+          subtopicToggleJSX = (0, _jsx3.default)(_Grid2.default, {
+            container: true,
+            spacing: 0,
+            direction: "column",
+            alignItems: "center",
+            justify: "center"
+          }, void 0, (0, _jsx3.default)(_Button2.default, {
+            onClick: this.toggleSubtopics
+          }, void 0, subtopicToggleButtonText));
+        }
+
+        var nodeContent = void 0;
+        if (node.content.string) {
+          // render new lines
+          var count = 0;
+          nodeContent = [];
+          node.content.string.split("\n").forEach(function (line) {
+            nodeContent.push((0, _jsx3.default)(_Paper2.default, {
+              style: {
+                padding: "0.5em",
+                marginTop: "0.5em",
+                backgroundColor: "gray"
+              }
+            }, void 0, (0, _jsx3.default)("p", {
+              style: { color: "white" }
+            }, "line-" + count, line)));
+            count++;
+          });
+        } else {
+          nodeContent = "";
+        }
+
+        var deleteButton = void 0;
+        if (this.props.auth.user && this.props.auth.user.admin) {
+          deleteButton = (0, _jsx3.default)("span", {}, void 0, " | ", (0, _jsx3.default)(_Button2.default, {
+            variant: "outlined",
+            color: "secondary",
+            onClick: function onClick() {
+              _this2.props.deleteNode(node._id);
+            }
+          }, void 0, "Delete Node"));
+        }
+
+        // FINAL CONTENT THAT WILL BE LOADED
+        content = (0, _jsx3.default)("div", {}, node._id, (0, _jsx3.default)(_Paper2.default, {
+          style: {
+            padding: "0.5em",
+            margin: "1em",
+            border: "solid black 1px"
+          }
+        }, void 0, (0, _jsx3.default)("h1", {
+          onClick: function onClick() {
+            _this2.props.onNavigation(node._id);
+          }
+        }, void 0, node.title), (0, _jsx3.default)("div", {
+          className: "row"
+        }, void 0, (0, _jsx3.default)("div", {
+          className: "col"
+        }, void 0, (0, _jsx3.default)(_Button2.default, {
+          variant: "outlined",
+          color: "primary",
+          style: { marginRight: "0.5em" },
+          onClick: this.toggleEditForm
+        }, void 0, "Edit Node"), (0, _jsx3.default)(_Button2.default, {
+          variant: "outlined",
+          color: "primary",
+          onClick: this.toggleNodeForm
+        }, void 0, "Add Node"), deleteButton)), nodeForm, editForm, sourceJSX, _ref2, nodeContent, (0, _jsx3.default)("div", {}, void 0, subtopicJSX), subtopicToggleJSX));
+      } else {
+        content = _ref3;
+      }
+
+      return (0, _jsx3.default)("div", {}, void 0, content);
+    }
+  }]);
+  return Node;
+}(_react.Component);
+
+// Retrieve data from store as props
+
+
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+    node: state.node,
+    universe: state.universe
+  };
+};
+
+Node.defaultProps = {
+  onNavigation: function onNavigation(e) {
+    if (e.includes("root")) {
+      _reactRouter.browserHistory.push("/universe/" + e.split("-")[1]);
+    } else {
+      _reactRouter.browserHistory.push("/node/" + e);
+      location.reload();
+    }
+  },
+  singleNode: null
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, {
+  getNodeByID: _NodeActions.getNodeByID,
+  getSubtopics: _NodeActions.getSubtopics,
+  getSources: _NodeActions.getSources,
+  nodeFullClear: _NodeActions.nodeFullClear,
+  getUniverse: _UniverseActions.getUniverse,
+  clearUniverse: _UniverseActions.clearUniverse,
+  clearSources: _NodeActions.clearSources,
+  clearSubtopics: _NodeActions.clearSubtopics,
+  clearNodes: _NodeActions.clearNodes,
+  clearNode: _NodeActions.clearNode,
+  deleteNode: _NodeActions.deleteNode
+})(Node);
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _mongoose = __webpack_require__(12);
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Schema = _mongoose2.default.Schema;
+
+var userSchema = new Schema({
+  name: { type: String, required: true, trim: true },
+  email: { type: String, required: true, trim: true },
+  password: { type: String, required: true },
+  active: { type: Boolean, default: false },
+  admin: { type: Boolean, default: false },
+  personalUniverse: { type: Schema.Types.ObjectId, ref: "universes" },
+  universes: { type: [Schema.Types.ObjectId] },
+  dateCreated: { type: Date, default: Date.now, required: true }
+});
+
+exports.default = _mongoose2.default.model("User", userSchema);
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports) {
+
+module.exports = require("validator");
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _mongoose = __webpack_require__(12);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
@@ -833,13 +1845,13 @@ var connectionSchema = new Schema({
 exports.default = _mongoose2.default.model("Connection", connectionSchema);
 
 /***/ }),
-/* 30 */
+/* 36 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux");
 
 /***/ }),
-/* 31 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -850,7 +1862,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getShowAddPost = undefined;
 
-var _AppActions = __webpack_require__(23);
+var _AppActions = __webpack_require__(26);
 
 // Initial State
 var initialState = {
@@ -884,7 +1896,7 @@ var getShowAddPost = exports.getShowAddPost = function getShowAddPost(state) {
 exports.default = AppReducer;
 
 /***/ }),
-/* 32 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -895,33 +1907,33 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.localizationData = exports.enabledLanguages = undefined;
 
-var _reactIntl = __webpack_require__(12);
+var _reactIntl = __webpack_require__(14);
 
-var _intl = __webpack_require__(67);
+var _intl = __webpack_require__(74);
 
 var _intl2 = _interopRequireDefault(_intl);
 
-var _intlLocalesSupported = __webpack_require__(68);
+var _intlLocalesSupported = __webpack_require__(75);
 
 var _intlLocalesSupported2 = _interopRequireDefault(_intlLocalesSupported);
 
-__webpack_require__(69);
+__webpack_require__(76);
 
-var _en = __webpack_require__(70);
+var _en = __webpack_require__(77);
 
 var _en2 = _interopRequireDefault(_en);
 
-var _en3 = __webpack_require__(71);
+var _en3 = __webpack_require__(78);
 
 var _en4 = _interopRequireDefault(_en3);
 
-__webpack_require__(72);
+__webpack_require__(79);
 
-var _fr = __webpack_require__(73);
+var _fr = __webpack_require__(80);
 
 var _fr2 = _interopRequireDefault(_fr);
 
-var _fr3 = __webpack_require__(74);
+var _fr3 = __webpack_require__(81);
 
 var _fr4 = _interopRequireDefault(_fr3);
 
@@ -987,7 +1999,7 @@ localizationData.fr = _fr4.default;
 localizationData.fr.messages = flattenMessages(localizationData.fr.messages);
 
 /***/ }),
-/* 33 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1004,7 +2016,7 @@ var _extends3 = _interopRequireDefault(_extends2);
 
 exports.switchLanguage = switchLanguage;
 
-var _setup = __webpack_require__(32);
+var _setup = __webpack_require__(38);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1018,7 +2030,7 @@ function switchLanguage(newLang) {
 }
 
 /***/ }),
-/* 34 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1028,7 +2040,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _axios = __webpack_require__(76);
+var _axios = __webpack_require__(83);
 
 var _axios2 = _interopRequireDefault(_axios);
 
@@ -1047,34 +2059,13 @@ var setAuthToken = function setAuthToken(token) {
 exports.default = setAuthToken;
 
 /***/ }),
-/* 35 */
+/* 41 */
 /***/ (function(module, exports) {
 
 module.exports = require("jwt-decode");
 
 /***/ }),
-/* 36 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var CLEAR_ERRORS = exports.CLEAR_ERRORS = "CLEAR_ERRORS";
-var GET_ERRORS = exports.GET_ERRORS = "GET_ERRORS";
-
-// Clear all errors
-var clearErrors = exports.clearErrors = function clearErrors() {
-  return {
-    type: CLEAR_ERRORS,
-    payload: {}
-  };
-};
-
-/***/ }),
-/* 37 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1092,13 +2083,13 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reduxDevtools = __webpack_require__(79);
+var _reduxDevtools = __webpack_require__(87);
 
-var _reduxDevtoolsLogMonitor = __webpack_require__(80);
+var _reduxDevtoolsLogMonitor = __webpack_require__(88);
 
 var _reduxDevtoolsLogMonitor2 = _interopRequireDefault(_reduxDevtoolsLogMonitor);
 
-var _reduxDevtoolsDockMonitor = __webpack_require__(81);
+var _reduxDevtoolsDockMonitor = __webpack_require__(89);
 
 var _reduxDevtoolsDockMonitor2 = _interopRequireDefault(_reduxDevtoolsDockMonitor);
 
@@ -1110,7 +2101,7 @@ exports.default = (0, _reduxDevtools.createDevTools)((0, _jsx3.default)(_reduxDe
 }, void 0, (0, _jsx3.default)(_reduxDevtoolsLogMonitor2.default, {})));
 
 /***/ }),
-/* 38 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1124,7 +2115,7 @@ var _jsx2 = __webpack_require__(1);
 
 var _jsx3 = _interopRequireDefault(_jsx2);
 
-var _defineProperty2 = __webpack_require__(20);
+var _defineProperty2 = __webpack_require__(24);
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
@@ -1160,21 +2151,21 @@ var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
 var _reactRouter = __webpack_require__(9);
 
-var _TextField = __webpack_require__(15);
+var _TextField = __webpack_require__(17);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
-var _Paper = __webpack_require__(10);
+var _Paper = __webpack_require__(11);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
-var _core = __webpack_require__(39);
+var _core = __webpack_require__(44);
 
-var _Switch = __webpack_require__(40);
+var _Switch = __webpack_require__(45);
 
 var _Switch2 = _interopRequireDefault(_Switch);
 
-var _FormControlLabel = __webpack_require__(41);
+var _FormControlLabel = __webpack_require__(46);
 
 var _FormControlLabel2 = _interopRequireDefault(_FormControlLabel);
 
@@ -1314,25 +2305,25 @@ function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { loginUser: _AuthActions.loginUser })(LoginPage);
 
 /***/ }),
-/* 39 */
+/* 44 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core");
 
 /***/ }),
-/* 40 */
+/* 45 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/Switch");
 
 /***/ }),
-/* 41 */
+/* 46 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/FormControlLabel");
 
 /***/ }),
-/* 42 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1346,7 +2337,7 @@ var _jsx2 = __webpack_require__(1);
 
 var _jsx3 = _interopRequireDefault(_jsx2);
 
-var _defineProperty2 = __webpack_require__(20);
+var _defineProperty2 = __webpack_require__(24);
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
@@ -1380,25 +2371,25 @@ var _reactHelmet = __webpack_require__(8);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _reactIntl = __webpack_require__(12);
+var _reactIntl = __webpack_require__(14);
 
 var _reactRouter = __webpack_require__(9);
 
-var _TextField = __webpack_require__(15);
+var _TextField = __webpack_require__(17);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
-var _Paper = __webpack_require__(10);
+var _Paper = __webpack_require__(11);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
-var _core = __webpack_require__(39);
+var _core = __webpack_require__(44);
 
-var _Switch = __webpack_require__(40);
+var _Switch = __webpack_require__(45);
 
 var _Switch2 = _interopRequireDefault(_Switch);
 
-var _FormControlLabel = __webpack_require__(41);
+var _FormControlLabel = __webpack_require__(46);
 
 var _FormControlLabel2 = _interopRequireDefault(_FormControlLabel);
 
@@ -1550,7 +2541,7 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { registerUser: _AuthActions.registerUser })(SignupPage);
 
 /***/ }),
-/* 43 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1596,7 +2587,7 @@ var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
 var _reactRouter = __webpack_require__(9);
 
-var _Paper = __webpack_require__(10);
+var _Paper = __webpack_require__(11);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
@@ -1604,21 +2595,21 @@ var _Button = __webpack_require__(13);
 
 var _Button2 = _interopRequireDefault(_Button);
 
-var _NodeForm = __webpack_require__(44);
+var _NodeForm = __webpack_require__(30);
 
 var _NodeForm2 = _interopRequireDefault(_NodeForm);
 
-var _NodeList = __webpack_require__(99);
+var _UniverseRoot = __webpack_require__(31);
 
-var _NodeList2 = _interopRequireDefault(_NodeList);
+var _UniverseRoot2 = _interopRequireDefault(_UniverseRoot);
 
-var _NodeActions = __webpack_require__(14);
+var _NodeActions = __webpack_require__(10);
+
+var _UniverseActions = __webpack_require__(15);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var _ref = (0, _jsx3.default)(_NodeForm2.default, {});
-
-var _ref2 = (0, _jsx3.default)("h1", {}, void 0, "Welcome to the Homepage!");
 
 var Home = function (_Component) {
   (0, _inherits3.default)(Home, _Component);
@@ -1630,6 +2621,7 @@ var Home = function (_Component) {
 
     _this.state = {
       nodeFormToggle: false,
+      universe: null,
       title: "",
       content: "",
       subtopics: [],
@@ -1647,12 +2639,20 @@ var Home = function (_Component) {
       if (!this.props.auth.isAuthenticated) {
         _reactRouter.browserHistory.push("/login");
       }
-      this.props.getRootNodes();
+      this.props.getPublicUniverse();
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps) {
+      if (this.props.universe.universe !== null && prevProps.universe.universe === null) {
+        this.setState({ universe: this.props.universe.universe });
+      }
     }
   }, {
     key: "componentWillUnmount",
     value: function componentWillUnmount() {
       this.props.clearNodes();
+      this.props.clearUniverse();
     }
   }, {
     key: "nodeFormToggle",
@@ -1672,16 +2672,15 @@ var Home = function (_Component) {
       }
 
       var rootNodeList = void 0;
-      if (this.props.node.nodes !== null && this.props.node.nodes.length > 0) {
-        rootNodeList = (0, _jsx3.default)(_NodeList2.default, {
-          nodes: this.props.node.nodes
+      if (this.state.universe !== null) {
+        rootNodeList = (0, _jsx3.default)(_UniverseRoot2.default, {
+          universe: this.state.universe,
+          onNavigation: this.onNavigation,
+          title: "Welcome to Agora!"
         });
       }
 
-      return (0, _jsx3.default)("div", {}, void 0, _ref2, (0, _jsx3.default)(_Button2.default, {
-        variant: "contained",
-        onClick: this.nodeFormToggle
-      }, void 0, "Add an Idea"), nodeForm, rootNodeList);
+      return (0, _jsx3.default)("div", {}, void 0, rootNodeList);
     }
   }]);
   return Home;
@@ -1693,234 +2692,15 @@ var Home = function (_Component) {
 var mapStateToProps = function mapStateToProps(state) {
   return {
     auth: state.auth,
-    node: state.node
+    node: state.node,
+    universe: state.universe
   };
 };
 
-exports.default = (0, _reactRedux.connect)(mapStateToProps, { getRootNodes: _NodeActions.getRootNodes, clearNodes: _NodeActions.clearNodes })(Home);
+exports.default = (0, _reactRedux.connect)(mapStateToProps, { clearNodes: _NodeActions.clearNodes, clearUniverse: _UniverseActions.clearUniverse, getPublicUniverse: _UniverseActions.getPublicUniverse })(Home);
 
 /***/ }),
-/* 44 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _jsx2 = __webpack_require__(1);
-
-var _jsx3 = _interopRequireDefault(_jsx2);
-
-var _defineProperty2 = __webpack_require__(20);
-
-var _defineProperty3 = _interopRequireDefault(_defineProperty2);
-
-var _classCallCheck2 = __webpack_require__(4);
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-var _createClass2 = __webpack_require__(5);
-
-var _createClass3 = _interopRequireDefault(_createClass2);
-
-var _possibleConstructorReturn2 = __webpack_require__(6);
-
-var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-var _inherits2 = __webpack_require__(7);
-
-var _inherits3 = _interopRequireDefault(_inherits2);
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _propTypes = __webpack_require__(2);
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _reactRedux = __webpack_require__(3);
-
-var _reactHelmet = __webpack_require__(8);
-
-var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
-
-var _NodeActions = __webpack_require__(14);
-
-var _SelectMultiple = __webpack_require__(45);
-
-var _SelectMultiple2 = _interopRequireDefault(_SelectMultiple);
-
-var _Paper = __webpack_require__(10);
-
-var _Paper2 = _interopRequireDefault(_Paper);
-
-var _TextField = __webpack_require__(15);
-
-var _TextField2 = _interopRequireDefault(_TextField);
-
-var _Button = __webpack_require__(13);
-
-var _Button2 = _interopRequireDefault(_Button);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _ref = (0, _jsx3.default)("h4", {}, void 0, "Add a New Idea (Node)");
-
-var _ref2 = (0, _jsx3.default)(_Button2.default, {
-  type: "submit",
-  color: "primary"
-}, void 0, "Submit");
-
-var _ref3 = (0, _jsx3.default)("p", {}, void 0, "Loading . . . ");
-
-var NodeForm = function (_Component) {
-  (0, _inherits3.default)(NodeForm, _Component);
-
-  function NodeForm(props) {
-    (0, _classCallCheck3.default)(this, NodeForm);
-
-    var _this = (0, _possibleConstructorReturn3.default)(this, (NodeForm.__proto__ || Object.getPrototypeOf(NodeForm)).call(this, props));
-
-    var defaultSources = [],
-        sources = [];
-    if (_this.props.node.node !== null) {
-      sources.push(_this.props.node.node._id);
-      defaultSources.push({
-        label: _this.props.node.node.title,
-        value: _this.props.node.node._id.toString()
-      });
-    }
-
-    _this.state = {
-      title: "",
-      content: "",
-      subtopics: [],
-      sources: sources,
-      defaultSources: defaultSources,
-      errors: {}
-    };
-
-    _this.onSubmit = _this.onSubmit.bind(_this);
-    _this.onChange = _this.onChange.bind(_this);
-    _this.onSourceSelect = _this.onSourceSelect.bind(_this);
-    _this.onSubtopicSelect = _this.onSubtopicSelect.bind(_this);
-    return _this;
-  }
-
-  (0, _createClass3.default)(NodeForm, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      if (this.props.node.allNodes == null && !this.props.node.loading) {
-        this.props.getAllNodesForSelect();
-      }
-    }
-  }, {
-    key: "onSubmit",
-    value: function onSubmit(e) {
-      e.preventDefault();
-      var newData = {
-        title: this.state.title,
-        content: this.state.content,
-        subtopics: this.state.subtopics,
-        sources: this.state.sources,
-        author: this.props.auth.user.id
-      };
-      this.props.createNode(newData);
-    }
-  }, {
-    key: "onChange",
-    value: function onChange(e) {
-      this.setState((0, _defineProperty3.default)({}, e.target.name, e.target.value));
-    }
-  }, {
-    key: "onSourceSelect",
-    value: function onSourceSelect(selection) {
-      var sources = [];
-      for (var i in selection) {
-        sources[i] = selection[i].value;
-      }
-      this.setState({ sources: sources });
-    }
-  }, {
-    key: "onSubtopicSelect",
-    value: function onSubtopicSelect(selection) {
-      var subtopics = [];
-      for (var i in selection) {
-        subtopics[i] = selection[i].value;
-      }
-      this.setState({ subtopics: subtopics });
-    }
-  }, {
-    key: "onSubtopicOfSelect",
-    value: function onSubtopicOfSelect(selection) {
-      var subtopicOf = [];
-      for (var i in selection) {
-        subtopicOf[i] = selection[i].value;
-      }
-      this.setState({ subtopicOf: subtopicOf });
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var content = void 0;
-      if (this.props.node.formNodes !== null) {
-        content = (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(_Paper2.default, {}, void 0, _ref, (0, _jsx3.default)("form", {
-          onSubmit: this.onSubmit
-        }, void 0, (0, _jsx3.default)(_TextField2.default, {
-          id: "title",
-          label: "Title of Idea",
-          name: "title",
-          onChange: this.onChange,
-          value: this.state.title,
-          margin: "normal",
-          variant: "outlined"
-        }), (0, _jsx3.default)(_TextField2.default, {
-          id: "content",
-          label: "Description of Idea",
-          name: "content",
-          onChange: this.onChange,
-          value: this.state.content,
-          margin: "normal",
-          variant: "outlined",
-          multiline: true
-        }), (0, _jsx3.default)(_SelectMultiple2.default, {
-          placeholder: "Select sources for this subject",
-          onChange: this.onSourceSelect,
-          options: this.props.node.formNodes,
-          defaultValue: this.state.defaultSources
-        }), (0, _jsx3.default)(_SelectMultiple2.default, {
-          placeholder: "Select subtopics that belong to this subject",
-          onChange: this.onSubtopicSelect,
-          options: this.props.node.formNodes
-        }), _ref2)));
-      } else {
-        content = _ref3;
-      }
-
-      return (0, _jsx3.default)("div", {}, void 0, content);
-    }
-  }]);
-  return NodeForm;
-}(_react.Component);
-
-// Retrieve data from store as props
-
-
-var mapStateToProps = function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-    node: state.node
-  };
-};
-
-exports.default = (0, _reactRedux.connect)(mapStateToProps, { createNode: _NodeActions.createNode, getAllNodesForSelect: _NodeActions.getAllNodesForSelect })(NodeForm);
-
-/***/ }),
-/* 45 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1942,7 +2722,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _classnames = __webpack_require__(98);
+var _classnames = __webpack_require__(106);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -1950,7 +2730,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactSelect = __webpack_require__(46);
+var _reactSelect = __webpack_require__(50);
 
 var _reactSelect2 = _interopRequireDefault(_reactSelect);
 
@@ -2015,13 +2795,19 @@ var SelectMultiple = function SelectMultiple(_ref) {
 exports.default = SelectMultiple;
 
 /***/ }),
-/* 46 */
+/* 50 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-select");
 
 /***/ }),
-/* 47 */
+/* 51 */
+/***/ (function(module, exports) {
+
+module.exports = require("@material-ui/core/Grid");
+
+/***/ }),
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2035,224 +2821,26 @@ var _jsx2 = __webpack_require__(1);
 
 var _jsx3 = _interopRequireDefault(_jsx2);
 
-var _classCallCheck2 = __webpack_require__(4);
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-var _createClass2 = __webpack_require__(5);
-
-var _createClass3 = _interopRequireDefault(_createClass2);
-
-var _possibleConstructorReturn2 = __webpack_require__(6);
-
-var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-var _inherits2 = __webpack_require__(7);
-
-var _inherits3 = _interopRequireDefault(_inherits2);
-
 var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(2);
+var _spinner = "/" + "559144c0218bc96a80bbd151315aeb99.gif";
 
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _reactRedux = __webpack_require__(3);
-
-var _reactRouter = __webpack_require__(9);
-
-var _Paper = __webpack_require__(10);
-
-var _Paper2 = _interopRequireDefault(_Paper);
-
-var _Button = __webpack_require__(13);
-
-var _Button2 = _interopRequireDefault(_Button);
-
-var _EditNodeForm = __webpack_require__(100);
-
-var _EditNodeForm2 = _interopRequireDefault(_EditNodeForm);
-
-var _NodeForm = __webpack_require__(44);
-
-var _NodeForm2 = _interopRequireDefault(_NodeForm);
-
-var _NodeActions = __webpack_require__(14);
+var _spinner2 = _interopRequireDefault(_spinner);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _ref = (0, _jsx3.default)(_NodeForm2.default, {});
-
-var _ref2 = (0, _jsx3.default)("br", {});
-
-var _ref3 = (0, _jsx3.default)("p", {}, void 0, "Loading . . . ");
-
-var Node = function (_Component) {
-  (0, _inherits3.default)(Node, _Component);
-
-  function Node() {
-    (0, _classCallCheck3.default)(this, Node);
-
-    var _this = (0, _possibleConstructorReturn3.default)(this, (Node.__proto__ || Object.getPrototypeOf(Node)).call(this));
-
-    _this.state = {
-      editFormToggle: false,
-      nodeFormToggle: false
-    };
-
-    _this.toggleEditForm = _this.toggleEditForm.bind(_this);
-    _this.nodeFormToggle = _this.nodeFormToggle.bind(_this);
-    return _this;
-  }
-
-  (0, _createClass3.default)(Node, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      if (this.props.node.node === null && !this.props.node.loading) {
-        this.props.getNodeByID(this.props.params.nodeID);
-      }
-    }
-  }, {
-    key: "toggleEditForm",
-    value: function toggleEditForm() {
-      this.setState({ editFormToggle: !this.state.editFormToggle });
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      this.props.nodeFullClear();
-    }
-  }, {
-    key: "componentDidUpdate",
-    value: function componentDidUpdate(prevProps) {
-      if (this.props.node.node !== null && this.props.node.node.subtopicConnections && this.props.node.node.subtopicConnections.length > 0 && this.props.node.subtopics === null && !this.props.node.loading) {
-        this.props.getSubtopics(this.props.params.nodeID);
-      }
-      if (this.props.node.node !== null && this.props.node.node.sourceConnections && this.props.node.node.sourceConnections.length > 0 && this.props.node.sources === null && !this.props.node.loading) {
-        this.props.getSources(this.props.params.nodeID);
-      }
-      // Check for redirect to other Node
-      if (this.props.params.nodeID !== prevProps.params.nodeID) {
-        this.props.nodeFullClear();
-        this.props.getNodeByID(this.props.params.nodeID);
-      }
-    }
-  }, {
-    key: "nodeFormToggle",
-    value: function nodeFormToggle() {
-      this.setState({ nodeFormToggle: !this.state.nodeFormToggle });
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _state = this.state,
-          editFormToggle = _state.editFormToggle,
-          nodeFormToggle = _state.nodeFormToggle;
-
-      var content = void 0;
-      if (this.props.node.node !== null) {
-        var sourceJSX = [],
-            subtopicJSX = [],
-            editForm = void 0,
-            nodeForm = void 0;
-        var node = this.props.node.node;
-
-        console.log(node.content.string.split("\n"));
-
-        if (editFormToggle) {
-          editForm = (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(_EditNodeForm2.default, {
-            node: node
-          }));
-        } else {
-          editForm = "";
-        }
-
-        if (nodeFormToggle) {
-          nodeForm = _ref;
-        }
-
-        var _props$node = this.props.node,
-            subtopics = _props$node.subtopics,
-            sources = _props$node.sources;
-
-        // Sources
-
-        if (sources && sources.length > 0) {
-          sources.forEach(function (source) {
-            source = source.source;
-            sourceJSX.push((0, _jsx3.default)("span", {}, void 0, (0, _jsx3.default)(_reactRouter.Link, {
-              to: "/node/" + source._id,
-              style: { textDecoration: "none" }
-            }, void 0, "#", source.title), " "));
-          });
-        } else {
-          sourceJSX.push((0, _jsx3.default)("span", {}, void 0, (0, _jsx3.default)(_reactRouter.Link, {
-            to: "/",
-            style: { textDecoration: "none" }
-          }, void 0, "#root"), " "));
-        }
-
-        // Subtopics
-        if (subtopics && subtopics.length > 0) {
-          subtopics.forEach(function (subtopic) {
-            subtopic = subtopic.subtopic;
-            subtopicJSX.push((0, _jsx3.default)(_Paper2.default, {
-              style: { padding: "0.5em", marginTop: "0.5em" }
-            }, void 0, (0, _jsx3.default)(_reactRouter.Link, {
-              to: "/node/" + subtopic._id,
-              style: { textDecoration: "none" }
-            }, void 0, (0, _jsx3.default)("h3", {}, void 0, subtopic.title)), subtopic.content.string === "" ? "No Content" : (0, _jsx3.default)("p", {}, void 0, subtopic.content.string)));
-          });
-        } else {
-          subtopicJSX = "";
-        }
-
-        // render new lines
-        var count = 0,
-            nodeContent = [];
-        node.content.string.split("\n").forEach(function (line) {
-          nodeContent.push((0, _jsx3.default)("p", {}, "line-" + count, line));
-          count++;
-        });
-
-        // FINAL CONTENT THAT WILL BE LOADED
-        content = (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)("div", {
-          className: "row"
-        }, void 0, (0, _jsx3.default)(_Button2.default, {
-          variant: "contained",
-          onClick: this.nodeFormToggle
-        }, void 0, "Add an Idea"), (0, _jsx3.default)(_Button2.default, {
-          variant: "contained",
-          onClick: this.toggleEditForm
-        }, void 0, "Edit Node")), nodeForm, editForm, (0, _jsx3.default)("h1", {}, void 0, node.title), sourceJSX, _ref2, (0, _jsx3.default)(_Paper2.default, {
-          style: { padding: "0.5em" }
-        }, void 0, nodeContent, (0, _jsx3.default)("div", {}, void 0, subtopicJSX)));
-      } else {
-        content = _ref3;
-      }
-
-      return (0, _jsx3.default)("div", {}, void 0, content);
-    }
-  }]);
-  return Node;
-}(_react.Component);
-
-// Retrieve data from store as props
-
-
-var mapStateToProps = function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-    node: state.node
-  };
+exports.default = function () {
+  return (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)("img", {
+    src: _spinner2.default,
+    alt: "Loading...",
+    style: { width: "200px", margin: "auto", display: "block" }
+  }));
 };
 
-exports.default = (0, _reactRedux.connect)(mapStateToProps, { getNodeByID: _NodeActions.getNodeByID, getSubtopics: _NodeActions.getSubtopics, getSources: _NodeActions.getSources, nodeFullClear: _NodeActions.nodeFullClear })(Node);
-
 /***/ }),
-/* 48 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2296,11 +2884,304 @@ var _reactHelmet = __webpack_require__(8);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _TextField = __webpack_require__(15);
+var _reactRouter = __webpack_require__(9);
+
+var _UniverseRoot = __webpack_require__(31);
+
+var _UniverseRoot2 = _interopRequireDefault(_UniverseRoot);
+
+var _NodeActions = __webpack_require__(10);
+
+var _UniverseActions = __webpack_require__(15);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Personal = function (_Component) {
+  (0, _inherits3.default)(Personal, _Component);
+
+  function Personal() {
+    (0, _classCallCheck3.default)(this, Personal);
+
+    var _this = (0, _possibleConstructorReturn3.default)(this, (Personal.__proto__ || Object.getPrototypeOf(Personal)).call(this));
+
+    _this.state = {
+      nodeFormToggle: false,
+      universe: null,
+      title: "",
+      content: "",
+      subtopics: [],
+      sources: [],
+      errors: {}
+    };
+
+    _this.nodeFormToggle = _this.nodeFormToggle.bind(_this);
+    return _this;
+  }
+
+  (0, _createClass3.default)(Personal, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      if (!this.props.auth.isAuthenticated) {
+        _reactRouter.browserHistory.push("/login");
+      }
+      if (this.props.auth.user.personalUniverse) {
+        this.props.getUniverse(this.props.auth.user.personalUniverse);
+      } else {
+        this.props.createPersonalUniverse(this.props.auth.user.id);
+      }
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps) {
+      if (this.props.universe.universe !== null && prevProps.universe.universe === null) {
+        this.setState({ universe: this.props.universe.universe });
+      }
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      this.props.clearUniverse();
+      this.props.clearNodes();
+    }
+  }, {
+    key: "nodeFormToggle",
+    value: function nodeFormToggle() {
+      this.setState({ nodeFormToggle: !this.state.nodeFormToggle });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var content = void 0;
+      if (this.state.universe !== null) {
+        content = (0, _jsx3.default)(_UniverseRoot2.default, {
+          universe: this.state.universe
+        });
+      } else {
+        content = "Loading . . . ";
+      }
+
+      return (0, _jsx3.default)("div", {}, void 0, content);
+    }
+  }]);
+  return Personal;
+}(_react.Component);
+
+// Retrieve data from store as props
+
+
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+    node: state.node,
+    universe: state.universe
+  };
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, {
+  clearNodes: _NodeActions.clearNodes,
+  createPersonalUniverse: _UniverseActions.createPersonalUniverse,
+  getUniverse: _UniverseActions.getUniverse,
+  clearUniverse: _UniverseActions.clearUniverse
+})(Personal);
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _jsx2 = __webpack_require__(1);
+
+var _jsx3 = _interopRequireDefault(_jsx2);
+
+var _classCallCheck2 = __webpack_require__(4);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(5);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = __webpack_require__(6);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(7);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _reactRedux = __webpack_require__(3);
+
+var _reactHelmet = __webpack_require__(8);
+
+var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
+
+var _reactRouter = __webpack_require__(9);
+
+var _UniverseRoot = __webpack_require__(31);
+
+var _UniverseRoot2 = _interopRequireDefault(_UniverseRoot);
+
+var _NodeActions = __webpack_require__(10);
+
+var _UniverseActions = __webpack_require__(15);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Universe = function (_Component) {
+  (0, _inherits3.default)(Universe, _Component);
+
+  function Universe() {
+    (0, _classCallCheck3.default)(this, Universe);
+
+    var _this = (0, _possibleConstructorReturn3.default)(this, (Universe.__proto__ || Object.getPrototypeOf(Universe)).call(this));
+
+    _this.state = {
+      nodeFormToggle: false,
+      title: "",
+      content: "",
+      subtopics: [],
+      sources: [],
+      errors: {}
+    };
+
+    _this.nodeFormToggle = _this.nodeFormToggle.bind(_this);
+    return _this;
+  }
+
+  (0, _createClass3.default)(Universe, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      if (!this.props.auth.isAuthenticated) {
+        _reactRouter.browserHistory.push("/login");
+      }
+      this.props.getUniverse(this.props.routeParams.universeID);
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      this.props.clearNodes();
+      this.props.clearUniverse();
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps) {
+      if (this.props.universe.universe !== null && prevProps.universe.universe === null && !this.props.universe.loading) {
+        // Redirect if public Universe
+        if (this.props.universe.universe.public) {
+          _reactRouter.browserHistory.push("/");
+        }
+        // Redirect if this is your personal Universe
+        if (this.props.universe.universe._id === this.props.auth.user.personalUniverse) {
+          _reactRouter.browserHistory.push("/home");
+        }
+      }
+    }
+  }, {
+    key: "nodeFormToggle",
+    value: function nodeFormToggle() {
+      this.setState({ nodeFormToggle: !this.state.nodeFormToggle });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var content = void 0;
+      if (this.props.universe.universe !== null) {
+        content = (0, _jsx3.default)(_UniverseRoot2.default, {
+          universe: this.props.universe.universe
+        });
+      } else {
+        content = "Loading . . . ";
+      }
+
+      return (0, _jsx3.default)("div", {}, void 0, content);
+    }
+  }]);
+  return Universe;
+}(_react.Component);
+
+// Retrieve data from store as props
+
+
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+    node: state.node,
+    universe: state.universe
+  };
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, {
+  getUniverseRootNodes: _NodeActions.getUniverseRootNodes,
+  clearNodes: _NodeActions.clearNodes,
+  createPersonalUniverse: _UniverseActions.createPersonalUniverse,
+  getUniverse: _UniverseActions.getUniverse,
+  clearUniverse: _UniverseActions.clearUniverse
+})(Universe);
+
+/***/ }),
+/* 55 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _jsx2 = __webpack_require__(1);
+
+var _jsx3 = _interopRequireDefault(_jsx2);
+
+var _classCallCheck2 = __webpack_require__(4);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(5);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = __webpack_require__(6);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(7);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _reactRedux = __webpack_require__(3);
+
+var _reactHelmet = __webpack_require__(8);
+
+var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
+
+var _TextField = __webpack_require__(17);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
-var _Paper = __webpack_require__(10);
+var _Paper = __webpack_require__(11);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
@@ -2308,7 +3189,9 @@ var _Button = __webpack_require__(13);
 
 var _Button2 = _interopRequireDefault(_Button);
 
-var _NodeActions = __webpack_require__(14);
+var _NodeActions = __webpack_require__(10);
+
+var _UniverseActions = __webpack_require__(15);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2330,6 +3213,7 @@ var Admin = function (_Component) {
 
     _this.onDuplicatePress = _this.onDuplicatePress.bind(_this);
     _this.updateConnectionPress = _this.updateConnectionPress.bind(_this);
+    _this.createPublicUniverse = _this.createPublicUniverse.bind(_this);
     return _this;
   }
 
@@ -2342,6 +3226,11 @@ var Admin = function (_Component) {
     key: "updateConnectionPress",
     value: function updateConnectionPress() {
       this.props.updateNodeConnections();
+    }
+  }, {
+    key: "createPublicUniverse",
+    value: function createPublicUniverse() {
+      this.props.createPublicUniverse();
     }
   }, {
     key: "render",
@@ -2365,10 +3254,14 @@ function mapStateToProps(state) {
   };
 }
 
-exports.default = (0, _reactRedux.connect)(mapStateToProps, { clearDuplicateSourceAndSubtopics: _NodeActions.clearDuplicateSourceAndSubtopics, updateNodeConnections: _NodeActions.updateNodeConnections })(Admin);
+exports.default = (0, _reactRedux.connect)(mapStateToProps, {
+  clearDuplicateSourceAndSubtopics: _NodeActions.clearDuplicateSourceAndSubtopics,
+  updateNodeConnections: _NodeActions.updateNodeConnections,
+  createPublicUniverse: _UniverseActions.createPublicUniverse
+})(Admin);
 
 /***/ }),
-/* 49 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2378,7 +3271,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _mongoose = __webpack_require__(11);
+var _mongoose = __webpack_require__(12);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
@@ -2398,13 +3291,26 @@ var postSchema = new Schema({
 exports.default = _mongoose2.default.model('Post', postSchema);
 
 /***/ }),
-/* 50 */
+/* 57 */
 /***/ (function(module, exports) {
 
 module.exports = require("sanitize-html");
 
 /***/ }),
-/* 51 */
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+if (process.env.NODE_ENV === "production") {
+  module.exports = __webpack_require__(121);
+} else {
+  module.exports = __webpack_require__(122);
+}
+
+/***/ }),
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2414,7 +3320,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _mongoose = __webpack_require__(11);
+var _mongoose = __webpack_require__(12);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
@@ -2422,38 +3328,39 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var Schema = _mongoose2.default.Schema;
 
-var userSchema = new Schema({
-  name: { type: String, required: true, trim: true },
-  email: { type: String, required: true, trim: true },
-  password: { type: String, required: true },
-  active: { type: Boolean, default: false },
-  admin: { type: Boolean, default: false },
-  dateCreated: { type: Date, default: Date.now, required: true }
+var universeSchema = new Schema({
+  title: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  // Will be used to define the single public universe that all users can see
+  public: {
+    type: Boolean,
+    default: false
+  },
+  // List all users that belong to a private Universe
+  users: {
+    type: [Schema.Types.ObjectId]
+  },
+  // Hold a list of all nodes that have been shared with this universe
+  // Allows for easier queries
+  // Not done for all nodes as its easy to query nodes by their primaryUniverse field
+  sharedNodes: {
+    type: [Schema.Types.ObjectId]
+  }
 });
 
-exports.default = _mongoose2.default.model("User", userSchema);
+exports.default = _mongoose2.default.model("Universe", universeSchema);
 
 /***/ }),
-/* 52 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-if (process.env.NODE_ENV === "production") {
-  module.exports = __webpack_require__(113);
-} else {
-  module.exports = __webpack_require__(114);
-}
-
-/***/ }),
-/* 53 */
+/* 60 */
 /***/ (function(module, exports) {
 
 module.exports = require("webpack");
 
 /***/ }),
-/* 54 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2467,31 +3374,31 @@ var _jsx2 = __webpack_require__(1);
 
 var _jsx3 = _interopRequireDefault(_jsx2);
 
-var _express = __webpack_require__(17);
+var _express = __webpack_require__(18);
 
 var _express2 = _interopRequireDefault(_express);
 
-var _compression = __webpack_require__(55);
+var _compression = __webpack_require__(62);
 
 var _compression2 = _interopRequireDefault(_compression);
 
-var _mongoose = __webpack_require__(11);
+var _mongoose = __webpack_require__(12);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _bodyParser = __webpack_require__(56);
+var _bodyParser = __webpack_require__(63);
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
-var _path = __webpack_require__(57);
+var _path = __webpack_require__(64);
 
 var _path2 = _interopRequireDefault(_path);
 
-var _IntlWrapper = __webpack_require__(58);
+var _IntlWrapper = __webpack_require__(65);
 
 var _IntlWrapper2 = _interopRequireDefault(_IntlWrapper);
 
-var _store = __webpack_require__(59);
+var _store = __webpack_require__(66);
 
 var _reactRedux = __webpack_require__(3);
 
@@ -2499,7 +3406,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _server = __webpack_require__(82);
+var _server = __webpack_require__(90);
 
 var _reactRouter = __webpack_require__(9);
 
@@ -2507,29 +3414,33 @@ var _reactHelmet = __webpack_require__(8);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _routes = __webpack_require__(83);
+var _routes = __webpack_require__(91);
 
 var _routes2 = _interopRequireDefault(_routes);
 
-var _fetchData = __webpack_require__(101);
+var _fetchData = __webpack_require__(109);
 
-var _post = __webpack_require__(103);
+var _post = __webpack_require__(111);
 
 var _post2 = _interopRequireDefault(_post);
 
-var _user = __webpack_require__(107);
+var _user = __webpack_require__(115);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _node = __webpack_require__(115);
+var _node = __webpack_require__(123);
 
 var _node2 = _interopRequireDefault(_node);
 
-var _dummyData = __webpack_require__(121);
+var _universe = __webpack_require__(129);
+
+var _universe2 = _interopRequireDefault(_universe);
+
+var _dummyData = __webpack_require__(131);
 
 var _dummyData2 = _interopRequireDefault(_dummyData);
 
-var _keys = __webpack_require__(52);
+var _keys = __webpack_require__(58);
 
 var _keys2 = _interopRequireDefault(_keys);
 
@@ -2546,13 +3457,13 @@ var isProdMode = process.env.NODE_ENV === "production" || false;
 if (isDevMode) {
   // Webpack Requirements
   // eslint-disable-next-line global-require
-  var webpack = __webpack_require__(53);
+  var webpack = __webpack_require__(60);
   // eslint-disable-next-line global-require
-  var config = __webpack_require__(122);
+  var config = __webpack_require__(132);
   // eslint-disable-next-line global-require
-  var webpackDevMiddleware = __webpack_require__(126);
+  var webpackDevMiddleware = __webpack_require__(136);
   // eslint-disable-next-line global-require
-  var webpackHotMiddleware = __webpack_require__(127);
+  var webpackHotMiddleware = __webpack_require__(137);
   var compiler = webpack(config);
   app.use(webpackDevMiddleware(compiler, {
     noInfo: true,
@@ -2596,6 +3507,7 @@ app.use(_express2.default.static(_path2.default.resolve(__dirname, "../dist/clie
 app.use("/api", _post2.default);
 app.use("/api", _user2.default);
 app.use("/api", _node2.default);
+app.use("/api", _universe2.default);
 
 // Render Initial HTML
 var renderFullPage = function renderFullPage(html, initialState) {
@@ -2657,25 +3569,25 @@ exports.default = app;
 /* WEBPACK VAR INJECTION */}.call(exports, "server"))
 
 /***/ }),
-/* 55 */
+/* 62 */
 /***/ (function(module, exports) {
 
 module.exports = require("compression");
 
 /***/ }),
-/* 56 */
+/* 63 */
 /***/ (function(module, exports) {
 
 module.exports = require("body-parser");
 
 /***/ }),
-/* 57 */
+/* 64 */
 /***/ (function(module, exports) {
 
 module.exports = require("path");
 
 /***/ }),
-/* 58 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2694,7 +3606,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactIntl = __webpack_require__(12);
+var _reactIntl = __webpack_require__(14);
 
 var _reactRedux = __webpack_require__(3);
 
@@ -2718,7 +3630,7 @@ function mapStateToProps(store) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(IntlWrapper);
 
 /***/ }),
-/* 59 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2729,13 +3641,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.configureStore = configureStore;
 
-var _redux = __webpack_require__(30);
+var _redux = __webpack_require__(36);
 
-var _reduxThunk = __webpack_require__(60);
+var _reduxThunk = __webpack_require__(67);
 
 var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
-var _reducers = __webpack_require__(61);
+var _reducers = __webpack_require__(68);
 
 var _reducers2 = _interopRequireDefault(_reducers);
 
@@ -2747,7 +3659,7 @@ var DevTools = void 0; /**
 
 if (process.env.NODE_ENV === "development") {
   // eslint-disable-next-line global-require
-  DevTools = __webpack_require__(37).default;
+  DevTools = __webpack_require__(42).default;
 }
 
 function configureStore() {
@@ -2776,13 +3688,13 @@ function configureStore() {
 }
 
 /***/ }),
-/* 60 */
+/* 67 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux-thunk");
 
 /***/ }),
-/* 61 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2792,63 +3704,68 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _redux = __webpack_require__(30);
+var _redux = __webpack_require__(36);
 
-var _AppReducer = __webpack_require__(31);
+var _AppReducer = __webpack_require__(37);
 
 var _AppReducer2 = _interopRequireDefault(_AppReducer);
 
-var _PostReducer = __webpack_require__(24);
+var _PostReducer = __webpack_require__(27);
 
 var _PostReducer2 = _interopRequireDefault(_PostReducer);
 
-var _IntlReducer = __webpack_require__(65);
+var _IntlReducer = __webpack_require__(72);
 
 var _IntlReducer2 = _interopRequireDefault(_IntlReducer);
 
-var _AuthReducer = __webpack_require__(75);
+var _AuthReducer = __webpack_require__(82);
 
 var _AuthReducer2 = _interopRequireDefault(_AuthReducer);
 
-var _ErrorReducer = __webpack_require__(77);
+var _ErrorReducer = __webpack_require__(84);
 
 var _ErrorReducer2 = _interopRequireDefault(_ErrorReducer);
 
-var _NodeReducer = __webpack_require__(78);
+var _NodeReducer = __webpack_require__(85);
 
 var _NodeReducer2 = _interopRequireDefault(_NodeReducer);
+
+var _UniverseReducer = __webpack_require__(86);
+
+var _UniverseReducer2 = _interopRequireDefault(_UniverseReducer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Combine all reducers into one root reducer
-
-
-// Import Reducers
+/**
+ * Root Reducer
+ */
 exports.default = (0, _redux.combineReducers)({
   app: _AppReducer2.default,
   posts: _PostReducer2.default,
   intl: _IntlReducer2.default,
   auth: _AuthReducer2.default,
   error: _ErrorReducer2.default,
-  node: _NodeReducer2.default
-}); /**
-     * Root Reducer
-     */
+  node: _NodeReducer2.default,
+  universe: _UniverseReducer2.default
+});
+
+// Import Reducers
 
 /***/ }),
-/* 62 */
+/* 69 */
 /***/ (function(module, exports) {
 
 module.exports = require("babel-runtime/helpers/toConsumableArray");
 
 /***/ }),
-/* 63 */
+/* 70 */
 /***/ (function(module, exports) {
 
 module.exports = require("isomorphic-fetch");
 
 /***/ }),
-/* 64 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2865,7 +3782,7 @@ var config = {
 exports.default = config;
 
 /***/ }),
-/* 65 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2875,7 +3792,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _objectWithoutProperties2 = __webpack_require__(66);
+var _objectWithoutProperties2 = __webpack_require__(73);
 
 var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
 
@@ -2883,9 +3800,9 @@ var _extends2 = __webpack_require__(16);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _setup = __webpack_require__(32);
+var _setup = __webpack_require__(38);
 
-var _IntlActions = __webpack_require__(33);
+var _IntlActions = __webpack_require__(39);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2917,37 +3834,37 @@ var IntlReducer = function IntlReducer() {
 exports.default = IntlReducer;
 
 /***/ }),
-/* 66 */
+/* 73 */
 /***/ (function(module, exports) {
 
 module.exports = require("babel-runtime/helpers/objectWithoutProperties");
 
 /***/ }),
-/* 67 */
+/* 74 */
 /***/ (function(module, exports) {
 
 module.exports = require("intl");
 
 /***/ }),
-/* 68 */
+/* 75 */
 /***/ (function(module, exports) {
 
 module.exports = require("intl-locales-supported");
 
 /***/ }),
-/* 69 */
+/* 76 */
 /***/ (function(module, exports) {
 
 module.exports = require("intl/locale-data/jsonp/en");
 
 /***/ }),
-/* 70 */
+/* 77 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-intl/locale-data/en");
 
 /***/ }),
-/* 71 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2977,19 +3894,19 @@ exports.default = {
 };
 
 /***/ }),
-/* 72 */
+/* 79 */
 /***/ (function(module, exports) {
 
 module.exports = require("intl/locale-data/jsonp/fr");
 
 /***/ }),
-/* 73 */
+/* 80 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-intl/locale-data/fr");
 
 /***/ }),
-/* 74 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3019,7 +3936,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 75 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3033,7 +3950,7 @@ var _extends2 = __webpack_require__(16);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _lodash = __webpack_require__(18);
+var _lodash = __webpack_require__(23);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
@@ -3064,13 +3981,13 @@ var AuthReducer = function AuthReducer() {
 exports.default = AuthReducer;
 
 /***/ }),
-/* 76 */
+/* 83 */
 /***/ (function(module, exports) {
 
 module.exports = require("axios");
 
 /***/ }),
-/* 77 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3094,12 +4011,12 @@ exports.default = function () {
   }
 };
 
-var _ErrorActions = __webpack_require__(36);
+var _ErrorActions = __webpack_require__(29);
 
 var initialState = {};
 
 /***/ }),
-/* 78 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3113,7 +4030,7 @@ var _extends2 = __webpack_require__(16);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _NodeActions = __webpack_require__(14);
+var _NodeActions = __webpack_require__(10);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3142,7 +4059,12 @@ var NodeReducer = function NodeReducer() {
         nodes: action.payload,
         loading: false
       });
-    case _NodeActions.GET_ALL_NODES:
+    case _NodeActions.GET_ALL_PUBLIC_NODES:
+      return (0, _extends3.default)({}, state, {
+        formNodes: action.payload,
+        loading: false
+      });
+    case _NodeActions.GET_ALL_PRIVATE_NODES:
       return (0, _extends3.default)({}, state, {
         formNodes: action.payload,
         loading: false
@@ -3161,6 +4083,10 @@ var NodeReducer = function NodeReducer() {
       return (0, _extends3.default)({}, state, {
         loading: true
       });
+    case _NodeActions.SET_NODE:
+      return (0, _extends3.default)({}, state, {
+        node: action.payload
+      });
     case _NodeActions.CLEAR_NODES:
       return (0, _extends3.default)({}, state, {
         nodes: null
@@ -3168,6 +4094,14 @@ var NodeReducer = function NodeReducer() {
     case _NodeActions.CLEAR_NODE:
       return (0, _extends3.default)({}, state, {
         node: null
+      });
+    case _NodeActions.CLEAR_SOURCES:
+      return (0, _extends3.default)({}, state, {
+        sources: null
+      });
+    case _NodeActions.CLEAR_SUBTOPICS:
+      return (0, _extends3.default)({}, state, {
+        subtopics: null
       });
     case _NodeActions.NODE_FULL_CLEAR:
       return {
@@ -3186,31 +4120,80 @@ var NodeReducer = function NodeReducer() {
 exports.default = NodeReducer;
 
 /***/ }),
-/* 79 */
+/* 86 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends2 = __webpack_require__(16);
+
+var _extends3 = _interopRequireDefault(_extends2);
+
+var _UniverseActions = __webpack_require__(15);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var initialState = {
+  universe: null,
+  loading: false
+};
+
+var UniverseReducer = function UniverseReducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+  var action = arguments[1];
+
+  switch (action.type) {
+    case _UniverseActions.GET_UNIVERSE:
+      return (0, _extends3.default)({}, state, {
+        universe: action.payload,
+        loading: false
+      });
+    case _UniverseActions.UNIVERSE_LOADING:
+      return (0, _extends3.default)({}, state, {
+        loading: true
+      });
+    case _UniverseActions.CLEAR_UNIVERSE:
+      return (0, _extends3.default)({}, state, {
+        universe: null
+      });
+    default:
+      return state;
+  }
+};
+
+exports.default = UniverseReducer;
+
+/***/ }),
+/* 87 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux-devtools");
 
 /***/ }),
-/* 80 */
+/* 88 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux-devtools-log-monitor");
 
 /***/ }),
-/* 81 */
+/* 89 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux-devtools-dock-monitor");
 
 /***/ }),
-/* 82 */
+/* 90 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-dom/server");
 
 /***/ }),
-/* 83 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3230,7 +4213,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouter = __webpack_require__(9);
 
-var _App = __webpack_require__(84);
+var _App = __webpack_require__(92);
 
 var _App2 = _interopRequireDefault(_App);
 
@@ -3250,18 +4233,21 @@ if (false) {
 /* eslint-disable global-require */
 if (process.env.NODE_ENV !== "production") {
   // Require async routes only in development for react-hot-reloader to work.
-  __webpack_require__(93);
-  __webpack_require__(97);
+  __webpack_require__(101);
+  __webpack_require__(105);
   // Auth Components
-  __webpack_require__(38);
-  __webpack_require__(42);
-  // App Components
   __webpack_require__(43);
-  // Node Components
   __webpack_require__(47);
+  // App Components
+  __webpack_require__(48);
+  // Node Components
+  __webpack_require__(32);
+  // Universe Components
+  __webpack_require__(53);
+  __webpack_require__(54);
 
   // Admin
-  __webpack_require__(48);
+  __webpack_require__(55);
 }
 
 // react-router setup with code-splitting
@@ -3272,41 +4258,55 @@ exports.default = (0, _jsx3.default)(_reactRouter.Route, {
 }, void 0, (0, _jsx3.default)(_reactRouter.IndexRoute, {
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(43).default);
+      cb(null, __webpack_require__(48).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/login",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(38).default);
+      cb(null, __webpack_require__(43).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/signup",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(42).default);
+      cb(null, __webpack_require__(47).default);
+    }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
+  }
+}), (0, _jsx3.default)(_reactRouter.Route, {
+  path: "/home",
+  getComponent: function getComponent(nextState, cb) {
+    new Promise(function(resolve) { resolve(); }).then((function (require) {
+      cb(null, __webpack_require__(53).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/admin",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(48).default);
+      cb(null, __webpack_require__(55).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/node/:nodeID",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(47).default);
+      cb(null, __webpack_require__(32).default);
+    }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
+  }
+}), (0, _jsx3.default)(_reactRouter.Route, {
+  path: "/universe/:universeID",
+  getComponent: function getComponent(nextState, cb) {
+    new Promise(function(resolve) { resolve(); }).then((function (require) {
+      cb(null, __webpack_require__(54).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }));
 
 /***/ }),
-/* 84 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3357,17 +4357,17 @@ var _reactHelmet = __webpack_require__(8);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _Header = __webpack_require__(85);
+var _Header = __webpack_require__(93);
 
 var _Header2 = _interopRequireDefault(_Header);
 
-var _Footer = __webpack_require__(92);
+var _Footer = __webpack_require__(100);
 
 var _Footer2 = _interopRequireDefault(_Footer);
 
-var _AppActions = __webpack_require__(23);
+var _AppActions = __webpack_require__(26);
 
-var _IntlActions = __webpack_require__(33);
+var _IntlActions = __webpack_require__(39);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3381,7 +4381,7 @@ var DevTools = void 0;
 
 if (process.env.NODE_ENV === "development") {
   // eslint-disable-next-line global-require
-  DevTools = __webpack_require__(37).default;
+  DevTools = __webpack_require__(42).default;
 }
 
 var _ref = (0, _jsx3.default)(DevTools, {});
@@ -3454,7 +4454,7 @@ function mapStateToProps(store) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(App);
 
 /***/ }),
-/* 85 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3496,17 +4496,17 @@ var _reactRouter = __webpack_require__(9);
 
 var _reactRedux = __webpack_require__(3);
 
-var _styles = __webpack_require__(86);
+var _styles = __webpack_require__(94);
 
-var _AppBar = __webpack_require__(87);
+var _AppBar = __webpack_require__(95);
 
 var _AppBar2 = _interopRequireDefault(_AppBar);
 
-var _Toolbar = __webpack_require__(88);
+var _Toolbar = __webpack_require__(96);
 
 var _Toolbar2 = _interopRequireDefault(_Toolbar);
 
-var _Typography = __webpack_require__(89);
+var _Typography = __webpack_require__(97);
 
 var _Typography2 = _interopRequireDefault(_Typography);
 
@@ -3514,11 +4514,11 @@ var _Button = __webpack_require__(13);
 
 var _Button2 = _interopRequireDefault(_Button);
 
-var _IconButton = __webpack_require__(90);
+var _IconButton = __webpack_require__(98);
 
 var _IconButton2 = _interopRequireDefault(_IconButton);
 
-var _Menu = __webpack_require__(91);
+var _Menu = __webpack_require__(99);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
@@ -3586,10 +4586,15 @@ var Header = function (_Component) {
 
 
       if (this.props.auth.isAuthenticated) {
-        buttons = (0, _jsx3.default)(_Button2.default, {
+        buttons = (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(_Button2.default, {
+          color: "inherit"
+        }, void 0, (0, _jsx3.default)(_reactRouter.Link, {
+          to: "/home",
+          style: { textDecoration: "none", color: "white" }
+        }, void 0, "Home")), (0, _jsx3.default)(_Button2.default, {
           color: "inherit",
           onClick: this.onLogoutClick.bind(this)
-        }, void 0, "Logout");
+        }, void 0, "Logout"));
       } else {
         buttons = (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(_Button2.default, {
           color: "inherit"
@@ -3638,43 +4643,43 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { logoutUser: _AuthActions.logoutUser })((0, _styles.withStyles)(matStyles)(Header));
 
 /***/ }),
-/* 86 */
+/* 94 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/styles");
 
 /***/ }),
-/* 87 */
+/* 95 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/AppBar");
 
 /***/ }),
-/* 88 */
+/* 96 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/Toolbar");
 
 /***/ }),
-/* 89 */
+/* 97 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/Typography");
 
 /***/ }),
-/* 90 */
+/* 98 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/IconButton");
 
 /***/ }),
-/* 91 */
+/* 99 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/icons/Menu");
 
 /***/ }),
-/* 92 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3694,7 +4699,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactIntl = __webpack_require__(12);
+var _reactIntl = __webpack_require__(14);
 
 var _Footer = {
   "footer": "_1oiRVDtQ6fOWkhBVWcRyE_"
@@ -3722,7 +4727,7 @@ function Footer() {
 exports.default = Footer;
 
 /***/ }),
-/* 93 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3762,21 +4767,21 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _PostList = __webpack_require__(94);
+var _PostList = __webpack_require__(102);
 
 var _PostList2 = _interopRequireDefault(_PostList);
 
-var _PostCreateWidget = __webpack_require__(96);
+var _PostCreateWidget = __webpack_require__(104);
 
 var _PostCreateWidget2 = _interopRequireDefault(_PostCreateWidget);
 
-var _PostActions = __webpack_require__(25);
+var _PostActions = __webpack_require__(28);
 
-var _AppActions = __webpack_require__(23);
+var _AppActions = __webpack_require__(26);
 
-var _AppReducer = __webpack_require__(31);
+var _AppReducer = __webpack_require__(37);
 
-var _PostReducer = __webpack_require__(24);
+var _PostReducer = __webpack_require__(27);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3854,7 +4859,7 @@ PostListPage.contextTypes = {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(PostListPage);
 
 /***/ }),
-/* 94 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3876,7 +4881,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _PostListItem = __webpack_require__(95);
+var _PostListItem = __webpack_require__(103);
 
 var _PostListItem2 = _interopRequireDefault(_PostListItem);
 
@@ -3899,7 +4904,7 @@ function PostList(props) {
 exports.default = PostList;
 
 /***/ }),
-/* 95 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3923,7 +4928,7 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRouter = __webpack_require__(9);
 
-var _reactIntl = __webpack_require__(12);
+var _reactIntl = __webpack_require__(14);
 
 var _PostListItem = {
   "single-post": "_2wFZUrnLLPIM2UvuNgnV1r",
@@ -3974,7 +4979,7 @@ function PostListItem(props) {
 exports.default = PostListItem;
 
 /***/ }),
-/* 96 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4013,7 +5018,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactIntl = __webpack_require__(12);
+var _reactIntl = __webpack_require__(14);
 
 var _PostCreateWidget = {
   "form": "_1_WEV3z8MyISJ_IVeQGbfN",
@@ -4099,7 +5104,7 @@ var PostCreateWidget = exports.PostCreateWidget = function (_Component) {
 exports.default = (0, _reactIntl.injectIntl)(PostCreateWidget);
 
 /***/ }),
-/* 97 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4129,7 +5134,7 @@ var _reactHelmet = __webpack_require__(8);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _reactIntl = __webpack_require__(12);
+var _reactIntl = __webpack_require__(14);
 
 var _PostListItem = {
   "single-post": "_2wFZUrnLLPIM2UvuNgnV1r",
@@ -4143,9 +5148,9 @@ var _PostListItem = {
 
 var _PostListItem2 = _interopRequireDefault(_PostListItem);
 
-var _PostActions = __webpack_require__(25);
+var _PostActions = __webpack_require__(28);
 
-var _PostReducer = __webpack_require__(24);
+var _PostReducer = __webpack_require__(27);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4189,13 +5194,13 @@ function mapStateToProps(state, props) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(PostDetailPage);
 
 /***/ }),
-/* 98 */
+/* 106 */
 /***/ (function(module, exports) {
 
 module.exports = require("classnames");
 
 /***/ }),
-/* 99 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4241,15 +5246,15 @@ var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
 var _reactRouter = __webpack_require__(9);
 
-var _reactSelect = __webpack_require__(46);
+var _reactSelect = __webpack_require__(50);
 
 var _reactSelect2 = _interopRequireDefault(_reactSelect);
 
-var _Paper = __webpack_require__(10);
+var _Paper = __webpack_require__(11);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
-var _TextField = __webpack_require__(15);
+var _TextField = __webpack_require__(17);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
@@ -4257,38 +5262,38 @@ var _Button = __webpack_require__(13);
 
 var _Button2 = _interopRequireDefault(_Button);
 
+var _Node = __webpack_require__(32);
+
+var _Node2 = _interopRequireDefault(_Node);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var NodeForm = function (_Component) {
-  (0, _inherits3.default)(NodeForm, _Component);
+var RootNodeList = function (_Component) {
+  (0, _inherits3.default)(RootNodeList, _Component);
 
-  function NodeForm() {
-    (0, _classCallCheck3.default)(this, NodeForm);
-    return (0, _possibleConstructorReturn3.default)(this, (NodeForm.__proto__ || Object.getPrototypeOf(NodeForm)).apply(this, arguments));
+  function RootNodeList() {
+    (0, _classCallCheck3.default)(this, RootNodeList);
+    return (0, _possibleConstructorReturn3.default)(this, (RootNodeList.__proto__ || Object.getPrototypeOf(RootNodeList)).apply(this, arguments));
   }
 
-  (0, _createClass3.default)(NodeForm, [{
+  (0, _createClass3.default)(RootNodeList, [{
     key: "render",
     value: function render() {
+      var _this2 = this;
+
       var nodeArray = [];
       if (this.props.nodes.length > 0) {
-        nodeArray.push((0, _jsx3.default)("h4", {}, "title", (0, _jsx3.default)(_reactRouter.Link, {
-          to: "/",
-          style: { textDecoration: "none" }
-        }, void 0, "#root")));
         this.props.nodes.forEach(function (node) {
-          nodeArray.push((0, _jsx3.default)("div", {}, node._id, (0, _jsx3.default)(_Paper2.default, {
-            style: { margin: "1em", padding: "1em" }
-          }, void 0, (0, _jsx3.default)(_reactRouter.Link, {
-            to: "/node/" + node._id,
-            style: { textDecoration: "none" }
-          }, void 0, (0, _jsx3.default)("h5", {}, void 0, node.title)), (0, _jsx3.default)("p", {}, void 0, node.content.string))));
+          nodeArray.push((0, _jsx3.default)("div", {}, node._id, (0, _jsx3.default)(_Node2.default, {
+            onNavigation: _this2.props.onNavigation,
+            singleNode: node
+          })));
         });
       }
       return (0, _jsx3.default)("div", {}, void 0, nodeArray);
     }
   }]);
-  return NodeForm;
+  return RootNodeList;
 }(_react.Component);
 
 // Retrieve data from store as props
@@ -4298,10 +5303,10 @@ var mapStateToProps = function mapStateToProps(state) {
   return {};
 };
 
-exports.default = (0, _reactRedux.connect)(mapStateToProps, {})(NodeForm);
+exports.default = (0, _reactRedux.connect)(mapStateToProps, {})(RootNodeList);
 
 /***/ }),
-/* 100 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4315,7 +5320,7 @@ var _jsx2 = __webpack_require__(1);
 
 var _jsx3 = _interopRequireDefault(_jsx2);
 
-var _defineProperty2 = __webpack_require__(20);
+var _defineProperty2 = __webpack_require__(24);
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
@@ -4349,17 +5354,21 @@ var _reactHelmet = __webpack_require__(8);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _NodeActions = __webpack_require__(14);
+var _NodeActions = __webpack_require__(10);
 
-var _SelectMultiple = __webpack_require__(45);
+var _Spinner = __webpack_require__(52);
+
+var _Spinner2 = _interopRequireDefault(_Spinner);
+
+var _SelectMultiple = __webpack_require__(49);
 
 var _SelectMultiple2 = _interopRequireDefault(_SelectMultiple);
 
-var _Paper = __webpack_require__(10);
+var _Paper = __webpack_require__(11);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
-var _TextField = __webpack_require__(15);
+var _TextField = __webpack_require__(17);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
@@ -4371,12 +5380,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var _ref = (0, _jsx3.default)("h4", {}, void 0, "Edit this Node");
 
-var _ref2 = (0, _jsx3.default)(_Button2.default, {
+var _ref2 = (0, _jsx3.default)("br", {});
+
+var _ref3 = (0, _jsx3.default)(_Button2.default, {
   type: "submit",
   color: "primary"
 }, void 0, "Submit");
 
-var _ref3 = (0, _jsx3.default)("p", {}, void 0, "Loading . . . ");
+var _ref4 = (0, _jsx3.default)(_Spinner2.default, {});
 
 var EditNodeForm = function (_Component) {
   (0, _inherits3.default)(EditNodeForm, _Component);
@@ -4387,10 +5398,13 @@ var EditNodeForm = function (_Component) {
     var _this = (0, _possibleConstructorReturn3.default)(this, (EditNodeForm.__proto__ || Object.getPrototypeOf(EditNodeForm)).call(this, props));
 
     _this.state = {
-      title: _this.props.node.node.title,
-      content: _this.props.node.node.content.string,
-      sources: _this.props.node.node.sources,
-      subtopics: _this.props.node.node.subtopics,
+      node: _this.props.singleNode,
+      title: _this.props.singleNode.title,
+      content: _this.props.singleNode.content.string,
+      sources: null,
+      subtopics: null,
+      sourceOptions: [],
+      subtopicOptions: [],
       errors: {}
     };
 
@@ -4398,22 +5412,99 @@ var EditNodeForm = function (_Component) {
     _this.onChange = _this.onChange.bind(_this);
     _this.onSourceSelect = _this.onSourceSelect.bind(_this);
     _this.onSubtopicSelect = _this.onSubtopicSelect.bind(_this);
+    _this.createDefaultSubtopicConnections = _this.createDefaultSubtopicConnections.bind(_this);
+    _this.createDefaultSourceConnections = _this.createDefaultSourceConnections.bind(_this);
     return _this;
   }
 
   (0, _createClass3.default)(EditNodeForm, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      console.log("mount");
       if (this.props.node.formNodes === null && !this.props.node.loading) {
-        this.props.getAllNodesForSelect();
+        if (this.props.private) {
+          this.props.getAllPrivateNodesForSelect(this.props.universe.universe._id);
+        } else {
+          this.props.getAllPublicNodesForSelect();
+        }
+        if (this.state.node.sourceConnections.length > 0) {
+          this.props.getSources(this.state.node._id);
+        }
+        if (this.state.node.subtopicConnections.length > 0) {
+          this.props.getSubtopics(this.state.node._id);
+        }
+      } else if (this.props.node.formNodes !== null) {
+        if (this.state.node.sourceConnections.length > 0) {
+          this.props.getSources(this.state.node._id);
+        }
+        if (this.state.node.subtopicConnections.length > 0) {
+          this.props.getSubtopics(this.state.node._id);
+        }
       }
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps) {
+      var _this2 = this;
+
+      // Place source and subtopic connections into state
+      if (this.props.node.subtopics !== null && this.state.subtopics === null) {
+        this.setState({ subtopics: this.props.node.subtopics }, function () {
+          _this2.createDefaultSubtopicConnections();
+        });
+        this.props.clearSubtopics();
+      }
+      if (this.props.node.sources !== null && this.state.sources === null) {
+        this.setState({ sources: this.props.node.sources }, function () {
+          _this2.createDefaultSourceConnections();
+        });
+        this.props.clearSources();
+      }
+    }
+  }, {
+    key: "createDefaultSubtopicConnections",
+    value: function createDefaultSubtopicConnections() {
+      var _this3 = this;
+
+      var subtopicOptions = this.state.subtopicOptions;
+
+      for (var i in this.props.node.formNodes) {
+        // Find existing subtopic connections
+        if (this.state.subtopics) {
+          this.state.subtopics.forEach(function (connectionObject) {
+            if (connectionObject.subtopic._id.toString() === _this3.props.node.formNodes[i].value) {
+              subtopicOptions.push(_this3.props.node.formNodes[i]);
+            }
+          });
+        }
+      }
+      this.setState({ subtopicOptions: subtopicOptions });
+    }
+  }, {
+    key: "createDefaultSourceConnections",
+    value: function createDefaultSourceConnections() {
+      var _this4 = this;
+
+      var sourceOptions = this.state.sourceOptions;
+
+      for (var i in this.props.node.formNodes) {
+        // Find existing source connections
+        if (this.state.sources) {
+          this.state.sources.forEach(function (connectionObject) {
+            if (connectionObject.source._id.toString() === _this4.props.node.formNodes[i].value) {
+              sourceOptions.push(_this4.props.node.formNodes[i]);
+            }
+          });
+        }
+      }
+      this.setState({ sourceOptions: sourceOptions });
     }
   }, {
     key: "onSubmit",
     value: function onSubmit(e) {
       e.preventDefault();
       var newData = {
-        id: this.props.node.node._id,
+        id: this.state.node._id,
         title: this.state.title,
         content: this.state.content,
         sources: this.state.sources,
@@ -4458,18 +5549,12 @@ var EditNodeForm = function (_Component) {
     key: "render",
     value: function render() {
       var content = void 0;
-      if (this.props.node !== null && this.props.node.formNodes !== null) {
-        var subtopicOptions = [],
-            sourceOptions = [];
+      console.log(this.state);
+      if (this.state.node !== null && this.props.node.formNodes !== null && (this.state.node.sourceConnections && this.state.sourceOptions.length > 0 || this.state.node.sourceConnections.length === 0) && (this.state.node.subtopicConnections && this.state.subtopicOptions.length > 0 || this.state.node.subtopicConnections.length === 0)) {
+        var _state = this.state,
+            subtopicOptions = _state.subtopicOptions,
+            sourceOptions = _state.sourceOptions;
 
-        for (var i in this.props.node.formNodes) {
-          if (this.props.node.node.subtopics.includes(this.props.node.formNodes[i].value)) {
-            subtopicOptions.push(this.props.node.formNodes[i]);
-          }
-          if (this.props.node.node.sources.includes(this.props.node.formNodes[i].value)) {
-            sourceOptions.push(this.props.node.formNodes[i]);
-          }
-        }
 
         content = (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(_Paper2.default, {}, void 0, _ref, (0, _jsx3.default)("form", {
           onSubmit: this.onSubmit
@@ -4481,7 +5566,7 @@ var EditNodeForm = function (_Component) {
           value: this.state.title,
           margin: "normal",
           variant: "outlined"
-        }), (0, _jsx3.default)(_TextField2.default, {
+        }), _ref2, (0, _jsx3.default)(_TextField2.default, {
           id: "content",
           label: "Description of Idea",
           name: "content",
@@ -4489,6 +5574,7 @@ var EditNodeForm = function (_Component) {
           value: this.state.content,
           margin: "normal",
           variant: "outlined",
+          fullWidth: true,
           multiline: true
         }), (0, _jsx3.default)(_SelectMultiple2.default, {
           placeholder: "Select sources for this subject",
@@ -4500,9 +5586,9 @@ var EditNodeForm = function (_Component) {
           onChange: this.onSubtopicSelect,
           options: this.props.node.formNodes,
           defaultValue: subtopicOptions
-        }), _ref2)));
+        }), _ref3)));
       } else {
-        content = _ref3;
+        content = _ref4;
       }
 
       return (0, _jsx3.default)("div", {}, void 0, content);
@@ -4517,14 +5603,27 @@ var EditNodeForm = function (_Component) {
 var mapStateToProps = function mapStateToProps(state) {
   return {
     auth: state.auth,
-    node: state.node
+    node: state.node,
+    universe: state.universe
   };
 };
 
-exports.default = (0, _reactRedux.connect)(mapStateToProps, { editNode: _NodeActions.editNode, getAllNodesForSelect: _NodeActions.getAllNodesForSelect })(EditNodeForm);
+EditNodeForm.defaultProps = {
+  private: false
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, {
+  editNode: _NodeActions.editNode,
+  getAllPublicNodesForSelect: _NodeActions.getAllPublicNodesForSelect,
+  getAllPrivateNodesForSelect: _NodeActions.getAllPrivateNodesForSelect,
+  getSources: _NodeActions.getSources,
+  getSubtopics: _NodeActions.getSubtopics,
+  clearSources: _NodeActions.clearSources,
+  clearSubtopics: _NodeActions.clearSubtopics
+})(EditNodeForm);
 
 /***/ }),
-/* 101 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4535,7 +5634,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.fetchComponentData = fetchComponentData;
 
-var _promiseUtils = __webpack_require__(102);
+var _promiseUtils = __webpack_require__(110);
 
 function fetchComponentData(store, components, params) {
   var needs = components.reduce(function (prev, current) {
@@ -4551,7 +5650,7 @@ function fetchComponentData(store, components, params) {
   */
 
 /***/ }),
-/* 102 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4582,7 +5681,7 @@ function sequence(items, consumer) {
 }
 
 /***/ }),
-/* 103 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4592,9 +5691,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _express = __webpack_require__(17);
+var _express = __webpack_require__(18);
 
-var _post = __webpack_require__(104);
+var _post = __webpack_require__(112);
 
 var PostController = _interopRequireWildcard(_post);
 
@@ -4617,7 +5716,7 @@ router.route('/posts/:cuid').delete(PostController.deletePost);
 exports.default = router;
 
 /***/ }),
-/* 104 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4631,19 +5730,19 @@ exports.addPost = addPost;
 exports.getPost = getPost;
 exports.deletePost = deletePost;
 
-var _post = __webpack_require__(49);
+var _post = __webpack_require__(56);
 
 var _post2 = _interopRequireDefault(_post);
 
-var _cuid = __webpack_require__(105);
+var _cuid = __webpack_require__(113);
 
 var _cuid2 = _interopRequireDefault(_cuid);
 
-var _limax = __webpack_require__(106);
+var _limax = __webpack_require__(114);
 
 var _limax2 = _interopRequireDefault(_limax);
 
-var _sanitizeHtml = __webpack_require__(50);
+var _sanitizeHtml = __webpack_require__(57);
 
 var _sanitizeHtml2 = _interopRequireDefault(_sanitizeHtml);
 
@@ -4726,19 +5825,19 @@ function deletePost(req, res) {
 }
 
 /***/ }),
-/* 105 */
+/* 113 */
 /***/ (function(module, exports) {
 
 module.exports = require("cuid");
 
 /***/ }),
-/* 106 */
+/* 114 */
 /***/ (function(module, exports) {
 
 module.exports = require("limax");
 
 /***/ }),
-/* 107 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4748,9 +5847,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _express = __webpack_require__(17);
+var _express = __webpack_require__(18);
 
-var _user = __webpack_require__(108);
+var _user = __webpack_require__(116);
 
 var UserController = _interopRequireWildcard(_user);
 
@@ -4776,7 +5875,7 @@ router.route("/user/login").post(UserController.loginUser);
 exports.default = router;
 
 /***/ }),
-/* 108 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4787,11 +5886,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.loginUser = exports.addUser = undefined;
 
-var _regenerator = __webpack_require__(21);
+var _regenerator = __webpack_require__(20);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _asyncToGenerator2 = __webpack_require__(22);
+var _asyncToGenerator2 = __webpack_require__(21);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -4904,7 +6003,7 @@ var addUser = exports.addUser = function () {
 
 var loginUser = exports.loginUser = function () {
   var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(req, res) {
-    var _validateLoginInput, errors, isValid, email, password, user, isMatch, payload, token, _errors2;
+    var _validateLoginInput, errors, isValid, email, password, user, isMatch, personalUniverse, admin, payload, token, _errors2;
 
     return _regenerator2.default.wrap(function _callee2$(_context2) {
       while (1) {
@@ -4947,48 +6046,52 @@ var loginUser = exports.loginUser = function () {
             isMatch = _context2.sent;
 
             if (!isMatch) {
-              _context2.next = 30;
+              _context2.next = 32;
               break;
             }
 
+            personalUniverse = null || user.personalUniverse;
+            admin = user.admin || false;
             payload = {
               id: user._id,
-              name: user.name
+              name: user.name,
+              admin: admin,
+              personalUniverse: personalUniverse
             };
             token = void 0;
 
             if (!req.body.rememberMe) {
-              _context2.next = 26;
+              _context2.next = 28;
               break;
             }
 
-            _context2.next = 23;
+            _context2.next = 25;
             return _jsonwebtoken2.default.sign(payload, _keys2.default.secretOrKey);
 
-          case 23:
+          case 25:
             token = _context2.sent;
-            _context2.next = 29;
+            _context2.next = 31;
             break;
 
-          case 26:
-            _context2.next = 28;
+          case 28:
+            _context2.next = 30;
             return _jsonwebtoken2.default.sign(payload, _keys2.default.secretOrKey, {
               expiresIn: 3600 * 24
             });
 
-          case 28:
+          case 30:
             token = _context2.sent;
 
-          case 29:
+          case 31:
 
             res.json({ token: "Bearer " + token });
 
-          case 30:
-            _context2.next = 38;
+          case 32:
+            _context2.next = 40;
             break;
 
-          case 32:
-            _context2.prev = 32;
+          case 34:
+            _context2.prev = 34;
             _context2.t0 = _context2["catch"](0);
 
             console.log(_context2.t0);
@@ -4997,12 +6100,12 @@ var loginUser = exports.loginUser = function () {
             _errors2.general = _context2.t0;
             res.status(500).json(_errors2);
 
-          case 38:
+          case 40:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, this, [[0, 32]]);
+    }, _callee2, this, [[0, 34]]);
   }));
 
   return function loginUser(_x3, _x4) {
@@ -5012,31 +6115,31 @@ var loginUser = exports.loginUser = function () {
 
 exports.getUsers = getUsers;
 
-var _user = __webpack_require__(51);
+var _user = __webpack_require__(33);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _sanitizeHtml = __webpack_require__(50);
+var _sanitizeHtml = __webpack_require__(57);
 
 var _sanitizeHtml2 = _interopRequireDefault(_sanitizeHtml);
 
-var _bcryptjs = __webpack_require__(109);
+var _bcryptjs = __webpack_require__(117);
 
 var _bcryptjs2 = _interopRequireDefault(_bcryptjs);
 
-var _jsonwebtoken = __webpack_require__(110);
+var _jsonwebtoken = __webpack_require__(118);
 
 var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
 
-var _validateUserSignupInputs = __webpack_require__(111);
+var _validateUserSignupInputs = __webpack_require__(119);
 
 var _validateUserSignupInputs2 = _interopRequireDefault(_validateUserSignupInputs);
 
-var _validateLoginInput2 = __webpack_require__(112);
+var _validateLoginInput2 = __webpack_require__(120);
 
 var _validateLoginInput3 = _interopRequireDefault(_validateLoginInput2);
 
-var _keys = __webpack_require__(52);
+var _keys = __webpack_require__(58);
 
 var _keys2 = _interopRequireDefault(_keys);
 
@@ -5058,26 +6161,26 @@ function getUsers(req, res) {
 }
 
 /***/ }),
-/* 109 */
+/* 117 */
 /***/ (function(module, exports) {
 
 module.exports = require("bcryptjs");
 
 /***/ }),
-/* 110 */
+/* 118 */
 /***/ (function(module, exports) {
 
 module.exports = require("jsonwebtoken");
 
 /***/ }),
-/* 111 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Validator = __webpack_require__(27);
-var _ = __webpack_require__(18);
+var Validator = __webpack_require__(34);
+var _ = __webpack_require__(23);
 
 module.exports = function validateWebAdminSignupInput(data) {
   var errors = {};
@@ -5135,14 +6238,14 @@ module.exports = function validateWebAdminSignupInput(data) {
 };
 
 /***/ }),
-/* 112 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Validator = __webpack_require__(27);
-var _ = __webpack_require__(18);
+var Validator = __webpack_require__(34);
+var _ = __webpack_require__(23);
 
 module.exports = function validateLoginInput(data) {
   var errors = {};
@@ -5172,7 +6275,7 @@ module.exports = function validateLoginInput(data) {
 };
 
 /***/ }),
-/* 113 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5186,7 +6289,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 114 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5200,7 +6303,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 115 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5210,9 +6313,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _express = __webpack_require__(17);
+var _express = __webpack_require__(18);
 
-var _node = __webpack_require__(116);
+var _node = __webpack_require__(124);
 
 var NodeController = _interopRequireWildcard(_node);
 
@@ -5223,11 +6326,17 @@ var router = new _express.Router();
 // Get Node by ID
 router.route("/node/:nodeID").get(NodeController.getNodeByID);
 
-// Get all root Nodes
-router.route("/nodes/root").get(NodeController.getRootNodes);
+// Get all root Nodes for a given universe
+router.route("/nodes/universe/:id/root").get(NodeController.getUniverseRootNodes);
 
 // Get all Nodes for Forms (returns ID and Title)
-router.route("/nodes/form/all").get(NodeController.getAllNodesForSelect);
+router.route("/nodes/form/public/all").get(NodeController.getAllPublicNodesForSelect);
+
+// Get all Nodes for Forms (returns ID and Title)
+router.route("/nodes/form/private/:id/all").get(NodeController.getAllPrivateNodesForSelect);
+
+// Delete Node
+router.route("/node/:id/delete").get(NodeController.deleteNode);
 
 // Get Node sources
 router.route("/node/:id/sources").get(NodeController.getNodeSources);
@@ -5241,8 +6350,7 @@ router.route("/node").post(NodeController.createNode);
 // Edit a node
 router.route("/node/:id/edit").post(NodeController.editNode);
 
-// LEGACY ** Remove Duplicate Sources and Subtopics from all Nodes
-router.route("/node/remove/duplicates/all/legacy").get(NodeController.legacyRemoveDuplicateSourcesAndSubtopics);
+// FOR DEVELOPMENT - Used to make edits to the database
 
 // Remove Duplicate Sources and Subtopics from all Nodes
 router.route("/node/remove/duplicates/all").get(NodeController.removeDuplicateSourcesAndSubtopics);
@@ -5250,10 +6358,13 @@ router.route("/node/remove/duplicates/all").get(NodeController.removeDuplicateSo
 // Replace legacy node connections with connection objects
 router.route("/node/connections/update/all").get(NodeController.updateNodeConnections);
 
+// LEGACY ** Remove Duplicate Sources and Subtopics from all Nodes
+router.route("/node/remove/duplicates/all/legacy").get(NodeController.legacyRemoveDuplicateSourcesAndSubtopics);
+
 exports.default = router;
 
 /***/ }),
-/* 116 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5262,13 +6373,13 @@ exports.default = router;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateNodeConnections = exports.legacyRemoveDuplicateSourcesAndSubtopics = exports.removeDuplicateSourcesAndSubtopics = exports.getAllNodesForSelect = exports.getRootNodes = exports.getNodeSubtopics = exports.getNodeSources = exports.getNodeByID = exports.editNode = exports.createNode = undefined;
+exports.updateNodeConnections = exports.legacyRemoveDuplicateSourcesAndSubtopics = exports.removeDuplicateSourcesAndSubtopics = exports.getAllPrivateNodesForSelect = exports.getAllPublicNodesForSelect = exports.getUniverseRootNodes = exports.getNodeSubtopics = exports.getNodeSources = exports.getNodeByID = exports.deleteNode = exports.editNode = exports.createNode = undefined;
 
-var _regenerator = __webpack_require__(21);
+var _regenerator = __webpack_require__(20);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _asyncToGenerator2 = __webpack_require__(22);
+var _asyncToGenerator2 = __webpack_require__(21);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -5290,7 +6401,7 @@ var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
  */
 var createNode = exports.createNode = function () {
   var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(req, res) {
-    var _validateNodeInput, isValid, errors, highlightArray, authorArray, nodeContent, node, sourceConnections, i, connection, subtopicConnections, _connection, _errors;
+    var _validateNodeInput, isValid, errors, highlightArray, authorArray, nodeContent, node, sourceConnections, i, sourceNodePrivate, connection, subtopicConnections, subtopicNodePrivate, _connection, _node, _sourceConnections, _connection2, _subtopicConnections, _connection3, _errors;
 
     return _regenerator2.default.wrap(function _callee$(_context) {
       while (1) {
@@ -5324,102 +6435,210 @@ var createNode = exports.createNode = function () {
               authorArray: authorArray,
               author: req.body.author
             };
-            node = new _node2.default({
+
+            if (!req.body.private) {
+              _context.next = 50;
+              break;
+            }
+
+            // Private Nodes
+            node = new _node3.default({
               title: req.body.title,
-              content: nodeContent
+              content: nodeContent,
+              public: false,
+              originUniverse: req.body.universe
             });
             sourceConnections = [];
             _context.t0 = _regenerator2.default.keys(req.body.sources);
 
-          case 11:
+          case 12:
             if ((_context.t1 = _context.t0()).done) {
-              _context.next = 22;
+              _context.next = 26;
               break;
             }
 
             i = _context.t1.value;
-            connection = new _connection4.default({
-              sourceNode: req.body.sources[i],
-              subtopicNode: node._id,
-              author: req.body.author
-            });
             _context.next = 16;
-            return connection.save();
+            return _node3.default.findById(req.body.sources[i]).public;
 
           case 16:
+            sourceNodePrivate = !_context.sent;
+            connection = new _connection7.default({
+              sourceNode: req.body.sources[i],
+              sourceNodePrivate: sourceNodePrivate,
+              subtopicNode: node._id,
+              subtopicNodePrivate: true,
+              author: req.body.author
+            });
+            _context.next = 20;
+            return connection.save();
+
+          case 20:
             connection = _context.sent;
-            _context.next = 19;
-            return _node2.default.findByIdAndUpdate(req.body.sources[i], {
+            _context.next = 23;
+            return _node3.default.findByIdAndUpdate(req.body.sources[i], {
               $push: { subtopicConnections: connection._id }
             });
 
-          case 19:
+          case 23:
             sourceConnections.push(connection._id);
-            _context.next = 11;
+            _context.next = 12;
             break;
 
-          case 22:
+          case 26:
             subtopicConnections = [];
             _context.t2 = _regenerator2.default.keys(req.body.subtopics);
 
-          case 24:
+          case 28:
             if ((_context.t3 = _context.t2()).done) {
-              _context.next = 35;
+              _context.next = 42;
               break;
             }
 
             i = _context.t3.value;
-            _connection = new _connection4.default({
+            _context.next = 32;
+            return _node3.default.findById(req.body.subtopics[i]).public;
+
+          case 32:
+            subtopicNodePrivate = !_context.sent;
+            _connection = new _connection7.default({
               sourceNode: node._id,
-              subtopicNode: req.body.subtopic[i],
+              sourceNodePrivate: true,
+              subtopicNode: req.body.subtopics[i],
+              subtopicNodePrivate: subtopicNodePrivate,
               author: req.body.author
             });
-            _context.next = 29;
+            _context.next = 36;
             return _connection.save();
 
-          case 29:
+          case 36:
             _connection = _context.sent;
-            _context.next = 32;
-            return _node2.default.findByIdAndUpdate(req.body.subtopic[i], {
+            _context.next = 39;
+            return _node3.default.findByIdAndUpdate(req.body.subtopics[i], {
               $push: { sourceConnections: _connection._id }
             });
 
-          case 32:
+          case 39:
             subtopicConnections.push(_connection._id);
-            _context.next = 24;
+            _context.next = 28;
             break;
 
-          case 35:
+          case 42:
 
             node.sourceConnections = sourceConnections;
             node.subtopicConnections = subtopicConnections;
-            _context.next = 39;
+            _context.next = 46;
             return node.save();
 
-          case 39:
+          case 46:
             node = _context.sent;
 
 
             res.end();
-            _context.next = 49;
+            _context.next = 83;
             break;
 
-          case 43:
-            _context.prev = 43;
-            _context.t4 = _context["catch"](0);
+          case 50:
+            // Public Nodes
+            _node = new _node3.default({
+              title: req.body.title,
+              content: nodeContent,
+              originUniverse: req.body.universe
+            });
+            _sourceConnections = [];
+            _context.t4 = _regenerator2.default.keys(req.body.sources);
 
-            console.log(_context.t4);
+          case 53:
+            if ((_context.t5 = _context.t4()).done) {
+              _context.next = 64;
+              break;
+            }
+
+            i = _context.t5.value;
+            _connection2 = new _connection7.default({
+              sourceNode: req.body.sources[i],
+              subtopicNode: _node._id,
+              author: req.body.author
+            });
+            _context.next = 58;
+            return _connection2.save();
+
+          case 58:
+            _connection2 = _context.sent;
+            _context.next = 61;
+            return _node3.default.findByIdAndUpdate(req.body.sources[i], {
+              $push: { subtopicConnections: _connection2._id }
+            });
+
+          case 61:
+            _sourceConnections.push(_connection2._id);
+            _context.next = 53;
+            break;
+
+          case 64:
+            _subtopicConnections = [];
+            _context.t6 = _regenerator2.default.keys(req.body.subtopics);
+
+          case 66:
+            if ((_context.t7 = _context.t6()).done) {
+              _context.next = 77;
+              break;
+            }
+
+            i = _context.t7.value;
+            _connection3 = new _connection7.default({
+              sourceNode: _node._id,
+              subtopicNode: req.body.subtopic[i],
+              author: req.body.author
+            });
+            _context.next = 71;
+            return _connection3.save();
+
+          case 71:
+            _connection3 = _context.sent;
+            _context.next = 74;
+            return _node3.default.findByIdAndUpdate(req.body.subtopic[i], {
+              $push: { sourceConnections: _connection3._id }
+            });
+
+          case 74:
+            _subtopicConnections.push(_connection3._id);
+            _context.next = 66;
+            break;
+
+          case 77:
+
+            _node.sourceConnections = _sourceConnections;
+            _node.subtopicConnections = _subtopicConnections;
+            _context.next = 81;
+            return _node.save();
+
+          case 81:
+            _node = _context.sent;
+
+
+            res.end();
+
+          case 83:
+            _context.next = 91;
+            break;
+
+          case 85:
+            _context.prev = 85;
+            _context.t8 = _context["catch"](0);
+
+            console.log(_context.t8);
             _errors = {};
 
-            _errors.general = _context.t4;
+            _errors.general = _context.t8;
             res.status(500).json(_errors);
 
-          case 49:
+          case 91:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, this, [[0, 43]]);
+    }, _callee, this, [[0, 85]]);
   }));
 
   return function createNode(_x, _x2) {
@@ -5444,7 +6663,7 @@ var editNode = exports.editNode = function () {
           case 0:
             _context2.prev = 0;
             _context2.next = 3;
-            return _node2.default.findById(req.params.id);
+            return _node3.default.findById(req.params.id);
 
           case 3:
             node = _context2.sent;
@@ -5487,33 +6706,105 @@ var editNode = exports.editNode = function () {
 }();
 
 /**
- * Get a node by its ID
+ * Delete a node through its ID
  * @param req
  * @param res
  * @returns void
  */
 
 
-var getNodeByID = exports.getNodeByID = function () {
+var deleteNode = exports.deleteNode = function () {
   var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(req, res) {
-    var node, errors;
+    var node, i, connection, _connection4, errors;
+
     return _regenerator2.default.wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
             _context3.next = 3;
-            return _node2.default.findById(req.params.nodeID);
+            return _node3.default.findById(req.params.id);
 
           case 3:
             node = _context3.sent;
 
-            res.json(node);
-            _context3.next = 13;
+            if (!(node.sourceConnections.length > 0)) {
+              _context3.next = 17;
+              break;
+            }
+
+            i = 0;
+
+          case 6:
+            if (!(i < node.sourceConnections.length)) {
+              _context3.next = 17;
+              break;
+            }
+
+            _context3.next = 9;
+            return _connection7.default.findById(node.sourceConnections[i]);
+
+          case 9:
+            connection = _context3.sent;
+            _context3.next = 12;
+            return _node3.default.findByIdAndUpdate(connection.sourceNode, {
+              $pull: { subtopicConnections: connection._id }
+            }, { new: true });
+
+          case 12:
+            _context3.next = 14;
+            return _connection7.default.findByIdAndRemove(node.sourceConnections[i]);
+
+          case 14:
+            i++;
+            _context3.next = 6;
             break;
 
-          case 7:
-            _context3.prev = 7;
+          case 17:
+            if (!(node.subtopicConnections.length > 0)) {
+              _context3.next = 30;
+              break;
+            }
+
+            i = 0;
+
+          case 19:
+            if (!(i < node.subtopicConnections.length)) {
+              _context3.next = 30;
+              break;
+            }
+
+            _context3.next = 22;
+            return _connection7.default.findById(node.subtopicConnections[i]);
+
+          case 22:
+            _connection4 = _context3.sent;
+            _context3.next = 25;
+            return _node3.default.findByIdAndUpdate(_connection4.subtopicNode, {
+              $pull: { sourceConnections: _connection4._id }
+            }, { new: true });
+
+          case 25:
+            _context3.next = 27;
+            return _connection7.default.findByIdAndRemove(node.subtopicConnections[i]);
+
+          case 27:
+            i++;
+            _context3.next = 19;
+            break;
+
+          case 30:
+            _context3.next = 32;
+            return _node3.default.findByIdAndRemove(req.params.id);
+
+          case 32:
+
+            res.end();
+            _context3.next = 41;
+            break;
+
+          case 35:
+            _context3.prev = 35;
             _context3.t0 = _context3["catch"](0);
 
             console.log(_context3.t0);
@@ -5522,16 +6813,65 @@ var getNodeByID = exports.getNodeByID = function () {
             errors.general = _context3.t0;
             res.status(500).json(errors);
 
-          case 13:
+          case 41:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, this, [[0, 7]]);
+    }, _callee3, this, [[0, 35]]);
   }));
 
-  return function getNodeByID(_x5, _x6) {
+  return function deleteNode(_x5, _x6) {
     return _ref3.apply(this, arguments);
+  };
+}();
+
+/**
+ * Get a node by its ID
+ * @param req
+ * @param res
+ * @returns void
+ */
+
+
+var getNodeByID = exports.getNodeByID = function () {
+  var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(req, res) {
+    var node, errors;
+    return _regenerator2.default.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            _context4.prev = 0;
+            _context4.next = 3;
+            return _node3.default.findById(req.params.nodeID);
+
+          case 3:
+            node = _context4.sent;
+
+            res.json(node);
+            _context4.next = 13;
+            break;
+
+          case 7:
+            _context4.prev = 7;
+            _context4.t0 = _context4["catch"](0);
+
+            console.log(_context4.t0);
+            errors = {};
+
+            errors.general = _context4.t0;
+            res.status(500).json(errors);
+
+          case 13:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4, this, [[0, 7]]);
+  }));
+
+  return function getNodeByID(_x7, _x8) {
+    return _ref4.apply(this, arguments);
   };
 }();
 
@@ -5544,22 +6884,22 @@ var getNodeByID = exports.getNodeByID = function () {
 
 
 var getNodeSources = exports.getNodeSources = function () {
-  var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(req, res) {
+  var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5(req, res) {
     var node, returnArray, i, connection, sourceNode, errors;
-    return _regenerator2.default.wrap(function _callee4$(_context4) {
+    return _regenerator2.default.wrap(function _callee5$(_context5) {
       while (1) {
-        switch (_context4.prev = _context4.next) {
+        switch (_context5.prev = _context5.next) {
           case 0:
-            _context4.prev = 0;
-            _context4.next = 3;
-            return _node2.default.findById(req.params.id);
+            _context5.prev = 0;
+            _context5.next = 3;
+            return _node3.default.findById(req.params.id);
 
           case 3:
-            node = _context4.sent;
+            node = _context5.sent;
             returnArray = [];
 
             if (!(node.sourceConnections && node.sourceConnections.length > 0)) {
-              _context4.next = 18;
+              _context5.next = 18;
               break;
             }
 
@@ -5567,110 +6907,24 @@ var getNodeSources = exports.getNodeSources = function () {
 
           case 7:
             if (!(i < node.sourceConnections.length)) {
-              _context4.next = 18;
-              break;
-            }
-
-            _context4.next = 10;
-            return _connection4.default.findById(node.sourceConnections[i]);
-
-          case 10:
-            connection = _context4.sent;
-            _context4.next = 13;
-            return _node2.default.findById(connection.sourceNode);
-
-          case 13:
-            sourceNode = _context4.sent;
-
-            returnArray.push({
-              connection: connection,
-              source: sourceNode
-            });
-
-          case 15:
-            i++;
-            _context4.next = 7;
-            break;
-
-          case 18:
-
-            res.json(returnArray);
-            _context4.next = 27;
-            break;
-
-          case 21:
-            _context4.prev = 21;
-            _context4.t0 = _context4["catch"](0);
-
-            console.log(_context4.t0);
-            errors = {};
-
-            errors.general = _context4.t0;
-            res.status(500).json(errors);
-
-          case 27:
-          case "end":
-            return _context4.stop();
-        }
-      }
-    }, _callee4, this, [[0, 21]]);
-  }));
-
-  return function getNodeSources(_x7, _x8) {
-    return _ref4.apply(this, arguments);
-  };
-}();
-
-/**
- * Get all subtopics for a Node
- * @param req
- * @param res
- * @returns void
- */
-
-
-var getNodeSubtopics = exports.getNodeSubtopics = function () {
-  var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5(req, res) {
-    var node, returnArray, i, connection, subtopicNode, errors;
-    return _regenerator2.default.wrap(function _callee5$(_context5) {
-      while (1) {
-        switch (_context5.prev = _context5.next) {
-          case 0:
-            _context5.prev = 0;
-            _context5.next = 3;
-            return _node2.default.findById(req.params.id);
-
-          case 3:
-            node = _context5.sent;
-            returnArray = [];
-
-            if (!(node.subtopicConnections && node.subtopicConnections.length > 0)) {
-              _context5.next = 18;
-              break;
-            }
-
-            i = 0;
-
-          case 7:
-            if (!(i < node.subtopicConnections.length)) {
               _context5.next = 18;
               break;
             }
 
             _context5.next = 10;
-            return _connection4.default.findById(node.subtopicConnections[i]);
+            return _connection7.default.findById(node.sourceConnections[i]);
 
           case 10:
             connection = _context5.sent;
             _context5.next = 13;
-            return _node2.default.findById(connection.subtopicNode);
+            return _node3.default.findById(connection.sourceNode);
 
           case 13:
-            subtopicNode = _context5.sent;
+            sourceNode = _context5.sent;
 
             returnArray.push({
               connection: connection,
-              subtopic: subtopicNode
+              source: sourceNode
             });
 
           case 15:
@@ -5702,41 +6956,76 @@ var getNodeSubtopics = exports.getNodeSubtopics = function () {
     }, _callee5, this, [[0, 21]]);
   }));
 
-  return function getNodeSubtopics(_x9, _x10) {
+  return function getNodeSources(_x9, _x10) {
     return _ref5.apply(this, arguments);
   };
 }();
 
 /**
- * Get all root nodes
+ * Get all subtopics for a Node
  * @param req
  * @param res
  * @returns void
  */
 
 
-var getRootNodes = exports.getRootNodes = function () {
+var getNodeSubtopics = exports.getNodeSubtopics = function () {
   var _ref6 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee6(req, res) {
-    var nodes, errors;
+    var node, returnArray, i, connection, subtopicNode, errors;
     return _regenerator2.default.wrap(function _callee6$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
           case 0:
             _context6.prev = 0;
             _context6.next = 3;
-            return _node2.default.find({
-              $or: [{ sourceConnections: { $eq: [] } }, { sourceConnections: { $eq: null } }]
-            });
+            return _node3.default.findById(req.params.id);
 
           case 3:
-            nodes = _context6.sent;
+            node = _context6.sent;
+            returnArray = [];
 
-            res.json(nodes);
-            _context6.next = 13;
-            break;
+            if (!(node.subtopicConnections && node.subtopicConnections.length > 0)) {
+              _context6.next = 18;
+              break;
+            }
+
+            i = 0;
 
           case 7:
-            _context6.prev = 7;
+            if (!(i < node.subtopicConnections.length)) {
+              _context6.next = 18;
+              break;
+            }
+
+            _context6.next = 10;
+            return _connection7.default.findById(node.subtopicConnections[i]);
+
+          case 10:
+            connection = _context6.sent;
+            _context6.next = 13;
+            return _node3.default.findById(connection.subtopicNode);
+
+          case 13:
+            subtopicNode = _context6.sent;
+
+            returnArray.push({
+              connection: connection,
+              subtopic: subtopicNode
+            });
+
+          case 15:
+            i++;
+            _context6.next = 7;
+            break;
+
+          case 18:
+
+            res.json(returnArray);
+            _context6.next = 27;
+            break;
+
+          case 21:
+            _context6.prev = 21;
             _context6.t0 = _context6["catch"](0);
 
             console.log(_context6.t0);
@@ -5745,40 +7034,98 @@ var getRootNodes = exports.getRootNodes = function () {
             errors.general = _context6.t0;
             res.status(500).json(errors);
 
-          case 13:
+          case 27:
           case "end":
             return _context6.stop();
         }
       }
-    }, _callee6, this, [[0, 7]]);
+    }, _callee6, this, [[0, 21]]);
   }));
 
-  return function getRootNodes(_x11, _x12) {
+  return function getNodeSubtopics(_x11, _x12) {
     return _ref6.apply(this, arguments);
   };
 }();
 
 /**
- * Get all Nodes for form
+ * Get all root nodes of a given universe
  * @param req
  * @param res
  * @returns void
  */
 
 
-var getAllNodesForSelect = exports.getAllNodesForSelect = function () {
+var getUniverseRootNodes = exports.getUniverseRootNodes = function () {
   var _ref7 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee7(req, res) {
-    var nodes, nodeArray, errors;
+    var universe, nodes, errors;
     return _regenerator2.default.wrap(function _callee7$(_context7) {
       while (1) {
         switch (_context7.prev = _context7.next) {
           case 0:
             _context7.prev = 0;
             _context7.next = 3;
-            return _node2.default.find();
+            return _universe2.default.findById(req.params.id);
 
           case 3:
+            universe = _context7.sent;
+            _context7.next = 6;
+            return _node3.default.find({
+              $and: [{
+                $or: [{ sourceConnections: { $eq: [] } }, { sourceConnections: { $eq: null } }]
+              }, { originUniverse: universe._id }]
+            });
+
+          case 6:
             nodes = _context7.sent;
+
+            res.json(nodes);
+            _context7.next = 16;
+            break;
+
+          case 10:
+            _context7.prev = 10;
+            _context7.t0 = _context7["catch"](0);
+
+            console.log(_context7.t0);
+            errors = {};
+
+            errors.general = _context7.t0;
+            res.status(500).json(errors);
+
+          case 16:
+          case "end":
+            return _context7.stop();
+        }
+      }
+    }, _callee7, this, [[0, 10]]);
+  }));
+
+  return function getUniverseRootNodes(_x13, _x14) {
+    return _ref7.apply(this, arguments);
+  };
+}();
+
+/**
+ * Get all public Nodes for form
+ * @param req
+ * @param res
+ * @returns void
+ */
+
+
+var getAllPublicNodesForSelect = exports.getAllPublicNodesForSelect = function () {
+  var _ref8 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee8(req, res) {
+    var nodes, nodeArray, errors;
+    return _regenerator2.default.wrap(function _callee8$(_context8) {
+      while (1) {
+        switch (_context8.prev = _context8.next) {
+          case 0:
+            _context8.prev = 0;
+            _context8.next = 3;
+            return _node3.default.find({ public: true });
+
+          case 3:
+            nodes = _context8.sent;
             nodeArray = [];
 
             nodes.forEach(function (node) {
@@ -5788,212 +7135,62 @@ var getAllNodesForSelect = exports.getAllNodesForSelect = function () {
               });
             });
             res.json(nodeArray);
-            _context7.next = 15;
+            _context8.next = 15;
             break;
 
           case 9:
-            _context7.prev = 9;
-            _context7.t0 = _context7["catch"](0);
+            _context8.prev = 9;
+            _context8.t0 = _context8["catch"](0);
 
-            console.log(_context7.t0);
+            console.log(_context8.t0);
             errors = {};
 
-            errors.general = _context7.t0;
+            errors.general = _context8.t0;
             res.status(500).json(errors);
 
           case 15:
           case "end":
-            return _context7.stop();
+            return _context8.stop();
         }
       }
-    }, _callee7, this, [[0, 9]]);
+    }, _callee8, this, [[0, 9]]);
   }));
 
-  return function getAllNodesForSelect(_x13, _x14) {
-    return _ref7.apply(this, arguments);
+  return function getAllPublicNodesForSelect(_x15, _x16) {
+    return _ref8.apply(this, arguments);
   };
 }();
 
 /**
- * Remove legacy duplicate sources and subtopics from all nodes
+ * Get all private Nodes for form
  * @param req
  * @param res
  * @returns void
  */
 
 
-var removeDuplicateSourcesAndSubtopics = exports.removeDuplicateSourcesAndSubtopics = function () {
-  var _ref8 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee9(req, res) {
-    var _this = this;
-
-    var nodes, errors;
+var getAllPrivateNodesForSelect = exports.getAllPrivateNodesForSelect = function () {
+  var _ref9 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee9(req, res) {
+    var nodes, nodeArray, errors;
     return _regenerator2.default.wrap(function _callee9$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
           case 0:
             _context9.prev = 0;
             _context9.next = 3;
-            return _node2.default.find();
+            return _node3.default.find({ originUniverse: req.params.id });
 
           case 3:
             nodes = _context9.sent;
+            nodeArray = [];
 
-            nodes.forEach(function () {
-              var _ref9 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee8(node) {
-                var i, connection, connections, j, _connection2, _connections;
-
-                return _regenerator2.default.wrap(function _callee8$(_context8) {
-                  while (1) {
-                    switch (_context8.prev = _context8.next) {
-                      case 0:
-                        if (!(node.sourceConnections.length > 0)) {
-                          _context8.next = 25;
-                          break;
-                        }
-
-                        i = 0;
-
-                      case 2:
-                        if (!(i < node.sourceConnections.length)) {
-                          _context8.next = 25;
-                          break;
-                        }
-
-                        _context8.next = 5;
-                        return _connection4.default.findById(node.sourceConnections[i]);
-
-                      case 5:
-                        connection = _context8.sent;
-                        _context8.next = 8;
-                        return _connection4.default.find({
-                          sourceNode: connection.sourceNode,
-                          subtopicNode: node._id
-                        });
-
-                      case 8:
-                        connections = _context8.sent;
-
-                        if (!(connections.length > 1)) {
-                          _context8.next = 22;
-                          break;
-                        }
-
-                        j = 1;
-
-                      case 11:
-                        if (!(j < connections.length)) {
-                          _context8.next = 22;
-                          break;
-                        }
-
-                        if (!connections[j]) {
-                          _context8.next = 19;
-                          break;
-                        }
-
-                        _context8.next = 15;
-                        return _node2.default.findByIdAndUpdate(connections[j].sourceNode, { $pull: { subtopicConnections: connections[j]._id } }, { new: true });
-
-                      case 15:
-                        _context8.next = 17;
-                        return _node2.default.findByIdAndUpdate(connections[j].subtopicNode, { $pull: { sourceConnections: connections[j]._id } }, { new: true });
-
-                      case 17:
-                        _context8.next = 19;
-                        return _connection4.default.findByIdAndRemove(connections[j]._id);
-
-                      case 19:
-                        j++;
-                        _context8.next = 11;
-                        break;
-
-                      case 22:
-                        i++;
-                        _context8.next = 2;
-                        break;
-
-                      case 25:
-                        if (!(node.subtopicConnections.length > 0)) {
-                          _context8.next = 50;
-                          break;
-                        }
-
-                        i = 0;
-
-                      case 27:
-                        if (!(i < node.subtopicConnections.length)) {
-                          _context8.next = 50;
-                          break;
-                        }
-
-                        _context8.next = 30;
-                        return _connection4.default.findById(node.subtopicConnections[i]);
-
-                      case 30:
-                        _connection2 = _context8.sent;
-                        _context8.next = 33;
-                        return _connection4.default.find({
-                          subtopicNode: _connection2.subtopicNode,
-                          sourceNode: node._id
-                        });
-
-                      case 33:
-                        _connections = _context8.sent;
-
-                        if (!(_connections.length > 1)) {
-                          _context8.next = 47;
-                          break;
-                        }
-
-                        j = 1;
-
-                      case 36:
-                        if (!(j < _connections.length)) {
-                          _context8.next = 47;
-                          break;
-                        }
-
-                        if (!_connections[j]) {
-                          _context8.next = 44;
-                          break;
-                        }
-
-                        _context8.next = 40;
-                        return _node2.default.findByIdAndUpdate(_connections[j].sourceNode, { $pull: { subtopicConnections: _connections[j]._id } }, { new: true });
-
-                      case 40:
-                        _context8.next = 42;
-                        return _node2.default.findByIdAndUpdate(_connections[j].subtopicNode, { $pull: { sourceConnections: _connections[j]._id } }, { new: true });
-
-                      case 42:
-                        _context8.next = 44;
-                        return _connection4.default.findByIdAndRemove(_connections[j]._id);
-
-                      case 44:
-                        j++;
-                        _context8.next = 36;
-                        break;
-
-                      case 47:
-                        i++;
-                        _context8.next = 27;
-                        break;
-
-                      case 50:
-                      case "end":
-                        return _context8.stop();
-                    }
-                  }
-                }, _callee8, _this);
-              }));
-
-              return function (_x17) {
-                return _ref9.apply(this, arguments);
-              };
-            }());
-
-            console.log("Big success");
-            res.end();
+            nodes.forEach(function (node) {
+              nodeArray.push({
+                label: node.title,
+                value: node._id
+              });
+            });
+            res.json(nodeArray);
             _context9.next = 15;
             break;
 
@@ -6015,22 +7212,22 @@ var removeDuplicateSourcesAndSubtopics = exports.removeDuplicateSourcesAndSubtop
     }, _callee9, this, [[0, 9]]);
   }));
 
-  return function removeDuplicateSourcesAndSubtopics(_x15, _x16) {
-    return _ref8.apply(this, arguments);
+  return function getAllPrivateNodesForSelect(_x17, _x18) {
+    return _ref9.apply(this, arguments);
   };
 }();
 
 /**
- * LEGACY ** Remove legacy duplicate sources and subtopics from all nodes
+ * Remove legacy duplicate sources and subtopics from all nodes
  * @param req
  * @param res
  * @returns void
  */
 
 
-var legacyRemoveDuplicateSourcesAndSubtopics = exports.legacyRemoveDuplicateSourcesAndSubtopics = function () {
+var removeDuplicateSourcesAndSubtopics = exports.removeDuplicateSourcesAndSubtopics = function () {
   var _ref10 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee11(req, res) {
-    var _this2 = this;
+    var _this = this;
 
     var nodes, errors;
     return _regenerator2.default.wrap(function _callee11$(_context11) {
@@ -6039,35 +7236,161 @@ var legacyRemoveDuplicateSourcesAndSubtopics = exports.legacyRemoveDuplicateSour
           case 0:
             _context11.prev = 0;
             _context11.next = 3;
-            return _node2.default.find();
+            return _node3.default.find();
 
           case 3:
             nodes = _context11.sent;
 
             nodes.forEach(function () {
               var _ref11 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee10(node) {
+                var i, connection, connections, j, _connection5, _connections;
+
                 return _regenerator2.default.wrap(function _callee10$(_context10) {
                   while (1) {
                     switch (_context10.prev = _context10.next) {
                       case 0:
-                        node.sources = node.sources.filter(function (elem, index, self) {
-                          return index == self.indexOf(elem);
-                        });
-                        node.subtopics = node.subtopics.filter(function (elem, index, self) {
-                          return index == self.indexOf(elem);
-                        });
-                        _context10.next = 4;
-                        return node.save();
+                        if (!(node.sourceConnections.length > 0)) {
+                          _context10.next = 25;
+                          break;
+                        }
 
-                      case 4:
+                        i = 0;
+
+                      case 2:
+                        if (!(i < node.sourceConnections.length)) {
+                          _context10.next = 25;
+                          break;
+                        }
+
+                        _context10.next = 5;
+                        return _connection7.default.findById(node.sourceConnections[i]);
+
+                      case 5:
+                        connection = _context10.sent;
+                        _context10.next = 8;
+                        return _connection7.default.find({
+                          sourceNode: connection.sourceNode,
+                          subtopicNode: node._id
+                        });
+
+                      case 8:
+                        connections = _context10.sent;
+
+                        if (!(connections.length > 1)) {
+                          _context10.next = 22;
+                          break;
+                        }
+
+                        j = 1;
+
+                      case 11:
+                        if (!(j < connections.length)) {
+                          _context10.next = 22;
+                          break;
+                        }
+
+                        if (!connections[j]) {
+                          _context10.next = 19;
+                          break;
+                        }
+
+                        _context10.next = 15;
+                        return _node3.default.findByIdAndUpdate(connections[j].sourceNode, { $pull: { subtopicConnections: connections[j]._id } }, { new: true });
+
+                      case 15:
+                        _context10.next = 17;
+                        return _node3.default.findByIdAndUpdate(connections[j].subtopicNode, { $pull: { sourceConnections: connections[j]._id } }, { new: true });
+
+                      case 17:
+                        _context10.next = 19;
+                        return _connection7.default.findByIdAndRemove(connections[j]._id);
+
+                      case 19:
+                        j++;
+                        _context10.next = 11;
+                        break;
+
+                      case 22:
+                        i++;
+                        _context10.next = 2;
+                        break;
+
+                      case 25:
+                        if (!(node.subtopicConnections.length > 0)) {
+                          _context10.next = 50;
+                          break;
+                        }
+
+                        i = 0;
+
+                      case 27:
+                        if (!(i < node.subtopicConnections.length)) {
+                          _context10.next = 50;
+                          break;
+                        }
+
+                        _context10.next = 30;
+                        return _connection7.default.findById(node.subtopicConnections[i]);
+
+                      case 30:
+                        _connection5 = _context10.sent;
+                        _context10.next = 33;
+                        return _connection7.default.find({
+                          subtopicNode: _connection5.subtopicNode,
+                          sourceNode: node._id
+                        });
+
+                      case 33:
+                        _connections = _context10.sent;
+
+                        if (!(_connections.length > 1)) {
+                          _context10.next = 47;
+                          break;
+                        }
+
+                        j = 1;
+
+                      case 36:
+                        if (!(j < _connections.length)) {
+                          _context10.next = 47;
+                          break;
+                        }
+
+                        if (!_connections[j]) {
+                          _context10.next = 44;
+                          break;
+                        }
+
+                        _context10.next = 40;
+                        return _node3.default.findByIdAndUpdate(_connections[j].sourceNode, { $pull: { subtopicConnections: _connections[j]._id } }, { new: true });
+
+                      case 40:
+                        _context10.next = 42;
+                        return _node3.default.findByIdAndUpdate(_connections[j].subtopicNode, { $pull: { sourceConnections: _connections[j]._id } }, { new: true });
+
+                      case 42:
+                        _context10.next = 44;
+                        return _connection7.default.findByIdAndRemove(_connections[j]._id);
+
+                      case 44:
+                        j++;
+                        _context10.next = 36;
+                        break;
+
+                      case 47:
+                        i++;
+                        _context10.next = 27;
+                        break;
+
+                      case 50:
                       case "end":
                         return _context10.stop();
                     }
                   }
-                }, _callee10, _this2);
+                }, _callee10, _this);
               }));
 
-              return function (_x20) {
+              return function (_x21) {
                 return _ref11.apply(this, arguments);
               };
             }());
@@ -6095,8 +7418,88 @@ var legacyRemoveDuplicateSourcesAndSubtopics = exports.legacyRemoveDuplicateSour
     }, _callee11, this, [[0, 9]]);
   }));
 
-  return function legacyRemoveDuplicateSourcesAndSubtopics(_x18, _x19) {
+  return function removeDuplicateSourcesAndSubtopics(_x19, _x20) {
     return _ref10.apply(this, arguments);
+  };
+}();
+
+/**
+ * LEGACY ** Remove legacy duplicate sources and subtopics from all nodes
+ * @param req
+ * @param res
+ * @returns void
+ */
+
+
+var legacyRemoveDuplicateSourcesAndSubtopics = exports.legacyRemoveDuplicateSourcesAndSubtopics = function () {
+  var _ref12 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee13(req, res) {
+    var _this2 = this;
+
+    var nodes, errors;
+    return _regenerator2.default.wrap(function _callee13$(_context13) {
+      while (1) {
+        switch (_context13.prev = _context13.next) {
+          case 0:
+            _context13.prev = 0;
+            _context13.next = 3;
+            return _node3.default.find();
+
+          case 3:
+            nodes = _context13.sent;
+
+            nodes.forEach(function () {
+              var _ref13 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee12(node) {
+                return _regenerator2.default.wrap(function _callee12$(_context12) {
+                  while (1) {
+                    switch (_context12.prev = _context12.next) {
+                      case 0:
+                        node.sources = node.sources.filter(function (elem, index, self) {
+                          return index == self.indexOf(elem);
+                        });
+                        node.subtopics = node.subtopics.filter(function (elem, index, self) {
+                          return index == self.indexOf(elem);
+                        });
+                        _context12.next = 4;
+                        return node.save();
+
+                      case 4:
+                      case "end":
+                        return _context12.stop();
+                    }
+                  }
+                }, _callee12, _this2);
+              }));
+
+              return function (_x24) {
+                return _ref13.apply(this, arguments);
+              };
+            }());
+
+            console.log("Big success");
+            res.end();
+            _context13.next = 15;
+            break;
+
+          case 9:
+            _context13.prev = 9;
+            _context13.t0 = _context13["catch"](0);
+
+            console.log(_context13.t0);
+            errors = {};
+
+            errors.general = _context13.t0;
+            res.status(500).json(errors);
+
+          case 15:
+          case "end":
+            return _context13.stop();
+        }
+      }
+    }, _callee13, this, [[0, 9]]);
+  }));
+
+  return function legacyRemoveDuplicateSourcesAndSubtopics(_x22, _x23) {
+    return _ref12.apply(this, arguments);
   };
 }();
 
@@ -6109,204 +7512,208 @@ var legacyRemoveDuplicateSourcesAndSubtopics = exports.legacyRemoveDuplicateSour
 
 
 var updateNodeConnections = exports.updateNodeConnections = function () {
-  var _ref12 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee15(req, res) {
+  var _ref14 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee17(req, res) {
     var _this3 = this;
 
     var nodes, author, errors;
-    return _regenerator2.default.wrap(function _callee15$(_context15) {
+    return _regenerator2.default.wrap(function _callee17$(_context17) {
       while (1) {
-        switch (_context15.prev = _context15.next) {
+        switch (_context17.prev = _context17.next) {
           case 0:
-            _context15.prev = 0;
-            _context15.next = 3;
-            return _node2.default.find();
+            _context17.prev = 0;
+            _context17.next = 3;
+            return _node3.default.find();
 
           case 3:
-            nodes = _context15.sent;
-            _context15.next = 6;
+            nodes = _context17.sent;
+            _context17.next = 6;
             return _user2.default.find({ admin: true });
 
           case 6:
-            author = _context15.sent;
+            author = _context17.sent;
 
             author = author[0];
             nodes.forEach(function () {
-              var _ref13 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee14(node) {
-                return _regenerator2.default.wrap(function _callee14$(_context14) {
+              var _ref15 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee16(node) {
+                return _regenerator2.default.wrap(function _callee16$(_context16) {
                   while (1) {
-                    switch (_context14.prev = _context14.next) {
+                    switch (_context16.prev = _context16.next) {
                       case 0:
                         if (node.sources.length > 0) {
                           node.sources.forEach(function () {
-                            var _ref14 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee12(source) {
+                            var _ref16 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee14(source) {
                               var connection;
-                              return _regenerator2.default.wrap(function _callee12$(_context12) {
+                              return _regenerator2.default.wrap(function _callee14$(_context14) {
                                 while (1) {
-                                  switch (_context12.prev = _context12.next) {
+                                  switch (_context14.prev = _context14.next) {
                                     case 0:
-                                      connection = new _connection4.default({
+                                      connection = new _connection7.default({
                                         sourceNode: source,
                                         subtopicNode: node._id,
                                         author: author._id
                                       });
                                       // Update related node
 
-                                      _context12.next = 3;
-                                      return _node2.default.findByIdAndUpdate(source, {
+                                      _context14.next = 3;
+                                      return _node3.default.findByIdAndUpdate(source, {
                                         $pull: { subtopics: node._id },
                                         $push: { subtopicConnections: connection._id }
                                       }, { new: true });
 
                                     case 3:
-                                      _context12.next = 5;
-                                      return _node2.default.findByIdAndUpdate(node._id, {
+                                      _context14.next = 5;
+                                      return _node3.default.findByIdAndUpdate(node._id, {
                                         $pull: { sources: source },
                                         $push: { sourceConnections: connection._id }
                                       }, { new: true });
 
                                     case 5:
-                                      _context12.next = 7;
+                                      _context14.next = 7;
                                       return connection.save();
 
                                     case 7:
                                     case "end":
-                                      return _context12.stop();
+                                      return _context14.stop();
                                   }
                                 }
-                              }, _callee12, _this3);
+                              }, _callee14, _this3);
                             }));
 
-                            return function (_x24) {
-                              return _ref14.apply(this, arguments);
+                            return function (_x28) {
+                              return _ref16.apply(this, arguments);
                             };
                           }());
                         }
                         if (node.subtopics.length > 0) {
                           node.subtopics.forEach(function () {
-                            var _ref15 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee13(subtopic) {
+                            var _ref17 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee15(subtopic) {
                               var connection;
-                              return _regenerator2.default.wrap(function _callee13$(_context13) {
+                              return _regenerator2.default.wrap(function _callee15$(_context15) {
                                 while (1) {
-                                  switch (_context13.prev = _context13.next) {
+                                  switch (_context15.prev = _context15.next) {
                                     case 0:
-                                      connection = new _connection4.default({
+                                      connection = new _connection7.default({
                                         sourceNode: node._id,
                                         subtopicNode: subtopic,
                                         author: author._id
                                       });
                                       // Update related node
 
-                                      _context13.next = 3;
-                                      return _node2.default.findByIdAndUpdate(subtopic, {
+                                      _context15.next = 3;
+                                      return _node3.default.findByIdAndUpdate(subtopic, {
                                         $pull: { sources: node._id },
                                         $push: { sourceConnections: connection._id }
                                       }, { new: true });
 
                                     case 3:
-                                      _context13.next = 5;
-                                      return _node2.default.findByIdAndUpdate(node._id, {
+                                      _context15.next = 5;
+                                      return _node3.default.findByIdAndUpdate(node._id, {
                                         $pull: { subtopics: subtopic },
                                         $push: { subtopicConnections: connection._id }
                                       }, { new: true });
 
                                     case 5:
-                                      _context13.next = 7;
+                                      _context15.next = 7;
                                       return connection.save();
 
                                     case 7:
                                     case "end":
-                                      return _context13.stop();
+                                      return _context15.stop();
                                   }
                                 }
-                              }, _callee13, _this3);
+                              }, _callee15, _this3);
                             }));
 
-                            return function (_x25) {
-                              return _ref15.apply(this, arguments);
+                            return function (_x29) {
+                              return _ref17.apply(this, arguments);
                             };
                           }());
                         }
 
                       case 2:
                       case "end":
-                        return _context14.stop();
+                        return _context16.stop();
                     }
                   }
-                }, _callee14, _this3);
+                }, _callee16, _this3);
               }));
 
-              return function (_x23) {
-                return _ref13.apply(this, arguments);
+              return function (_x27) {
+                return _ref15.apply(this, arguments);
               };
             }());
 
             console.log("Large success");
             res.end();
-            _context15.next = 19;
+            _context17.next = 19;
             break;
 
           case 13:
-            _context15.prev = 13;
-            _context15.t0 = _context15["catch"](0);
+            _context17.prev = 13;
+            _context17.t0 = _context17["catch"](0);
 
-            console.log(_context15.t0);
+            console.log(_context17.t0);
             errors = {};
 
-            errors.general = _context15.t0;
+            errors.general = _context17.t0;
             res.status(500).json(errors);
 
           case 19:
           case "end":
-            return _context15.stop();
+            return _context17.stop();
         }
       }
-    }, _callee15, this, [[0, 13]]);
+    }, _callee17, this, [[0, 13]]);
   }));
 
-  return function updateNodeConnections(_x21, _x22) {
-    return _ref12.apply(this, arguments);
+  return function updateNodeConnections(_x25, _x26) {
+    return _ref14.apply(this, arguments);
   };
 }();
 
-var _node = __webpack_require__(28);
+var _node2 = __webpack_require__(25);
 
-var _node2 = _interopRequireDefault(_node);
+var _node3 = _interopRequireDefault(_node2);
 
-var _connection3 = __webpack_require__(29);
+var _connection6 = __webpack_require__(35);
 
-var _connection4 = _interopRequireDefault(_connection3);
+var _connection7 = _interopRequireDefault(_connection6);
 
-var _user = __webpack_require__(51);
+var _user = __webpack_require__(33);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _mongodb = __webpack_require__(117);
+var _universe = __webpack_require__(59);
 
-var _validateNodeInput2 = __webpack_require__(118);
+var _universe2 = _interopRequireDefault(_universe);
+
+var _mongodb = __webpack_require__(125);
+
+var _validateNodeInput2 = __webpack_require__(126);
 
 var _validateNodeInput3 = _interopRequireDefault(_validateNodeInput2);
 
-var _addSourceConnections = __webpack_require__(119);
+var _addSourceConnections = __webpack_require__(127);
 
-var _addSubtopicConnections = __webpack_require__(120);
+var _addSubtopicConnections = __webpack_require__(128);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 117 */
+/* 125 */
 /***/ (function(module, exports) {
 
 module.exports = require("mongodb");
 
 /***/ }),
-/* 118 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Validator = __webpack_require__(27);
-var _ = __webpack_require__(18);
+var Validator = __webpack_require__(34);
+var _ = __webpack_require__(23);
 
 module.exports = function validateNodeInput(data) {
   var errors = {};
@@ -6331,7 +7738,7 @@ module.exports = function validateNodeInput(data) {
 };
 
 /***/ }),
-/* 119 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6342,11 +7749,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.addSourceConnections = undefined;
 
-var _regenerator = __webpack_require__(21);
+var _regenerator = __webpack_require__(20);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _asyncToGenerator2 = __webpack_require__(22);
+var _asyncToGenerator2 = __webpack_require__(21);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -6364,7 +7771,7 @@ var addSourceConnections = exports.addSourceConnections = function () {
             author = data.author;
             nodeId = _mongoose2.default.Types.ObjectId(node._id);
 
-            if (!(sourceConnections.length > 0)) {
+            if (!(sourceConnections && sourceConnections.length > 0)) {
               _context4.next = 14;
               break;
             }
@@ -6518,22 +7925,22 @@ var addSourceConnections = exports.addSourceConnections = function () {
   };
 }();
 
-var _node = __webpack_require__(28);
+var _node = __webpack_require__(25);
 
 var _node2 = _interopRequireDefault(_node);
 
-var _connection = __webpack_require__(29);
+var _connection = __webpack_require__(35);
 
 var _connection2 = _interopRequireDefault(_connection);
 
-var _mongoose = __webpack_require__(11);
+var _mongoose = __webpack_require__(12);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 120 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6544,11 +7951,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.addSubtopicConnections = undefined;
 
-var _regenerator = __webpack_require__(21);
+var _regenerator = __webpack_require__(20);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _asyncToGenerator2 = __webpack_require__(22);
+var _asyncToGenerator2 = __webpack_require__(21);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -6566,7 +7973,7 @@ var addSubtopicConnections = exports.addSubtopicConnections = function () {
             author = data.author;
             nodeId = _mongoose2.default.Types.ObjectId(node._id);
 
-            if (!(subtopicConnections.length > 0)) {
+            if (!(subtopicConnections && subtopicConnections.length > 0)) {
               _context4.next = 14;
               break;
             }
@@ -6721,22 +8128,329 @@ var addSubtopicConnections = exports.addSubtopicConnections = function () {
   };
 }();
 
-var _node = __webpack_require__(28);
+var _node = __webpack_require__(25);
 
 var _node2 = _interopRequireDefault(_node);
 
-var _connection = __webpack_require__(29);
+var _connection = __webpack_require__(35);
 
 var _connection2 = _interopRequireDefault(_connection);
 
-var _mongoose = __webpack_require__(11);
+var _mongoose = __webpack_require__(12);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 121 */
+/* 129 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _express = __webpack_require__(18);
+
+var _universe = __webpack_require__(130);
+
+var UniverseController = _interopRequireWildcard(_universe);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var router = new _express.Router();
+
+// Get Universe by ID
+router.route("/universe/:id").get(UniverseController.getUniverse);
+
+// Get Public Universe
+router.route("/universe/public/get").get(UniverseController.getPublicUniverse);
+
+// Create a personal universe for a given user if it doesn't already exist
+router.route("/universe/create/personal/:id").get(UniverseController.createPersonalUniverse);
+
+// Create a single public Universe and add all nodes to it (should not be used again)
+router.route("/universe/create/public").get(UniverseController.createPublicUniverse);
+
+exports.default = router;
+
+/***/ }),
+/* 130 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.createPublicUniverse = exports.createPersonalUniverse = exports.getPublicUniverse = exports.getUniverse = undefined;
+
+var _regenerator = __webpack_require__(20);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _asyncToGenerator2 = __webpack_require__(21);
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+
+/**
+ * Get universe by ID
+ * @param req
+ * @param res
+ * @returns void
+ */
+var getUniverse = exports.getUniverse = function () {
+  var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(req, res) {
+    var universe, errors;
+    return _regenerator2.default.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.prev = 0;
+            _context.next = 3;
+            return _universe2.default.findById(req.params.id);
+
+          case 3:
+            universe = _context.sent;
+
+
+            res.json(universe);
+            _context.next = 13;
+            break;
+
+          case 7:
+            _context.prev = 7;
+            _context.t0 = _context["catch"](0);
+
+            console.log(_context.t0);
+            errors = {};
+
+            errors.general = _context.t0;
+            res.status(500).json(errors);
+
+          case 13:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee, this, [[0, 7]]);
+  }));
+
+  return function getUniverse(_x, _x2) {
+    return _ref.apply(this, arguments);
+  };
+}();
+
+/**
+ * Get public universe
+ * @param req
+ * @param res
+ * @returns void
+ */
+
+
+var getPublicUniverse = exports.getPublicUniverse = function () {
+  var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(req, res) {
+    var universe, errors;
+    return _regenerator2.default.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            _context2.prev = 0;
+            _context2.next = 3;
+            return _universe2.default.findOne({ public: true });
+
+          case 3:
+            universe = _context2.sent;
+
+
+            res.json(universe);
+            _context2.next = 13;
+            break;
+
+          case 7:
+            _context2.prev = 7;
+            _context2.t0 = _context2["catch"](0);
+
+            console.log(_context2.t0);
+            errors = {};
+
+            errors.general = _context2.t0;
+            res.status(500).json(errors);
+
+          case 13:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2, this, [[0, 7]]);
+  }));
+
+  return function getPublicUniverse(_x3, _x4) {
+    return _ref2.apply(this, arguments);
+  };
+}();
+
+/**
+ * Create a universe and starting node for a given user
+ * @param req
+ * @param res
+ * @returns void
+ */
+
+
+var createPersonalUniverse = exports.createPersonalUniverse = function () {
+  var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(req, res) {
+    var user, universe, node, errors;
+    return _regenerator2.default.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.prev = 0;
+            _context3.next = 3;
+            return _user2.default.findById(req.params.id);
+
+          case 3:
+            user = _context3.sent;
+
+            if (!user.personalUniverse) {
+              _context3.next = 6;
+              break;
+            }
+
+            return _context3.abrupt("return", console.log("This user already has a personal universe"));
+
+          case 6:
+            universe = new _universe2.default({
+              title: user.name + "'s Universe",
+              users: new Array(user._id)
+            });
+            _context3.next = 9;
+            return universe.save();
+
+          case 9:
+            universe = _context3.sent;
+
+            user.personalUniverse = universe._id;
+            _context3.next = 13;
+            return user.save();
+
+          case 13:
+            user = _context3.sent;
+            node = new _node2.default({
+              title: user.name,
+              author: user._id,
+              public: false,
+              originUniverse: universe._id
+            });
+            _context3.next = 17;
+            return node.save();
+
+          case 17:
+
+            console.log("Gigantic Success!");
+
+            res.end();
+            _context3.next = 27;
+            break;
+
+          case 21:
+            _context3.prev = 21;
+            _context3.t0 = _context3["catch"](0);
+
+            console.log(_context3.t0);
+            errors = {};
+
+            errors.general = _context3.t0;
+            res.status(500).json(errors);
+
+          case 27:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3, this, [[0, 21]]);
+  }));
+
+  return function createPersonalUniverse(_x5, _x6) {
+    return _ref3.apply(this, arguments);
+  };
+}();
+
+/**
+ * Create the public universe and add all nodes to it
+ * @param req
+ * @param res
+ * @returns void
+ */
+
+
+var createPublicUniverse = exports.createPublicUniverse = function () {
+  var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(req, res) {
+    var errors;
+    return _regenerator2.default.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            try {
+              // let universe = new Universe({
+              //   title: "Public",
+              //   public: true
+              // });
+              // await universe.save();
+
+              // let allNodes = await Node.find();
+              // for (var i = 0; i < allNodes.length; i++) {
+              //   let node = allNodes[i];
+              //   node.public = true;
+              //   node.originUniverse = universe._id;
+              //   await node.save();
+              // }
+
+              console.log("Uncomment code in Universe Controller to run this again");
+
+              res.end();
+            } catch (e) {
+              console.log(e);
+              errors = {};
+
+              errors.general = e;
+              res.status(500).json(errors);
+            }
+
+          case 1:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4, this);
+  }));
+
+  return function createPublicUniverse(_x7, _x8) {
+    return _ref4.apply(this, arguments);
+  };
+}();
+
+var _universe = __webpack_require__(59);
+
+var _universe2 = _interopRequireDefault(_universe);
+
+var _node = __webpack_require__(25);
+
+var _node2 = _interopRequireDefault(_node);
+
+var _user = __webpack_require__(33);
+
+var _user2 = _interopRequireDefault(_user);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ }),
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6767,23 +8481,23 @@ exports.default = function () {
   });
 };
 
-var _post = __webpack_require__(49);
+var _post = __webpack_require__(56);
 
 var _post2 = _interopRequireDefault(_post);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 122 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(__dirname) {
 
-var webpack = __webpack_require__(53);
-var cssnext = __webpack_require__(123);
-var postcssFocus = __webpack_require__(124);
-var postcssReporter = __webpack_require__(125);
+var webpack = __webpack_require__(60);
+var cssnext = __webpack_require__(133);
+var postcssFocus = __webpack_require__(134);
+var postcssReporter = __webpack_require__(135);
 
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
@@ -6863,31 +8577,31 @@ module.exports = {
 /* WEBPACK VAR INJECTION */}.call(exports, ""))
 
 /***/ }),
-/* 123 */
+/* 133 */
 /***/ (function(module, exports) {
 
 module.exports = require("postcss-cssnext");
 
 /***/ }),
-/* 124 */
+/* 134 */
 /***/ (function(module, exports) {
 
 module.exports = require("postcss-focus");
 
 /***/ }),
-/* 125 */
+/* 135 */
 /***/ (function(module, exports) {
 
 module.exports = require("postcss-reporter");
 
 /***/ }),
-/* 126 */
+/* 136 */
 /***/ (function(module, exports) {
 
 module.exports = require("webpack-dev-middleware");
 
 /***/ }),
-/* 127 */
+/* 137 */
 /***/ (function(module, exports) {
 
 module.exports = require("webpack-hot-middleware");

@@ -6,6 +6,7 @@ import { browserHistory } from "react-router";
 
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
 
 import EditNodeForm from "./EditNodeForm";
 import NodeForm from "./NodeForm";
@@ -19,7 +20,8 @@ import {
   clearSources,
   clearNodes,
   clearNode,
-  nodeFullClear
+  nodeFullClear,
+  deleteNode
 } from "../NodeActions";
 import { getUniverse, clearUniverse } from "../../Universe/UniverseActions";
 
@@ -30,13 +32,15 @@ class Node extends Component {
     this.state = {
       node: this.props.singleNode || null,
       editFormToggle: false,
-      nodeFormToggle: false,
+      toggleNodeForm: false,
+      subtopicToggle: false,
       subtopics: null,
       sources: null
     };
 
     this.toggleEditForm = this.toggleEditForm.bind(this);
-    // this.nodeFormToggle = this.nodeFormToggle.bind(this);
+    this.toggleNodeForm = this.toggleNodeForm.bind(this);
+    this.toggleSubtopics = this.toggleSubtopics.bind(this);
   }
 
   componentDidMount() {
@@ -66,6 +70,11 @@ class Node extends Component {
 
   componentWillUnmount() {
     this.props.clearNodes();
+  }
+
+  toggleSubtopics() {
+    console.log(this.state.subtopicToggle);
+    this.setState({ subtopicToggle: !this.state.subtopicToggle });
   }
 
   componentDidUpdate(prevProps) {
@@ -110,18 +119,19 @@ class Node extends Component {
     }
   }
 
-  // nodeFormToggle() {
-  //   this.setState({ nodeFormToggle: !this.state.nodeFormToggle });
-  // }
+  toggleNodeForm() {
+    this.setState({ toggleNodeForm: !this.state.toggleNodeForm });
+  }
 
   render() {
-    let { editFormToggle, nodeFormToggle } = this.state;
+    let { editFormToggle, toggleNodeForm } = this.state;
     let content;
     if (this.state.node !== null) {
       let sourceJSX = [],
         subtopicJSX = [],
         editForm,
-        nodeForm;
+        nodeForm,
+        subtopicToggleButtonText;
       let node = this.state.node;
 
       if (editFormToggle) {
@@ -137,8 +147,13 @@ class Node extends Component {
         editForm = "";
       }
 
-      if (nodeFormToggle) {
-        nodeForm = <NodeForm />;
+      if (toggleNodeForm) {
+        nodeForm = (
+          <NodeForm
+            private={!this.props.universe.universe.public}
+            sourceNode={this.state.node}
+          />
+        );
       }
 
       let { subtopics, sources } = this.state;
@@ -180,12 +195,17 @@ class Node extends Component {
       }
 
       // Subtopics
-      if (subtopics && subtopics.length > 0) {
+      if (subtopics && subtopics.length > 0 && this.state.subtopicToggle) {
+        subtopicToggleButtonText = "Hide Subtopics";
         subtopics.forEach(subtopic => {
           subtopic = subtopic.subtopic;
           subtopicJSX.push(
             <Paper
-              style={{ padding: "0.5em", marginTop: "0.5em" }}
+              style={{
+                padding: "0.5em",
+                marginTop: "0.5em",
+                border: "solid black 1px"
+              }}
               key={subtopic._id}
             >
               <h3
@@ -207,9 +227,28 @@ class Node extends Component {
         this.props.node.loading &&
         this.state.node.subtopicConnections.length > 0
       ) {
+        subtopicToggleButtonText = "Subtopics Loading . . .";
         subtopicJSX = <Spinner />;
       } else {
+        subtopicToggleButtonText = "Show Subtopics";
         subtopicJSX = "";
+      }
+
+      let subtopicToggleJSX;
+      if (subtopics && subtopics.length > 0) {
+        subtopicToggleJSX = (
+          <Grid
+            container
+            spacing={0}
+            direction="column"
+            alignItems="center"
+            justify="center"
+          >
+            <Button onClick={this.toggleSubtopics}>
+              {subtopicToggleButtonText}
+            </Button>
+          </Grid>
+        );
       }
 
       let nodeContent;
@@ -218,27 +257,53 @@ class Node extends Component {
         let count = 0;
         nodeContent = [];
         node.content.string.split("\n").forEach(line => {
-          nodeContent.push(<p key={`line-${count}`}>{line}</p>);
+          nodeContent.push(
+            <Paper
+              style={{
+                padding: "0.5em",
+                marginTop: "0.5em",
+                backgroundColor: "gray"
+              }}
+            >
+              <p style={{ color: "white" }} key={`line-${count}`}>
+                {line}
+              </p>
+            </Paper>
+          );
           count++;
         });
       } else {
         nodeContent = "";
       }
 
+      let deleteButton;
+      if (this.props.auth.user && this.props.auth.user.admin) {
+        deleteButton = (
+          <span>
+            {" | "}
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => {
+                this.props.deleteNode(node._id);
+              }}
+            >
+              Delete Node
+            </Button>
+          </span>
+        );
+      }
+
       // FINAL CONTENT THAT WILL BE LOADED
       content = (
         <div key={node._id}>
-          <Paper style={{ padding: "0.5em", margin: "1em" }}>
-            <div className="row">
-              {/* <Button variant="contained" onClick={this.nodeFormToggle}>
-              Add an Idea
-            </Button> */}
-              <Button variant="contained" onClick={this.toggleEditForm}>
-                Edit Node
-              </Button>
-            </div>
-            {nodeForm}
-            {editForm}
+          <Paper
+            style={{
+              padding: "0.5em",
+              margin: "1em",
+              border: "solid black 1px"
+            }}
+          >
             <h1
               onClick={() => {
                 this.props.onNavigation(node._id);
@@ -246,10 +311,33 @@ class Node extends Component {
             >
               {node.title}
             </h1>
+            <div className="row">
+              <div className="col">
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  style={{ marginRight: "0.5em" }}
+                  onClick={this.toggleEditForm}
+                >
+                  Edit Node
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={this.toggleNodeForm}
+                >
+                  Add Node
+                </Button>
+                {deleteButton}
+              </div>
+            </div>
+            {nodeForm}
+            {editForm}
             {sourceJSX}
             <br />
             {nodeContent}
             <div>{subtopicJSX}</div>
+            {subtopicToggleJSX}
           </Paper>
         </div>
       );
@@ -298,6 +386,7 @@ export default connect(
     clearSources,
     clearSubtopics,
     clearNodes,
-    clearNode
+    clearNode,
+    deleteNode
   }
 )(Node);

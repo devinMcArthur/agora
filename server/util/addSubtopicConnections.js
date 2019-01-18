@@ -7,7 +7,7 @@ export async function addSubtopicConnections(node, data) {
     let subtopicConnections = data.subtopics;
     let author = data.author;
     let nodeId = mongoose.Types.ObjectId(node._id);
-    if (subtopicConnections.length > 0) {
+    if (subtopicConnections && subtopicConnections.length > 0) {
       // Find items that have been removed, remove source relationship in that node
       let oldSubtopicConnections = node.subtopicConnections.filter(
         existingConnection =>

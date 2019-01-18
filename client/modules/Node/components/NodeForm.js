@@ -26,13 +26,19 @@ class NodeForm extends Component {
         label: this.props.node.node.title,
         value: this.props.node.node._id.toString()
       });
+    } else if (this.props.sourceNode) {
+      sources.push(this.props.sourceNode._id);
+      defaultSources.push({
+        label: this.props.sourceNode.title,
+        value: this.props.sourceNode._id.toString()
+      });
     }
 
     this.state = {
       title: "",
       content: "",
       subtopics: [],
-      sources: [],
+      sources,
       defaultSources,
       universe: null,
       errors: {}
@@ -54,9 +60,7 @@ class NodeForm extends Component {
         this.props.getAllPublicNodesForSelect();
       }
     }
-    if (this.props.private === true) {
-      this.setState({ universe: this.props.universe.universe._id });
-    }
+    this.setState({ universe: this.props.universe.universe._id });
   }
 
   onSubmit(e) {
@@ -91,14 +95,6 @@ class NodeForm extends Component {
       subtopics[i] = selection[i].value;
     }
     this.setState({ subtopics });
-  }
-
-  onSubtopicOfSelect(selection) {
-    let subtopicOf = [];
-    for (var i in selection) {
-      subtopicOf[i] = selection[i].value;
-    }
-    this.setState({ subtopicOf });
   }
 
   render() {
@@ -170,7 +166,8 @@ NodeForm.defaultProps = {
 NodeForm.propTypes = {
   auth: PropTypes.object.isRequired,
   createNode: PropTypes.func.isRequired,
-  private: PropTypes.bool
+  private: PropTypes.bool,
+  sourceNode: PropTypes.object
 };
 
 export default connect(

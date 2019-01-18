@@ -95,9 +95,11 @@ export async function loginUser(req, res) {
     const isMatch = await bcrypt.compare(password, user.password);
     if (isMatch) {
       let personalUniverse = null || user.personalUniverse;
+      let admin = user.admin || false;
       const payload = {
         id: user._id,
         name: user.name,
+        admin,
         personalUniverse
       };
 

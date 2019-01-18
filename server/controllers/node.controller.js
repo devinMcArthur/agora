@@ -63,7 +63,6 @@ export async function createNode(req, res) {
       for (var i in req.body.sources) {
         let sourceNodePrivate = !(await Node.findById(req.body.sources[i])
           .public);
-        console.log(sourceNodePrivate);
         let connection = new Connection({
           sourceNode: req.body.sources[i],
           sourceNodePrivate,
@@ -85,12 +84,12 @@ export async function createNode(req, res) {
         let connection = new Connection({
           sourceNode: node._id,
           sourceNodePrivate: true,
-          subtopicNode: req.body.subtopic[i],
+          subtopicNode: req.body.subtopics[i],
           subtopicNodePrivate,
           author: req.body.author
         });
         connection = await connection.save();
-        await Node.findByIdAndUpdate(req.body.subtopic[i], {
+        await Node.findByIdAndUpdate(req.body.subtopics[i], {
           $push: { sourceConnections: connection._id }
         });
         subtopicConnections.push(connection._id);
@@ -105,7 +104,8 @@ export async function createNode(req, res) {
       // Public Nodes
       let node = new Node({
         title: req.body.title,
-        content: nodeContent
+        content: nodeContent,
+        originUniverse: req.body.universe
       });
 
       let sourceConnections = [];
@@ -165,6 +165,59 @@ export async function editNode(req, res) {
     addSourceConnections(node, req.body);
     addSubtopicConnections(node, req.body);
     await node.save();
+
+    res.end();
+  } catch (e) {
+    console.log(e);
+    let errors = {};
+    errors.general = e;
+    res.status(500).json(errors);
+  }
+}
+
+/**
+ * Delete a node through its ID
+ * @param req
+ * @param res
+ * @returns void
+ */
+export async function deleteNode(req, res) {
+  try {
+    let node = await Node.findById(req.params.id);
+    // Remove source connections
+    if (node.sourceConnections.length > 0) {
+      for (var i = 0; i < node.sourceConnections.length; i++) {
+        // Remove connection
+        let connection = await Connection.findById(node.sourceConnections[i]);
+        // Remove connection from source node
+        await Node.findByIdAndUpdate(
+          connection.sourceNode,
+          {
+            $pull: { subtopicConnections: connection._id }
+          },
+          { new: true }
+        );
+        await Connection.findByIdAndRemove(node.sourceConnections[i]);
+      }
+    }
+
+    // Remove subtopic connections
+    if (node.subtopicConnections.length > 0) {
+      for (var i = 0; i < node.subtopicConnections.length; i++) {
+        // Remove connection
+        let connection = await Connection.findById(node.subtopicConnections[i]);
+        // Remove connection from subtopic node
+        await Node.findByIdAndUpdate(
+          connection.subtopicNode,
+          {
+            $pull: { sourceConnections: connection._id }
+          },
+          { new: true }
+        );
+        await Connection.findByIdAndRemove(node.subtopicConnections[i]);
+      }
+    }
+    await Node.findByIdAndRemove(req.params.id);
 
     res.end();
   } catch (e) {

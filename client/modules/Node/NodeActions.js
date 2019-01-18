@@ -63,6 +63,13 @@ export const getNodeByID = id => dispatch => {
     );
 };
 
+// Remove duplicate sources and subtopics from all nodes
+export const deleteNode = id => dispatch => {
+  return callApi(`/node/${id}/delete`, "get")
+    .then(res => location.reload())
+    .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
+};
+
 // Retrieve an ID and Title for all Public Nodes
 export const getAllPublicNodesForSelect = () => dispatch => {
   dispatch(setNodeLoading());

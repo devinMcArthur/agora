@@ -20,6 +20,9 @@ router
   .route("/nodes/form/private/:id/all")
   .get(NodeController.getAllPrivateNodesForSelect);
 
+// Delete Node
+router.route("/node/:id/delete").get(NodeController.deleteNode);
+
 // Get Node sources
 router.route("/node/:id/sources").get(NodeController.getNodeSources);
 
