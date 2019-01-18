@@ -3,7 +3,11 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 
-import { createNode, getAllNodesForSelect } from "../NodeActions";
+import {
+  createNode,
+  getAllPublicNodesForSelect,
+  getAllPrivateNodesForSelect
+} from "../NodeActions";
 
 import SelectMultiple from "../../../components/SelectMultiple";
 import Paper from "@material-ui/core/Paper";
@@ -28,7 +32,7 @@ class NodeForm extends Component {
       title: "",
       content: "",
       subtopics: [],
-      sources,
+      sources: [],
       defaultSources,
       universe: null,
       errors: {}
@@ -42,7 +46,13 @@ class NodeForm extends Component {
 
   componentDidMount() {
     if (this.props.node.allNodes == null && !this.props.node.loading) {
-      this.props.getAllNodesForSelect();
+      if (this.props.private) {
+        this.props.getAllPrivateNodesForSelect(
+          this.props.universe.universe._id
+        );
+      } else {
+        this.props.getAllPublicNodesForSelect();
+      }
     }
     if (this.props.private === true) {
       this.setState({ universe: this.props.universe.universe._id });
@@ -92,7 +102,6 @@ class NodeForm extends Component {
   }
 
   render() {
-    console.log(this.props);
     let content;
     if (this.props.node.formNodes !== null) {
       content = (
@@ -166,5 +175,5 @@ NodeForm.propTypes = {
 
 export default connect(
   mapStateToProps,
-  { createNode, getAllNodesForSelect }
+  { createNode, getAllPublicNodesForSelect, getAllPrivateNodesForSelect }
 )(NodeForm);

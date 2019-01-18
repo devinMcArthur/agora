@@ -87,7 +87,9 @@ class UniverseRoot extends Component {
 
   render() {
     let nodeForm,
-      nodeFormComp = <NodeForm private={!this.props.universe.public} />;
+      nodeFormComp = (
+        <NodeForm private={!this.props.universe.universe.public} />
+      );
 
     if (this.state.nodeFormToggle) {
       nodeForm = nodeFormComp;

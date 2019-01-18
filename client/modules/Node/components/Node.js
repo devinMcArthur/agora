@@ -35,14 +35,11 @@ class Node extends Component {
       sources: null
     };
 
-    // this.toggleEditForm = this.toggleEditForm.bind(this);
+    this.toggleEditForm = this.toggleEditForm.bind(this);
     // this.nodeFormToggle = this.nodeFormToggle.bind(this);
   }
 
   componentDidMount() {
-    console.log("mount");
-    console.log(this.state.node);
-
     // Handle component loading
     let { node } = this.state;
     if (node) {
@@ -73,10 +70,6 @@ class Node extends Component {
 
   componentDidUpdate(prevProps) {
     // Grab appropriate subtopics for this node
-    console.log("update");
-    console.log(this.state.node);
-    console.log(this.props.node.subtopics);
-    console.log(prevProps.node.subtopics);
     if (
       this.props.node.subtopics !== null &&
       this.state.subtopics === null &&
@@ -115,7 +108,6 @@ class Node extends Component {
         this.props.getSources(this.props.node.node._id);
       }
     }
-    console.log("updateend");
   }
 
   // nodeFormToggle() {
@@ -135,7 +127,10 @@ class Node extends Component {
       if (editFormToggle) {
         editForm = (
           <div>
-            <EditNodeForm node={node} />
+            <EditNodeForm
+              singleNode={node}
+              private={!this.props.universe.universe.public}
+            />
           </div>
         );
       } else {
@@ -168,12 +163,6 @@ class Node extends Component {
         if (this.props.universe.universe !== null) {
           sourceJSX.push(
             <span key={"root-link"}>
-              {/* <Link
-                to={`/universe/${this.props.universe.universe._id}`}
-                style={{ textDecoration: "none" }}
-              >
-                #root
-              </Link>{" "} */}
               <Button
                 onClick={() => {
                   this.props.onNavigation(
@@ -240,14 +229,14 @@ class Node extends Component {
       content = (
         <div key={node._id}>
           <Paper style={{ padding: "0.5em", margin: "1em" }}>
-            {/* <div className="row">
-            <Button variant="contained" onClick={this.nodeFormToggle}>
+            <div className="row">
+              {/* <Button variant="contained" onClick={this.nodeFormToggle}>
               Add an Idea
-            </Button>
-            <Button variant="contained" onClick={this.toggleEditForm}>
-              Edit Node
-            </Button>
-          </div> */}
+            </Button> */}
+              <Button variant="contained" onClick={this.toggleEditForm}>
+                Edit Node
+              </Button>
+            </div>
             {nodeForm}
             {editForm}
             <h1

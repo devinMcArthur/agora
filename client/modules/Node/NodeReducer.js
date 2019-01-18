@@ -1,7 +1,8 @@
 import {
   GET_NODES,
   GET_NODE,
-  GET_ALL_NODES,
+  GET_ALL_PUBLIC_NODES,
+  GET_ALL_PRIVATE_NODES,
   GET_SOURCES,
   GET_SUBTOPICS,
   NODE_LOADING,
@@ -37,7 +38,13 @@ const NodeReducer = (state = initialState, action) => {
         nodes: action.payload,
         loading: false
       };
-    case GET_ALL_NODES:
+    case GET_ALL_PUBLIC_NODES:
+      return {
+        ...state,
+        formNodes: action.payload,
+        loading: false
+      };
+    case GET_ALL_PRIVATE_NODES:
       return {
         ...state,
         formNodes: action.payload,

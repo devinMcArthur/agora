@@ -3,7 +3,13 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 
-import { editNode, getAllNodesForSelect } from "../NodeActions";
+import {
+  editNode,
+  getAllPublicNodesForSelect,
+  getAllPrivateNodesForSelect
+} from "../NodeActions";
+
+import Spinner from "../../App/components/Common/Spinner";
 
 import SelectMultiple from "../../../components/SelectMultiple";
 import Paper from "@material-ui/core/Paper";
@@ -15,10 +21,11 @@ class EditNodeForm extends Component {
     super(props);
 
     this.state = {
-      title: this.props.node.node.title,
-      content: this.props.node.node.content.string,
-      sources: this.props.node.node.sources,
-      subtopics: this.props.node.node.subtopics,
+      node: this.props.singleNode,
+      title: this.props.singleNode.title,
+      content: this.props.singleNode.content.string,
+      sources: this.props.singleNode.sources,
+      subtopics: this.props.singleNode.subtopics,
       sourceOptions: [],
       subtopicOptions: [],
       errors: {}
@@ -33,14 +40,20 @@ class EditNodeForm extends Component {
 
   componentDidMount() {
     if (this.props.node.formNodes === null && !this.props.node.loading) {
-      this.props.getAllNodesForSelect();
+      if (this.props.private) {
+        this.props.getAllPrivateNodesForSelect(
+          this.props.universe.universe._id
+        );
+      } else {
+        this.props.getAllPublicNodesForSelect();
+      }
     }
-    if (
-      (this.state.subtopicOptions.length === 0 && this.props.node.subtopics) ||
-      (this.state.sourceOptions.length === 0 && this.props.node.sources)
-    ) {
-      this.createDefaultConnections();
-    }
+    // if (
+    //   (this.state.subtopicOptions.length === 0 && this.props.node.subtopics) ||
+    //   (this.state.sourceOptions.length === 0 && this.props.node.sources)
+    // ) {
+    //   this.createDefaultConnections();
+    // }
   }
 
   componentDidUpdate(prevProps) {
@@ -59,8 +72,8 @@ class EditNodeForm extends Component {
       existingSourceConnections = [];
     for (var i in this.props.node.formNodes) {
       // Find existing subtopic connections
-      if (this.props.node.subtopics) {
-        this.props.node.subtopics.forEach(subtopicObject => {
+      if (this.state.node.subtopics) {
+        this.state.node.subtopics.forEach(subtopicObject => {
           existingSuptopicConnections.push(subtopicObject.subtopic._id);
         });
         if (
@@ -73,8 +86,8 @@ class EditNodeForm extends Component {
       }
 
       // Find existing source connections
-      if (this.props.node.sources) {
-        this.props.node.sources.forEach(sourceObject => {
+      if (this.state.node.sources) {
+        this.state.node.sources.forEach(sourceObject => {
           existingSourceConnections.push(sourceObject.source._id);
         });
         if (
@@ -90,7 +103,7 @@ class EditNodeForm extends Component {
   onSubmit(e) {
     e.preventDefault();
     let newData = {
-      id: this.props.node.node._id,
+      id: this.state.node._id,
       title: this.state.title,
       content: this.state.content,
       sources: this.state.sources,
@@ -129,12 +142,15 @@ class EditNodeForm extends Component {
   }
 
   render() {
+    console.log(this.state.subtopicOptions);
     let content;
     if (
-      this.props.node !== null &&
-      this.props.node.formNodes !== null &&
-      (this.props.node.sources && this.state.sourceOptions.length > 0) &&
-      (this.props.node.subtopics && this.state.subtopicOptions.length > 0)
+      this.state.node !== null &&
+      this.state.node.formNodes !== null &&
+      ((this.state.node.sources && this.state.sourceOptions.length > 0) ||
+        this.state.node.sources === null) &&
+      ((this.state.node.subtopics && this.state.subtopicOptions.length > 0) ||
+        this.state.node.subtopics === null)
     ) {
       const { subtopicOptions, sourceOptions } = this.state;
 
@@ -184,7 +200,7 @@ class EditNodeForm extends Component {
         </div>
       );
     } else {
-      content = <p>Loading . . . </p>;
+      content = <Spinner />;
     }
 
     return <div>{content}</div>;
@@ -194,15 +210,21 @@ class EditNodeForm extends Component {
 // Retrieve data from store as props
 const mapStateToProps = state => ({
   auth: state.auth,
-  node: state.node
+  node: state.node,
+  universe: state.universe
 });
+
+EditNodeForm.defaultProps = {
+  private: false
+};
 
 EditNodeForm.propTypes = {
   auth: PropTypes.object.isRequired,
-  node: PropTypes.object.isRequired
+  singleNode: PropTypes.object.isRequired,
+  private: PropTypes.bool
 };
 
 export default connect(
   mapStateToProps,
-  { editNode, getAllNodesForSelect }
+  { editNode, getAllPublicNodesForSelect, getAllPrivateNodesForSelect }
 )(EditNodeForm);

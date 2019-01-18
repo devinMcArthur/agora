@@ -11,7 +11,14 @@ router
   .get(NodeController.getUniverseRootNodes);
 
 // Get all Nodes for Forms (returns ID and Title)
-router.route("/nodes/form/all").get(NodeController.getAllNodesForSelect);
+router
+  .route("/nodes/form/public/all")
+  .get(NodeController.getAllPublicNodesForSelect);
+
+// Get all Nodes for Forms (returns ID and Title)
+router
+  .route("/nodes/form/private/:id/all")
+  .get(NodeController.getAllPrivateNodesForSelect);
 
 // Get Node sources
 router.route("/node/:id/sources").get(NodeController.getNodeSources);

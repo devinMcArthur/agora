@@ -6,7 +6,8 @@ import { GET_ERRORS } from "../Error/ErrorActions";
 
 export const GET_NODE = "GET_NODE";
 export const GET_NODES = "GET_NODES";
-export const GET_ALL_NODES = "GET_ALL_NODES";
+export const GET_ALL_PUBLIC_NODES = "GET_ALL_PUBLIC_NODES";
+export const GET_ALL_PRIVATE_NODES = "GET_ALL_PRIVATE_NODES";
 export const GET_SOURCES = "GET_SOURCES";
 export const GET_SUBTOPICS = "GET_SUBTOPICS";
 export const NODE_LOADING = "NODE_LOADING";
@@ -62,11 +63,19 @@ export const getNodeByID = id => dispatch => {
     );
 };
 
-// Retrieve an ID and Title for all Nodes
-export const getAllNodesForSelect = () => dispatch => {
+// Retrieve an ID and Title for all Public Nodes
+export const getAllPublicNodesForSelect = () => dispatch => {
   dispatch(setNodeLoading());
-  return callApi("/nodes/form/all", "get")
-    .then(res => dispatch({ type: GET_ALL_NODES, payload: res }))
+  return callApi("/nodes/form/public/all", "get")
+    .then(res => dispatch({ type: GET_ALL_PUBLIC_NODES, payload: res }))
+    .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
+};
+
+// Retrieve an ID and Title for all Private Nodes
+export const getAllPrivateNodesForSelect = id => dispatch => {
+  dispatch(setNodeLoading());
+  return callApi(`/nodes/form/private/${id}/all`, "get")
+    .then(res => dispatch({ type: GET_ALL_PRIVATE_NODES, payload: res }))
     .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
 };
 

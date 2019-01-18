@@ -285,14 +285,39 @@ export async function getUniverseRootNodes(req, res) {
 }
 
 /**
- * Get all Nodes for form
+ * Get all public Nodes for form
  * @param req
  * @param res
  * @returns void
  */
-export async function getAllNodesForSelect(req, res) {
+export async function getAllPublicNodesForSelect(req, res) {
   try {
-    let nodes = await Node.find();
+    let nodes = await Node.find({ public: true });
+    let nodeArray = [];
+    nodes.forEach(node => {
+      nodeArray.push({
+        label: node.title,
+        value: node._id
+      });
+    });
+    res.json(nodeArray);
+  } catch (e) {
+    console.log(e);
+    let errors = {};
+    errors.general = e;
+    res.status(500).json(errors);
+  }
+}
+
+/**
+ * Get all private Nodes for form
+ * @param req
+ * @param res
+ * @returns void
+ */
+export async function getAllPrivateNodesForSelect(req, res) {
+  try {
+    let nodes = await Node.find({ originUniverse: req.params.id });
     let nodeArray = [];
     nodes.forEach(node => {
       nodeArray.push({
