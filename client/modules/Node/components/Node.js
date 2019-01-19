@@ -226,6 +226,7 @@ class Node extends Component {
               key={subtopic._id}
             >
               <h3
+                style={{ cursor: "pointer" }}
                 onClick={() => {
                   this.props.onNavigation(subtopic._id);
                 }}
@@ -333,6 +334,8 @@ class Node extends Component {
               <Grid item>
                 {" "}
                 <h1
+                  style={{ cursor: "pointer" }}
+                  className="link-text"
                   onClick={() => {
                     this.props.onNavigation(node._id);
                   }}

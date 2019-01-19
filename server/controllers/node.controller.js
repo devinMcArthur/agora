@@ -59,6 +59,8 @@ export async function createNode(req, res) {
         originUniverse: req.body.universe
       });
 
+      node = await node.save();
+
       let sourceConnections = [];
       for (var i in req.body.sources) {
         let sourceNodePrivate = !(await Node.findById(req.body.sources[i])
@@ -108,6 +110,8 @@ export async function createNode(req, res) {
         originUniverse: req.body.universe
       });
 
+      node = await node.save();
+
       let sourceConnections = [];
       for (var i in req.body.sources) {
         let connection = new Connection({
@@ -126,11 +130,11 @@ export async function createNode(req, res) {
       for (var i in req.body.subtopics) {
         let connection = new Connection({
           sourceNode: node._id,
-          subtopicNode: req.body.subtopic[i],
+          subtopicNode: req.body.subtopics[i],
           author: req.body.author
         });
         connection = await connection.save();
-        await Node.findByIdAndUpdate(req.body.subtopic[i], {
+        await Node.findByIdAndUpdate(req.body.subtopics[i], {
           $push: { sourceConnections: connection._id }
         });
         subtopicConnections.push(connection._id);

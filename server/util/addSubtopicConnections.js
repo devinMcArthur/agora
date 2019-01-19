@@ -31,35 +31,38 @@ export async function addSubtopicConnections(node, data) {
       });
 
       // Find objects that are new, add source relationship in that node
-      let newSubtopicConnections = subtopicConnections.filter(
-        newSubtopicConnection =>
-          !node.subtopicConnections.some(existingSubtopicConnection =>
-            existingSubtopicConnection.equals(
-              mongoose.Types.ObjectId(newSubtopicConnection)
+      if (subtopicConnections.length > 0) {
+        let newSubtopicConnections = subtopicConnections.filter(
+          newSubtopicConnection =>
+            !node.subtopicConnections.some(existingSubtopicConnection =>
+              existingSubtopicConnection.equals(
+                mongoose.Types.ObjectId(newSubtopicConnection)
+              )
             )
-          )
-      );
-      newSubtopicConnections.forEach(async subtopicConnection => {
-        // Create Connection Object
-        let connection = new Connection({
-          sourceNode: nodeId,
-          subtopicNode: subtopicConnection,
-          author
+        );
+        newSubtopicConnections.forEach(async subtopicConnection => {
+          // Create Connection Object
+          let connection = new Connection({
+            sourceNode: nodeId,
+            subtopicNode: subtopicConnection,
+            author
+          });
+          // Add connection to this node
+          await Node.findByIdAndUpdate(
+            nodeId,
+            { $push: { subtopicConnections: connection._id } },
+            { new: true }
+          );
+          // Add connection to other node
+          await Node.findByIdAndUpdate(
+            subtopicConnection,
+            { $push: { sourceConnections: connection._id } },
+            { new: true }
+          );
+          await connection.save();
         });
-        // Add connection to this node
-        await Node.findByIdAndUpdate(
-          nodeId,
-          { $push: { subtopicConnections: connection._id } },
-          { new: true }
-        );
-        // Add connection to other node
-        await Node.findByIdAndUpdate(
-          subtopicConnection,
-          { $push: { sourceConnections: connection._id } },
-          { new: true }
-        );
-        await connection.save();
-      });
+      }
+
       await node.save();
       return;
     } else {

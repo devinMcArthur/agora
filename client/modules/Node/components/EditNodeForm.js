@@ -30,6 +30,8 @@ class EditNodeForm extends Component {
       content: this.props.singleNode.content.string,
       sources: null,
       subtopics: null,
+      sourceObjects: null,
+      subtopicObjects: null,
       sourceOptions: [],
       subtopicOptions: [],
       errors: {}
@@ -48,7 +50,6 @@ class EditNodeForm extends Component {
   }
 
   componentDidMount() {
-    console.log("mount");
     if (this.props.node.formNodes === null && !this.props.node.loading) {
       if (this.props.private) {
         this.props.getAllPrivateNodesForSelect(
@@ -76,13 +77,24 @@ class EditNodeForm extends Component {
   componentDidUpdate(prevProps) {
     // Place source and subtopic connections into state
     if (this.props.node.subtopics !== null && this.state.subtopics === null) {
-      this.setState({ subtopics: this.props.node.subtopics }, () => {
-        this.createDefaultSubtopicConnections();
+      let subtopics = [];
+      this.props.node.subtopics.forEach(subtopicObject => {
+        subtopics.push(subtopicObject.connection._id);
       });
+      this.setState(
+        { subtopics, subtopicObjects: this.props.node.subtopics },
+        () => {
+          this.createDefaultSubtopicConnections();
+        }
+      );
       this.props.clearSubtopics();
     }
     if (this.props.node.sources !== null && this.state.sources === null) {
-      this.setState({ sources: this.props.node.sources }, () => {
+      let sources = [];
+      this.props.node.sources.forEach(sourceObject => {
+        sources.push(sourceObject.connection._id);
+      });
+      this.setState({ sources, sourceObjects: this.props.node.sources }, () => {
         this.createDefaultSourceConnections();
       });
       this.props.clearSources();
@@ -93,8 +105,8 @@ class EditNodeForm extends Component {
     let { subtopicOptions } = this.state;
     for (var i in this.props.node.formNodes) {
       // Find existing subtopic connections
-      if (this.state.subtopics) {
-        this.state.subtopics.forEach(connectionObject => {
+      if (this.state.subtopicObjects) {
+        this.state.subtopicObjects.forEach(connectionObject => {
           if (
             connectionObject.subtopic._id.toString() ===
             this.props.node.formNodes[i].value
@@ -111,8 +123,8 @@ class EditNodeForm extends Component {
     let { sourceOptions } = this.state;
     for (var i in this.props.node.formNodes) {
       // Find existing source connections
-      if (this.state.sources) {
-        this.state.sources.forEach(connectionObject => {
+      if (this.state.sourceObjects) {
+        this.state.sourceObjects.forEach(connectionObject => {
           if (
             connectionObject.source._id.toString() ===
             this.props.node.formNodes[i].value
@@ -168,7 +180,6 @@ class EditNodeForm extends Component {
 
   render() {
     let content;
-    console.log(this.state);
     if (
       this.state.node !== null &&
       this.props.node.formNodes !== null &&

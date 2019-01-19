@@ -1754,6 +1754,7 @@ var Node = function (_Component) {
                 border: "solid black 1px"
               }
             }, subtopic._id, (0, _jsx3.default)("h3", {
+              style: { cursor: "pointer" },
               onClick: function onClick() {
                 _this2.props.onNavigation(subtopic._id);
               }
@@ -1829,6 +1830,8 @@ var Node = function (_Component) {
         }, void 0, (0, _jsx3.default)(_Grid2.default, {
           item: true
         }, void 0, " ", (0, _jsx3.default)("h1", {
+          style: { cursor: "pointer" },
+          className: "link-text",
           onClick: function onClick() {
             _this2.props.onNavigation(node._id);
           }
@@ -4960,7 +4963,7 @@ function Footer() {
     className: _Footer2.default.footer
   }, void 0, (0, _jsx3.default)("p", {
     style: { color: "black" }
-  }, void 0, "\xA9 2019 \xB7 Solitaire \xB7 Alpha 0.1.2"));
+  }, void 0, "\xA9 2019 \xB7 Solitaire \xB7 Alpha 0.1.4"));
 }
 
 // Import Images
@@ -5630,6 +5633,8 @@ var EditNodeForm = function (_Component) {
       content: _this.props.singleNode.content.string,
       sources: null,
       subtopics: null,
+      sourceObjects: null,
+      subtopicObjects: null,
       sourceOptions: [],
       subtopicOptions: [],
       errors: {}
@@ -5647,7 +5652,6 @@ var EditNodeForm = function (_Component) {
   (0, _createClass3.default)(EditNodeForm, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      console.log("mount");
       if (this.props.node.formNodes === null && !this.props.node.loading) {
         if (this.props.private) {
           this.props.getAllPrivateNodesForSelect(this.props.universe.universe._id);
@@ -5676,13 +5680,21 @@ var EditNodeForm = function (_Component) {
 
       // Place source and subtopic connections into state
       if (this.props.node.subtopics !== null && this.state.subtopics === null) {
-        this.setState({ subtopics: this.props.node.subtopics }, function () {
+        var subtopics = [];
+        this.props.node.subtopics.forEach(function (subtopicObject) {
+          subtopics.push(subtopicObject.connection._id);
+        });
+        this.setState({ subtopics: subtopics, subtopicObjects: this.props.node.subtopics }, function () {
           _this2.createDefaultSubtopicConnections();
         });
         this.props.clearSubtopics();
       }
       if (this.props.node.sources !== null && this.state.sources === null) {
-        this.setState({ sources: this.props.node.sources }, function () {
+        var sources = [];
+        this.props.node.sources.forEach(function (sourceObject) {
+          sources.push(sourceObject.connection._id);
+        });
+        this.setState({ sources: sources, sourceObjects: this.props.node.sources }, function () {
           _this2.createDefaultSourceConnections();
         });
         this.props.clearSources();
@@ -5697,8 +5709,8 @@ var EditNodeForm = function (_Component) {
 
       for (var i in this.props.node.formNodes) {
         // Find existing subtopic connections
-        if (this.state.subtopics) {
-          this.state.subtopics.forEach(function (connectionObject) {
+        if (this.state.subtopicObjects) {
+          this.state.subtopicObjects.forEach(function (connectionObject) {
             if (connectionObject.subtopic._id.toString() === _this3.props.node.formNodes[i].value) {
               subtopicOptions.push(_this3.props.node.formNodes[i]);
             }
@@ -5716,8 +5728,8 @@ var EditNodeForm = function (_Component) {
 
       for (var i in this.props.node.formNodes) {
         // Find existing source connections
-        if (this.state.sources) {
-          this.state.sources.forEach(function (connectionObject) {
+        if (this.state.sourceObjects) {
+          this.state.sourceObjects.forEach(function (connectionObject) {
             if (connectionObject.source._id.toString() === _this4.props.node.formNodes[i].value) {
               sourceOptions.push(_this4.props.node.formNodes[i]);
             }
@@ -5776,7 +5788,6 @@ var EditNodeForm = function (_Component) {
     key: "render",
     value: function render() {
       var content = void 0;
-      console.log(this.state);
       if (this.state.node !== null && this.props.node.formNodes !== null && (this.state.node.sourceConnections && this.state.sourceOptions.length > 0 || this.state.node.sourceConnections.length === 0) && (this.state.node.subtopicConnections && this.state.subtopicOptions.length > 0 || this.state.node.subtopicConnections.length === 0)) {
         var _state = this.state,
             subtopicOptions = _state.subtopicOptions,
@@ -6842,7 +6853,7 @@ var createNode = exports.createNode = function () {
             };
 
             if (!req.body.private) {
-              _context.next = 50;
+              _context.next = 53;
               break;
             }
 
@@ -6853,20 +6864,25 @@ var createNode = exports.createNode = function () {
               public: false,
               originUniverse: req.body.universe
             });
+            _context.next = 12;
+            return node.save();
+
+          case 12:
+            node = _context.sent;
             sourceConnections = [];
             _context.t0 = _regenerator2.default.keys(req.body.sources);
 
-          case 12:
+          case 15:
             if ((_context.t1 = _context.t0()).done) {
-              _context.next = 26;
+              _context.next = 29;
               break;
             }
 
             i = _context.t1.value;
-            _context.next = 16;
+            _context.next = 19;
             return _node3.default.findById(req.body.sources[i]).public;
 
-          case 16:
+          case 19:
             sourceNodePrivate = !_context.sent;
             connection = new _connection7.default({
               sourceNode: req.body.sources[i],
@@ -6875,36 +6891,36 @@ var createNode = exports.createNode = function () {
               subtopicNodePrivate: true,
               author: req.body.author
             });
-            _context.next = 20;
+            _context.next = 23;
             return connection.save();
 
-          case 20:
+          case 23:
             connection = _context.sent;
-            _context.next = 23;
+            _context.next = 26;
             return _node3.default.findByIdAndUpdate(req.body.sources[i], {
               $push: { subtopicConnections: connection._id }
             });
 
-          case 23:
+          case 26:
             sourceConnections.push(connection._id);
-            _context.next = 12;
+            _context.next = 15;
             break;
 
-          case 26:
+          case 29:
             subtopicConnections = [];
             _context.t2 = _regenerator2.default.keys(req.body.subtopics);
 
-          case 28:
+          case 31:
             if ((_context.t3 = _context.t2()).done) {
-              _context.next = 42;
+              _context.next = 45;
               break;
             }
 
             i = _context.t3.value;
-            _context.next = 32;
+            _context.next = 35;
             return _node3.default.findById(req.body.subtopics[i]).public;
 
-          case 32:
+          case 35:
             subtopicNodePrivate = !_context.sent;
             _connection = new _connection7.default({
               sourceNode: node._id,
@@ -6913,49 +6929,54 @@ var createNode = exports.createNode = function () {
               subtopicNodePrivate: subtopicNodePrivate,
               author: req.body.author
             });
-            _context.next = 36;
+            _context.next = 39;
             return _connection.save();
 
-          case 36:
+          case 39:
             _connection = _context.sent;
-            _context.next = 39;
+            _context.next = 42;
             return _node3.default.findByIdAndUpdate(req.body.subtopics[i], {
               $push: { sourceConnections: _connection._id }
             });
 
-          case 39:
+          case 42:
             subtopicConnections.push(_connection._id);
-            _context.next = 28;
+            _context.next = 31;
             break;
 
-          case 42:
+          case 45:
 
             node.sourceConnections = sourceConnections;
             node.subtopicConnections = subtopicConnections;
-            _context.next = 46;
+            _context.next = 49;
             return node.save();
 
-          case 46:
+          case 49:
             node = _context.sent;
 
 
             res.json(node);
-            _context.next = 83;
+            _context.next = 89;
             break;
 
-          case 50:
+          case 53:
             // Public Nodes
             _node = new _node3.default({
               title: req.body.title,
               content: nodeContent,
               originUniverse: req.body.universe
             });
+            _context.next = 56;
+            return _node.save();
+
+          case 56:
+            _node = _context.sent;
             _sourceConnections = [];
             _context.t4 = _regenerator2.default.keys(req.body.sources);
 
-          case 53:
+          case 59:
             if ((_context.t5 = _context.t4()).done) {
-              _context.next = 64;
+              _context.next = 70;
               break;
             }
 
@@ -6965,71 +6986,71 @@ var createNode = exports.createNode = function () {
               subtopicNode: _node._id,
               author: req.body.author
             });
-            _context.next = 58;
+            _context.next = 64;
             return _connection2.save();
 
-          case 58:
+          case 64:
             _connection2 = _context.sent;
-            _context.next = 61;
+            _context.next = 67;
             return _node3.default.findByIdAndUpdate(req.body.sources[i], {
               $push: { subtopicConnections: _connection2._id }
             });
 
-          case 61:
+          case 67:
             _sourceConnections.push(_connection2._id);
-            _context.next = 53;
+            _context.next = 59;
             break;
 
-          case 64:
+          case 70:
             _subtopicConnections = [];
             _context.t6 = _regenerator2.default.keys(req.body.subtopics);
 
-          case 66:
+          case 72:
             if ((_context.t7 = _context.t6()).done) {
-              _context.next = 77;
+              _context.next = 83;
               break;
             }
 
             i = _context.t7.value;
             _connection3 = new _connection7.default({
               sourceNode: _node._id,
-              subtopicNode: req.body.subtopic[i],
+              subtopicNode: req.body.subtopics[i],
               author: req.body.author
             });
-            _context.next = 71;
+            _context.next = 77;
             return _connection3.save();
 
-          case 71:
+          case 77:
             _connection3 = _context.sent;
-            _context.next = 74;
-            return _node3.default.findByIdAndUpdate(req.body.subtopic[i], {
+            _context.next = 80;
+            return _node3.default.findByIdAndUpdate(req.body.subtopics[i], {
               $push: { sourceConnections: _connection3._id }
             });
 
-          case 74:
+          case 80:
             _subtopicConnections.push(_connection3._id);
-            _context.next = 66;
+            _context.next = 72;
             break;
 
-          case 77:
+          case 83:
 
             _node.sourceConnections = _sourceConnections;
             _node.subtopicConnections = _subtopicConnections;
-            _context.next = 81;
+            _context.next = 87;
             return _node.save();
 
-          case 81:
+          case 87:
             _node = _context.sent;
 
 
             res.json(_node);
 
-          case 83:
-            _context.next = 91;
+          case 89:
+            _context.next = 97;
             break;
 
-          case 85:
-            _context.prev = 85;
+          case 91:
+            _context.prev = 91;
             _context.t8 = _context["catch"](0);
 
             console.log(_context.t8);
@@ -7038,12 +7059,12 @@ var createNode = exports.createNode = function () {
             _errors.general = _context.t8;
             res.status(500).json(_errors);
 
-          case 91:
+          case 97:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, this, [[0, 85]]);
+    }, _callee, this, [[0, 91]]);
   }));
 
   return function createNode(_x, _x2) {
@@ -8177,7 +8198,7 @@ var addSourceConnections = exports.addSourceConnections = function () {
             nodeId = _mongoose2.default.Types.ObjectId(node._id);
 
             if (!(sourceConnections && sourceConnections.length > 0)) {
-              _context4.next = 14;
+              _context4.next = 13;
               break;
             }
 
@@ -8223,57 +8244,60 @@ var addSourceConnections = exports.addSourceConnections = function () {
             }());
 
             // Find objects that are new, add subtopic relationship from that node
-            newSourceConnections = sourceConnections.filter(function (newSourceConnection) {
-              return !node.sourceConnections.some(function (existingSourceConnection) {
-                return existingSourceConnection.equals(_mongoose2.default.Types.ObjectId(newSourceConnection));
+            if (sourceConnections.length > 0) {
+              newSourceConnections = sourceConnections.filter(function (newSourceConnection) {
+                return !node.sourceConnections.some(function (existingSourceConnection) {
+                  return existingSourceConnection.equals(_mongoose2.default.Types.ObjectId(newSourceConnection));
+                });
               });
-            });
 
-            newSourceConnections.forEach(function () {
-              var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(sourceConnection) {
-                var connection;
-                return _regenerator2.default.wrap(function _callee2$(_context2) {
-                  while (1) {
-                    switch (_context2.prev = _context2.next) {
-                      case 0:
-                        // Create Connection Object
-                        connection = new _connection2.default({
-                          sourceNode: sourceConnection,
-                          subtopicNode: nodeId,
-                          author: author
-                        });
-                        // Add Connection to this node (subtopic node)
+              newSourceConnections.forEach(function () {
+                var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(sourceConnection) {
+                  var connection;
+                  return _regenerator2.default.wrap(function _callee2$(_context2) {
+                    while (1) {
+                      switch (_context2.prev = _context2.next) {
+                        case 0:
+                          // Create Connection Object
+                          connection = new _connection2.default({
+                            sourceNode: sourceConnection,
+                            subtopicNode: nodeId,
+                            author: author
+                          });
+                          // Add Connection to this node (subtopic node)
 
-                        _context2.next = 3;
-                        return _node2.default.findByIdAndUpdate(nodeId, { $push: { sourceConnections: connection._id } }, { new: true });
+                          _context2.next = 3;
+                          return _node2.default.findByIdAndUpdate(nodeId, { $push: { sourceConnections: connection._id } }, { new: true });
 
-                      case 3:
-                        _context2.next = 5;
-                        return _node2.default.findByIdAndUpdate(sourceConnection, { $push: { subtopicConnections: connection._id } }, { new: true });
+                        case 3:
+                          _context2.next = 5;
+                          return _node2.default.findByIdAndUpdate(sourceConnection, { $push: { subtopicConnections: connection._id } }, { new: true });
 
-                      case 5:
-                        _context2.next = 7;
-                        return connection.save();
+                        case 5:
+                          _context2.next = 7;
+                          return connection.save();
 
-                      case 7:
-                      case "end":
-                        return _context2.stop();
+                        case 7:
+                        case "end":
+                          return _context2.stop();
+                      }
                     }
-                  }
-                }, _callee2, _this);
-              }));
+                  }, _callee2, _this);
+                }));
 
-              return function (_x4) {
-                return _ref3.apply(this, arguments);
-              };
-            }());
-            _context4.next = 11;
+                return function (_x4) {
+                  return _ref3.apply(this, arguments);
+                };
+              }());
+            }
+
+            _context4.next = 10;
             return node.save();
 
-          case 11:
+          case 10:
             return _context4.abrupt("return");
 
-          case 14:
+          case 13:
             // Remove from subtopic of related nodes
             node.sources.forEach(function () {
               var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(source) {
@@ -8297,18 +8321,18 @@ var addSourceConnections = exports.addSourceConnections = function () {
               };
             }());
             node.sources = [];
-            _context4.next = 18;
+            _context4.next = 17;
             return node.save();
 
-          case 18:
+          case 17:
             return _context4.abrupt("return");
 
-          case 19:
-            _context4.next = 27;
+          case 18:
+            _context4.next = 26;
             break;
 
-          case 21:
-            _context4.prev = 21;
+          case 20:
+            _context4.prev = 20;
             _context4.t0 = _context4["catch"](0);
 
             console.log(_context4.t0);
@@ -8317,12 +8341,12 @@ var addSourceConnections = exports.addSourceConnections = function () {
             errors.general = _context4.t0;
             return _context4.abrupt("return", new Error(errors));
 
-          case 27:
+          case 26:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, this, [[0, 21]]);
+    }, _callee4, this, [[0, 20]]);
   }));
 
   return function addSourceConnections(_x, _x2) {
@@ -8379,7 +8403,7 @@ var addSubtopicConnections = exports.addSubtopicConnections = function () {
             nodeId = _mongoose2.default.Types.ObjectId(node._id);
 
             if (!(subtopicConnections && subtopicConnections.length > 0)) {
-              _context4.next = 14;
+              _context4.next = 13;
               break;
             }
 
@@ -8426,57 +8450,60 @@ var addSubtopicConnections = exports.addSubtopicConnections = function () {
             }());
 
             // Find objects that are new, add source relationship in that node
-            newSubtopicConnections = subtopicConnections.filter(function (newSubtopicConnection) {
-              return !node.subtopicConnections.some(function (existingSubtopicConnection) {
-                return existingSubtopicConnection.equals(_mongoose2.default.Types.ObjectId(newSubtopicConnection));
+            if (subtopicConnections.length > 0) {
+              newSubtopicConnections = subtopicConnections.filter(function (newSubtopicConnection) {
+                return !node.subtopicConnections.some(function (existingSubtopicConnection) {
+                  return existingSubtopicConnection.equals(_mongoose2.default.Types.ObjectId(newSubtopicConnection));
+                });
               });
-            });
 
-            newSubtopicConnections.forEach(function () {
-              var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(subtopicConnection) {
-                var connection;
-                return _regenerator2.default.wrap(function _callee2$(_context2) {
-                  while (1) {
-                    switch (_context2.prev = _context2.next) {
-                      case 0:
-                        // Create Connection Object
-                        connection = new _connection2.default({
-                          sourceNode: nodeId,
-                          subtopicNode: subtopicConnection,
-                          author: author
-                        });
-                        // Add connection to this node
+              newSubtopicConnections.forEach(function () {
+                var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(subtopicConnection) {
+                  var connection;
+                  return _regenerator2.default.wrap(function _callee2$(_context2) {
+                    while (1) {
+                      switch (_context2.prev = _context2.next) {
+                        case 0:
+                          // Create Connection Object
+                          connection = new _connection2.default({
+                            sourceNode: nodeId,
+                            subtopicNode: subtopicConnection,
+                            author: author
+                          });
+                          // Add connection to this node
 
-                        _context2.next = 3;
-                        return _node2.default.findByIdAndUpdate(nodeId, { $push: { subtopicConnections: connection._id } }, { new: true });
+                          _context2.next = 3;
+                          return _node2.default.findByIdAndUpdate(nodeId, { $push: { subtopicConnections: connection._id } }, { new: true });
 
-                      case 3:
-                        _context2.next = 5;
-                        return _node2.default.findByIdAndUpdate(subtopicConnection, { $push: { sourceConnections: connection._id } }, { new: true });
+                        case 3:
+                          _context2.next = 5;
+                          return _node2.default.findByIdAndUpdate(subtopicConnection, { $push: { sourceConnections: connection._id } }, { new: true });
 
-                      case 5:
-                        _context2.next = 7;
-                        return connection.save();
+                        case 5:
+                          _context2.next = 7;
+                          return connection.save();
 
-                      case 7:
-                      case "end":
-                        return _context2.stop();
+                        case 7:
+                        case "end":
+                          return _context2.stop();
+                      }
                     }
-                  }
-                }, _callee2, _this);
-              }));
+                  }, _callee2, _this);
+                }));
 
-              return function (_x4) {
-                return _ref3.apply(this, arguments);
-              };
-            }());
-            _context4.next = 11;
+                return function (_x4) {
+                  return _ref3.apply(this, arguments);
+                };
+              }());
+            }
+
+            _context4.next = 10;
             return node.save();
 
-          case 11:
+          case 10:
             return _context4.abrupt("return");
 
-          case 14:
+          case 13:
             // Remove from source of related nodes
             node.subtopics.forEach(function () {
               var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(source) {
@@ -8500,18 +8527,18 @@ var addSubtopicConnections = exports.addSubtopicConnections = function () {
               };
             }());
             node.subtopics = [];
-            _context4.next = 18;
+            _context4.next = 17;
             return node.save();
 
-          case 18:
+          case 17:
             return _context4.abrupt("return");
 
-          case 19:
-            _context4.next = 27;
+          case 18:
+            _context4.next = 26;
             break;
 
-          case 21:
-            _context4.prev = 21;
+          case 20:
+            _context4.prev = 20;
             _context4.t0 = _context4["catch"](0);
 
             console.log(_context4.t0);
@@ -8520,12 +8547,12 @@ var addSubtopicConnections = exports.addSubtopicConnections = function () {
             errors.general = _context4.t0;
             return _context4.abrupt("return", new Error(errors));
 
-          case 27:
+          case 26:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, this, [[0, 21]]);
+    }, _callee4, this, [[0, 20]]);
   }));
 
   return function addSubtopicConnections(_x, _x2) {
