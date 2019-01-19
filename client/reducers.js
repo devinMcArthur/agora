@@ -11,6 +11,7 @@ import auth from "./modules/Auth/AuthReducer";
 import error from "./modules/Error/ErrorReducer";
 import node from "./modules/Node/NodeReducer";
 import universe from "./modules/Universe/UniverseReducer";
+import user from "./modules/User/UserReducer";
 
 // Combine all reducers into one root reducer
 export default combineReducers({
@@ -20,5 +21,6 @@ export default combineReducers({
   auth,
   error,
   node,
-  universe
+  universe,
+  user
 });

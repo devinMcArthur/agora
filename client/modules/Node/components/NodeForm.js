@@ -100,6 +100,7 @@ class NodeForm extends Component {
   render() {
     let content;
     if (this.props.node.formNodes !== null) {
+      console.log(this.props.node.formNodes);
       content = (
         <div>
           <Paper>

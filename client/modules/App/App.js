@@ -42,8 +42,7 @@ export class App extends Component {
           process.env.NODE_ENV === "development" && <DevTools />}
         <div>
           <Helmet
-            title="Home"
-            titleTemplate="%s - Agora"
+            title="Agora"
             meta={[
               { charset: "utf-8" },
               {

@@ -1,11 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import Helmet from "react-helmet";
-import { browserHistory } from "react-router";
-
-import Paper from "@material-ui/core/Paper";
-import Button from "@material-ui/core/Button";
 
 import NodeForm from "../../../Node/components/NodeForm";
 import UniverseRoot from "../../../Universe/components/UniverseRoot";
@@ -54,6 +49,8 @@ class Home extends Component {
 
   render() {
     let nodeForm,
+      universeList,
+      rootNodeList,
       nodeFormComp = <NodeForm />;
 
     if (this.state.nodeFormToggle) {
@@ -62,7 +59,6 @@ class Home extends Component {
       nodeForm = "";
     }
 
-    let rootNodeList;
     if (this.state.universe !== null) {
       rootNodeList = (
         <UniverseRoot
@@ -73,16 +69,7 @@ class Home extends Component {
       );
     }
 
-    return (
-      <div>
-        {/* <h1>Welcome to the Homepage!</h1>
-        <Button variant="contained" onClick={this.nodeFormToggle}>
-          Add an Idea
-        </Button>
-        {nodeForm} */}
-        {rootNodeList}
-      </div>
-    );
+    return <div>{rootNodeList}</div>;
   }
 }
 

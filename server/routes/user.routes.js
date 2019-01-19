@@ -3,7 +3,7 @@ import * as UserController from "../controllers/user.controller";
 const router = new Router();
 
 // Get all Users
-router.route("/users").get(UserController.getUsers);
+router.route("/user/all").get(UserController.getAllUsers);
 
 // Get one post by cuid
 // router.route("/posts/:cuid").get(PostController.getPost);

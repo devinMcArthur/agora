@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Helmet from "react-helmet";
 import { browserHistory } from "react-router";
+import { Link } from "react-router";
 
 import UniverseRoot from "../components/UniverseRoot";
 
@@ -10,7 +11,8 @@ import { clearNodes } from "../../Node/NodeActions";
 import {
   createPersonalUniverse,
   getUniverse,
-  clearUniverse
+  clearUniverse,
+  getUserUniverses
 } from "../UniverseActions";
 
 class Personal extends Component {
@@ -36,6 +38,7 @@ class Personal extends Component {
     }
     if (this.props.auth.user.personalUniverse) {
       this.props.getUniverse(this.props.auth.user.personalUniverse);
+      this.props.getUserUniverses(this.props.auth.user.id);
     } else {
       this.props.createPersonalUniverse(this.props.auth.user.id);
     }
@@ -60,9 +63,25 @@ class Personal extends Component {
   }
 
   render() {
-    let content;
+    let content,
+      universeList = [];
     if (this.state.universe !== null) {
-      content = <UniverseRoot universe={this.state.universe} />;
+      if (this.props.universe.universes !== null) {
+        this.props.universe.universes.forEach(uni => {
+          universeList.push(
+            <span>
+              <Link to={`/universe/${uni._id}`}>{uni.title}</Link>
+            </span>
+          );
+        });
+      }
+
+      content = (
+        <div>
+          {universeList}
+          <UniverseRoot universe={this.state.universe} />
+        </div>
+      );
     } else {
       content = "Loading . . . ";
     }
@@ -88,6 +107,7 @@ export default connect(
     clearNodes,
     createPersonalUniverse,
     getUniverse,
-    clearUniverse
+    clearUniverse,
+    getUserUniverses
   }
 )(Personal);

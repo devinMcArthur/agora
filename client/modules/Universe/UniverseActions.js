@@ -4,8 +4,16 @@ import { GET_ERRORS } from "../Error/ErrorActions";
 import { setCurrentUser } from "../Auth/AuthActions";
 
 export const GET_UNIVERSE = "GET_UNIVERSE";
+export const GET_UNIVERSES = "GET_UNIVERSES";
 export const UNIVERSE_LOADING = "UNIVERSE_LOADING";
 export const CLEAR_UNIVERSE = "CLEAR_UNIVERSE";
+
+// Create Universe
+export const createUniverse = universe => dispatch => {
+  return callApi(`/universe`, "post", universe)
+    .then(res => window.location.replace(`/universe/${res}`))
+    .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
+};
 
 // Get universe by id
 export const getUniverse = id => dispatch => {
@@ -30,6 +38,13 @@ export const createPersonalUniverse = id => dispatch => {
       dispatch(setCurrentUser());
       location.reload();
     })
+    .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
+};
+
+export const getUserUniverses = id => dispatch => {
+  dispatch(setUniverseLoading());
+  return callApi(`/universe/user/${id}/fetch/all`)
+    .then(res => dispatch({ type: GET_UNIVERSES, payload: res }))
     .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
 };
 

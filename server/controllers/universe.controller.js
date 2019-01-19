@@ -3,6 +3,37 @@ import Node from "../models/node";
 import User from "../models/user";
 
 /**
+ * Create universe
+ * @param req
+ * @param res
+ * @returns void
+ */
+export async function createUniverse(req, res) {
+  try {
+    let universe = new Universe({
+      title: req.body.title,
+      users: req.body.users
+    });
+    await universe.save();
+
+    req.body.users.forEach(async userID => {
+      let user = await User.findByIdAndUpdate(
+        userID,
+        { $push: { universes: universe._id } },
+        { new: true }
+      );
+    });
+
+    res.json(universe._id);
+  } catch (e) {
+    console.log(e);
+    let errors = {};
+    errors.general = e;
+    res.status(500).json(errors);
+  }
+}
+
+/**
  * Get universe by ID
  * @param req
  * @param res
@@ -71,6 +102,31 @@ export async function createPersonalUniverse(req, res) {
     console.log("Gigantic Success!");
 
     res.end();
+  } catch (e) {
+    console.log(e);
+    let errors = {};
+    errors.general = e;
+    res.status(500).json(errors);
+  }
+}
+
+/**
+ * Create a universe and starting node for a given user
+ * @param req
+ * @param res
+ * @returns void
+ */
+export async function getUsersUniverses(req, res) {
+  try {
+    let user = await User.findById(req.params.id);
+    let universes = [];
+    if (user.universes) {
+      for (var i = 0; i < user.universes.length; i++) {
+        universes.push(await Universe.findById(user.universes[i]));
+      }
+    }
+
+    res.json(universes);
   } catch (e) {
     console.log(e);
     let errors = {};

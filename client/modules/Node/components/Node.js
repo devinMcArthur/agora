@@ -261,29 +261,32 @@ class Node extends Component {
         );
       }
 
-      let nodeContent;
+      let lineArray, nodeContent;
       if (node.content.string) {
         // render new lines
         let count = 0;
-        nodeContent = [];
+        lineArray = [];
         node.content.string.split("\n").forEach(line => {
-          nodeContent.push(
-            <Paper
-              style={{
-                padding: "0.5em",
-                marginTop: "0.5em",
-                backgroundColor: "gray"
-              }}
-              square={true}
-              key={"node-content"}
-            >
-              <p style={{ color: "white" }} key={`line-${count}`}>
-                {line}
-              </p>
-            </Paper>
+          lineArray.push(
+            <p style={{ color: "white" }} key={`line-${count}`}>
+              {line}
+            </p>
           );
           count++;
         });
+        nodeContent = (
+          <Paper
+            style={{
+              padding: "0.5em",
+              marginTop: "0.5em",
+              backgroundColor: "gray"
+            }}
+            square={true}
+            key={"node-content"}
+          >
+            {lineArray}
+          </Paper>
+        );
       } else {
         nodeContent = "";
       }
@@ -355,7 +358,6 @@ class Node extends Component {
             {nodeForm}
             {editForm}
             {sourceJSX}
-            <br />
             {nodeContent}
             <div>{subtopicJSX}</div>
             {subtopicToggleJSX}

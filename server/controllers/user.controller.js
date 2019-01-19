@@ -14,15 +14,16 @@ import keys from "../config/keys";
  * @param res
  * @returns void
  */
-export function getUsers(req, res) {
-  User.find()
-    .sort("-dateCreated")
-    .exec((err, users) => {
-      if (err) {
-        res.status(500).send(err);
-      }
-      res.json({ users });
-    });
+export async function getAllUsers(req, res) {
+  try {
+    let users = await User.find();
+    res.json(users);
+  } catch (e) {
+    console.log(e);
+    let errors = {};
+    errors.general = e;
+    res.status(500).json(errors);
+  }
 }
 
 /**
