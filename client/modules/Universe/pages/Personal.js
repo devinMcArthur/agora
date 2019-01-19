@@ -67,10 +67,11 @@ class Personal extends Component {
       universeList = [];
     if (this.state.universe !== null) {
       if (this.props.universe.universes !== null) {
+        universeList.push(<span>Shared Universes: </span>);
         this.props.universe.universes.forEach(uni => {
           universeList.push(
             <span>
-              <Link to={`/universe/${uni._id}`}>{uni.title}</Link>
+              <Link to={`/universe/${uni._id}`}>{uni.title}</Link>{" "}
             </span>
           );
         });

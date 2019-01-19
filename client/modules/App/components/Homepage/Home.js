@@ -65,6 +65,8 @@ class Home extends Component {
           universe={this.state.universe}
           onNavigation={this.onNavigation}
           title="Welcome to Agora!"
+          text="This is a platform to aggregate all information, this is the public Universe which is shared among all users, if you wish to access your own Universe, press '
+          'Home' in the Top Navigation Bar"
         />
       );
     }

@@ -1350,8 +1350,6 @@ var _UniverseActions = __webpack_require__(14);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _ref = (0, _jsx3.default)("p", {}, void 0, "This is a platform to aggregate all information, this is the public Universe which is shared among all users, if you wish to access your own Universe, press \"Home\" in the Top Navigation Bar");
-
 var UniverseRoot = function (_Component) {
   (0, _inherits3.default)(UniverseRoot, _Component);
 
@@ -1461,6 +1459,7 @@ var UniverseRoot = function (_Component) {
         item: true,
         xs: "auto"
       }, void 0, (0, _jsx3.default)("h1", {
+        style: { cursor: "pointer" },
         onClick: function onClick() {
           _this2.universeNavigation(_this2.props.universe.universe._id);
         }
@@ -1471,7 +1470,7 @@ var UniverseRoot = function (_Component) {
         variant: "outlined",
         color: "primary",
         onClick: this.nodeFormToggle
-      }, void 0, "Add a new Node")) : ""), nodeForm, _ref, content);
+      }, void 0, "Add a new Node")) : ""), nodeForm, (0, _jsx3.default)("p", {}, void 0, this.props.text), content);
     }
   }]);
   return UniverseRoot;
@@ -2944,7 +2943,8 @@ var Home = function (_Component) {
         rootNodeList = (0, _jsx3.default)(_UniverseRoot2.default, {
           universe: this.state.universe,
           onNavigation: this.onNavigation,
-          title: "Welcome to Agora!"
+          title: "Welcome to Agora!",
+          text: "This is a platform to aggregate all information, this is the public Universe which is shared among all users, if you wish to access your own Universe, press '\r\n          'Home' in the Top Navigation Bar"
         });
       }
 
@@ -3030,6 +3030,8 @@ var _UniverseActions = __webpack_require__(14);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var _ref = (0, _jsx3.default)("span", {}, void 0, "Shared Universes: ");
+
 var Personal = function (_Component) {
   (0, _inherits3.default)(Personal, _Component);
 
@@ -3090,10 +3092,11 @@ var Personal = function (_Component) {
           universeList = [];
       if (this.state.universe !== null) {
         if (this.props.universe.universes !== null) {
+          universeList.push(_ref);
           this.props.universe.universes.forEach(function (uni) {
             universeList.push((0, _jsx3.default)("span", {}, void 0, (0, _jsx3.default)(_reactRouter.Link, {
               to: "/universe/" + uni._id
-            }, void 0, uni.title)));
+            }, void 0, uni.title), " "));
           });
         }
 

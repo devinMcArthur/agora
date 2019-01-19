@@ -126,6 +126,7 @@ class UniverseRoot extends Component {
         <Grid container spacing={24}>
           <Grid item xs={"auto"}>
             <h1
+              style={{ cursor: "pointer" }}
               onClick={() => {
                 this.universeNavigation(this.props.universe.universe._id);
               }}
@@ -149,11 +150,7 @@ class UniverseRoot extends Component {
         </Grid>
 
         {nodeForm}
-        <p>
-          This is a platform to aggregate all information, this is the public
-          Universe which is shared among all users, if you wish to access your
-          own Universe, press "Home" in the Top Navigation Bar
-        </p>
+        <p>{this.props.text}</p>
         {content}
       </div>
     );
@@ -169,7 +166,8 @@ const mapStateToProps = state => ({
 
 UniverseRoot.propTypes = {
   universe: PropTypes.object.isRequired,
-  title: PropTypes.string
+  title: PropTypes.string,
+  text: PropTypes.text
 };
 
 export default connect(
