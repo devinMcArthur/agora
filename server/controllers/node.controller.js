@@ -99,7 +99,7 @@ export async function createNode(req, res) {
       node.subtopicConnections = subtopicConnections;
       node = await node.save();
 
-      res.end();
+      res.json(node);
     } else {
       // Public Nodes
       let node = new Node({
@@ -140,7 +140,7 @@ export async function createNode(req, res) {
       node.subtopicConnections = subtopicConnections;
       node = await node.save();
 
-      res.end();
+      res.json(node);
     }
   } catch (e) {
     console.log(e);

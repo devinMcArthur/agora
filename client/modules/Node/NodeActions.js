@@ -21,7 +21,7 @@ export const NODE_FULL_CLEAR = "NODE_FULL_CLEAR";
 // Create a node
 export const createNode = node => dispatch => {
   return callApi("node", "post", node)
-    .then(res => location.reload())
+    .then(res => dispatch({ type: GET_NODE, payload: res }))
     .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
 };
 

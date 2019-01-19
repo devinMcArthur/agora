@@ -12,6 +12,8 @@ import EditNodeForm from "./EditNodeForm";
 import NodeForm from "./NodeForm";
 import Spinner from "../../App/components/Common/Spinner";
 
+import ShareButton from "../../../components/ShareButton";
+
 import {
   getNodeByID,
   getSubtopics,
@@ -79,6 +81,11 @@ class Node extends Component {
 
   toggleSubtopics() {
     this.setState({ subtopicToggle: !this.state.subtopicToggle });
+  }
+
+  copyNodeAddressToClipboard() {
+    let textField = document.createElement("textarea");
+    textField.innerText = ``;
   }
 
   componentDidUpdate(prevProps) {
@@ -322,13 +329,21 @@ class Node extends Component {
               border: "solid black 1px"
             }}
           >
-            <h1
-              onClick={() => {
-                this.props.onNavigation(node._id);
-              }}
-            >
-              {node.title}
-            </h1>
+            <Grid justify="space-between" container spacing={24}>
+              <Grid item>
+                {" "}
+                <h1
+                  onClick={() => {
+                    this.props.onNavigation(node._id);
+                  }}
+                >
+                  {node.title}
+                </h1>
+              </Grid>
+              <Grid item>
+                <ShareButton link={`${location.origin}/node/${node._id}`} />
+              </Grid>
+            </Grid>
             <div className="row">
               <div className="col">
                 {this.props.auth.isAuthenticated ? (

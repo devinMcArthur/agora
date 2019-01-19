@@ -139,11 +139,11 @@ var _apiCaller = __webpack_require__(19);
 
 var _apiCaller2 = _interopRequireDefault(_apiCaller);
 
-var _setAuthToken = __webpack_require__(42);
+var _setAuthToken = __webpack_require__(43);
 
 var _setAuthToken2 = _interopRequireDefault(_setAuthToken);
 
-var _jwtDecode = __webpack_require__(43);
+var _jwtDecode = __webpack_require__(44);
 
 var _jwtDecode2 = _interopRequireDefault(_jwtDecode);
 
@@ -169,7 +169,7 @@ var NODE_FULL_CLEAR = exports.NODE_FULL_CLEAR = "NODE_FULL_CLEAR";
 var createNode = exports.createNode = function createNode(node) {
   return function (dispatch) {
     return (0, _apiCaller2.default)("node", "post", node).then(function (res) {
-      return location.reload();
+      return dispatch({ type: GET_NODE, payload: res });
     }).catch(function (err) {
       return dispatch({ type: _ErrorActions.GET_ERRORS, payload: err });
     });
@@ -495,11 +495,11 @@ var _apiCaller = __webpack_require__(19);
 
 var _apiCaller2 = _interopRequireDefault(_apiCaller);
 
-var _setAuthToken = __webpack_require__(42);
+var _setAuthToken = __webpack_require__(43);
 
 var _setAuthToken2 = _interopRequireDefault(_setAuthToken);
 
-var _jwtDecode = __webpack_require__(43);
+var _jwtDecode = __webpack_require__(44);
 
 var _jwtDecode2 = _interopRequireDefault(_jwtDecode);
 
@@ -1332,7 +1332,7 @@ var _Button = __webpack_require__(17);
 
 var _Button2 = _interopRequireDefault(_Button);
 
-var _Grid = __webpack_require__(52);
+var _Grid = __webpack_require__(53);
 
 var _Grid2 = _interopRequireDefault(_Grid);
 
@@ -1549,7 +1549,7 @@ var _Button = __webpack_require__(17);
 
 var _Button2 = _interopRequireDefault(_Button);
 
-var _Grid = __webpack_require__(52);
+var _Grid = __webpack_require__(53);
 
 var _Grid2 = _interopRequireDefault(_Grid);
 
@@ -1564,6 +1564,10 @@ var _NodeForm2 = _interopRequireDefault(_NodeForm);
 var _Spinner = __webpack_require__(34);
 
 var _Spinner2 = _interopRequireDefault(_Spinner);
+
+var _ShareButton = __webpack_require__(111);
+
+var _ShareButton2 = _interopRequireDefault(_ShareButton);
 
 var _NodeActions = __webpack_require__(10);
 
@@ -1634,6 +1638,12 @@ var Node = function (_Component) {
     key: "toggleSubtopics",
     value: function toggleSubtopics() {
       this.setState({ subtopicToggle: !this.state.subtopicToggle });
+    }
+  }, {
+    key: "copyNodeAddressToClipboard",
+    value: function copyNodeAddressToClipboard() {
+      var textField = document.createElement("textarea");
+      textField.innerText = "";
     }
   }, {
     key: "componentDidUpdate",
@@ -1812,11 +1822,21 @@ var Node = function (_Component) {
             margin: "1em",
             border: "solid black 1px"
           }
-        }, void 0, (0, _jsx3.default)("h1", {
+        }, void 0, (0, _jsx3.default)(_Grid2.default, {
+          justify: "space-between",
+          container: true,
+          spacing: 24
+        }, void 0, (0, _jsx3.default)(_Grid2.default, {
+          item: true
+        }, void 0, " ", (0, _jsx3.default)("h1", {
           onClick: function onClick() {
             _this2.props.onNavigation(node._id);
           }
-        }, void 0, node.title), (0, _jsx3.default)("div", {
+        }, void 0, node.title)), (0, _jsx3.default)(_Grid2.default, {
+          item: true
+        }, void 0, (0, _jsx3.default)(_ShareButton2.default, {
+          link: location.origin + "/node/" + node._id
+        }))), (0, _jsx3.default)("div", {
           className: "row"
         }, void 0, (0, _jsx3.default)("div", {
           className: "col"
@@ -1944,12 +1964,56 @@ exports.default = _mongoose2.default.model("User", userSchema);
 
 /***/ }),
 /* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _mongoose = __webpack_require__(11);
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Schema = _mongoose2.default.Schema;
+
+var universeSchema = new Schema({
+  title: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  // Will be used to define the single public universe that all users can see
+  public: {
+    type: Boolean,
+    default: false
+  },
+  // List all users that belong to a private Universe
+  users: {
+    type: [Schema.Types.ObjectId]
+  },
+  // Hold a list of all nodes that have been shared with this universe
+  // Allows for easier queries
+  // Not done for all nodes as its easy to query nodes by their primaryUniverse field
+  sharedNodes: {
+    type: [Schema.Types.ObjectId]
+  }
+});
+
+exports.default = _mongoose2.default.model("Universe", universeSchema);
+
+/***/ }),
+/* 37 */
 /***/ (function(module, exports) {
 
 module.exports = require("validator");
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2003,13 +2067,13 @@ var connectionSchema = new Schema({
 exports.default = _mongoose2.default.model("Connection", connectionSchema);
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux");
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2054,7 +2118,7 @@ var getShowAddPost = exports.getShowAddPost = function getShowAddPost(state) {
 exports.default = AppReducer;
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2157,7 +2221,7 @@ localizationData.fr = _fr4.default;
 localizationData.fr.messages = flattenMessages(localizationData.fr.messages);
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2174,7 +2238,7 @@ var _extends3 = _interopRequireDefault(_extends2);
 
 exports.switchLanguage = switchLanguage;
 
-var _setup = __webpack_require__(40);
+var _setup = __webpack_require__(41);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2188,7 +2252,7 @@ function switchLanguage(newLang) {
 }
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2217,13 +2281,13 @@ var setAuthToken = function setAuthToken(token) {
 exports.default = setAuthToken;
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports) {
 
 module.exports = require("jwt-decode");
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2273,7 +2337,7 @@ var setUserLoading = exports.setUserLoading = function setUserLoading() {
 };
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2309,7 +2373,7 @@ exports.default = (0, _reduxDevtools.createDevTools)((0, _jsx3.default)(_reduxDe
 }, void 0, (0, _jsx3.default)(_reduxDevtoolsLogMonitor2.default, {})));
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2367,13 +2431,13 @@ var _Paper = __webpack_require__(15);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
-var _core = __webpack_require__(47);
+var _core = __webpack_require__(48);
 
-var _Switch = __webpack_require__(48);
+var _Switch = __webpack_require__(49);
 
 var _Switch2 = _interopRequireDefault(_Switch);
 
-var _FormControlLabel = __webpack_require__(49);
+var _FormControlLabel = __webpack_require__(50);
 
 var _FormControlLabel2 = _interopRequireDefault(_FormControlLabel);
 
@@ -2513,25 +2577,25 @@ function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { loginUser: _AuthActions.loginUser })(LoginPage);
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core");
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/Switch");
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/FormControlLabel");
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2591,13 +2655,13 @@ var _Paper = __webpack_require__(15);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
-var _core = __webpack_require__(47);
+var _core = __webpack_require__(48);
 
-var _Switch = __webpack_require__(48);
+var _Switch = __webpack_require__(49);
 
 var _Switch2 = _interopRequireDefault(_Switch);
 
-var _FormControlLabel = __webpack_require__(49);
+var _FormControlLabel = __webpack_require__(50);
 
 var _FormControlLabel2 = _interopRequireDefault(_FormControlLabel);
 
@@ -2749,7 +2813,7 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { registerUser: _AuthActions.registerUser })(SignupPage);
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2892,13 +2956,13 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { clearNodes: _NodeActions.clearNodes, clearUniverse: _UniverseActions.clearUniverse, getPublicUniverse: _UniverseActions.getPublicUniverse })(Home);
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/Grid");
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3054,7 +3118,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, {
 })(Personal);
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3204,7 +3268,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, {
 })(Universe);
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3276,7 +3340,7 @@ var _NodeActions = __webpack_require__(10);
 
 var _UniverseActions = __webpack_require__(14);
 
-var _UserActions = __webpack_require__(44);
+var _UserActions = __webpack_require__(45);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3432,7 +3496,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, {
 })(Admin);
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3462,23 +3526,10 @@ var postSchema = new Schema({
 exports.default = _mongoose2.default.model('Post', postSchema);
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports) {
 
 module.exports = require("sanitize-html");
-
-/***/ }),
-/* 58 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-if (process.env.NODE_ENV === "production") {
-  module.exports = __webpack_require__(123);
-} else {
-  module.exports = __webpack_require__(124);
-}
 
 /***/ }),
 /* 59 */
@@ -3487,42 +3538,11 @@ if (process.env.NODE_ENV === "production") {
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _mongoose = __webpack_require__(11);
-
-var _mongoose2 = _interopRequireDefault(_mongoose);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Schema = _mongoose2.default.Schema;
-
-var universeSchema = new Schema({
-  title: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  // Will be used to define the single public universe that all users can see
-  public: {
-    type: Boolean,
-    default: false
-  },
-  // List all users that belong to a private Universe
-  users: {
-    type: [Schema.Types.ObjectId]
-  },
-  // Hold a list of all nodes that have been shared with this universe
-  // Allows for easier queries
-  // Not done for all nodes as its easy to query nodes by their primaryUniverse field
-  sharedNodes: {
-    type: [Schema.Types.ObjectId]
-  }
-});
-
-exports.default = _mongoose2.default.model("Universe", universeSchema);
+if (process.env.NODE_ENV === "production") {
+  module.exports = __webpack_require__(126);
+} else {
+  module.exports = __webpack_require__(127);
+}
 
 /***/ }),
 /* 60 */
@@ -3589,29 +3609,29 @@ var _routes = __webpack_require__(92);
 
 var _routes2 = _interopRequireDefault(_routes);
 
-var _fetchData = __webpack_require__(111);
+var _fetchData = __webpack_require__(114);
 
-var _post = __webpack_require__(113);
+var _post = __webpack_require__(116);
 
 var _post2 = _interopRequireDefault(_post);
 
-var _user = __webpack_require__(117);
+var _user = __webpack_require__(120);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _node = __webpack_require__(125);
+var _node = __webpack_require__(128);
 
 var _node2 = _interopRequireDefault(_node);
 
-var _universe = __webpack_require__(131);
+var _universe = __webpack_require__(134);
 
 var _universe2 = _interopRequireDefault(_universe);
 
-var _dummyData = __webpack_require__(133);
+var _dummyData = __webpack_require__(136);
 
 var _dummyData2 = _interopRequireDefault(_dummyData);
 
-var _keys = __webpack_require__(58);
+var _keys = __webpack_require__(59);
 
 var _keys2 = _interopRequireDefault(_keys);
 
@@ -3630,11 +3650,11 @@ if (isDevMode) {
   // eslint-disable-next-line global-require
   var webpack = __webpack_require__(60);
   // eslint-disable-next-line global-require
-  var config = __webpack_require__(134);
+  var config = __webpack_require__(137);
   // eslint-disable-next-line global-require
-  var webpackDevMiddleware = __webpack_require__(138);
+  var webpackDevMiddleware = __webpack_require__(141);
   // eslint-disable-next-line global-require
-  var webpackHotMiddleware = __webpack_require__(139);
+  var webpackHotMiddleware = __webpack_require__(142);
   var compiler = webpack(config);
   app.use(webpackDevMiddleware(compiler, {
     noInfo: true,
@@ -3812,7 +3832,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.configureStore = configureStore;
 
-var _redux = __webpack_require__(38);
+var _redux = __webpack_require__(39);
 
 var _reduxThunk = __webpack_require__(67);
 
@@ -3830,7 +3850,7 @@ var DevTools = void 0; /**
 
 if (process.env.NODE_ENV === "development") {
   // eslint-disable-next-line global-require
-  DevTools = __webpack_require__(45).default;
+  DevTools = __webpack_require__(46).default;
 }
 
 function configureStore() {
@@ -3875,9 +3895,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _redux = __webpack_require__(38);
+var _redux = __webpack_require__(39);
 
-var _AppReducer = __webpack_require__(39);
+var _AppReducer = __webpack_require__(40);
 
 var _AppReducer2 = _interopRequireDefault(_AppReducer);
 
@@ -3976,9 +3996,9 @@ var _extends2 = __webpack_require__(13);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _setup = __webpack_require__(40);
+var _setup = __webpack_require__(41);
 
-var _IntlActions = __webpack_require__(41);
+var _IntlActions = __webpack_require__(42);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4365,7 +4385,7 @@ var _extends2 = __webpack_require__(13);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _UserActions = __webpack_require__(44);
+var _UserActions = __webpack_require__(45);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4467,18 +4487,18 @@ if (process.env.NODE_ENV !== "production") {
   __webpack_require__(102);
   __webpack_require__(106);
   // Auth Components
-  __webpack_require__(46);
-  __webpack_require__(50);
-  // App Components
+  __webpack_require__(47);
   __webpack_require__(51);
+  // App Components
+  __webpack_require__(52);
   // Node Components
   __webpack_require__(33);
   // Universe Components
-  __webpack_require__(53);
   __webpack_require__(54);
+  __webpack_require__(55);
 
   // Admin
-  __webpack_require__(55);
+  __webpack_require__(56);
 }
 
 // react-router setup with code-splitting
@@ -4489,35 +4509,35 @@ exports.default = (0, _jsx3.default)(_reactRouter.Route, {
 }, void 0, (0, _jsx3.default)(_reactRouter.IndexRoute, {
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(51).default);
+      cb(null, __webpack_require__(52).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/login",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(46).default);
+      cb(null, __webpack_require__(47).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/signup",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(50).default);
+      cb(null, __webpack_require__(51).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/home",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(53).default);
+      cb(null, __webpack_require__(54).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/admin",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(55).default);
+      cb(null, __webpack_require__(56).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
@@ -4531,7 +4551,7 @@ exports.default = (0, _jsx3.default)(_reactRouter.Route, {
   path: "/universe/:universeID",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(54).default);
+      cb(null, __webpack_require__(55).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }));
@@ -4598,7 +4618,7 @@ var _Footer2 = _interopRequireDefault(_Footer);
 
 var _AppActions = __webpack_require__(27);
 
-var _IntlActions = __webpack_require__(41);
+var _IntlActions = __webpack_require__(42);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4612,7 +4632,7 @@ var DevTools = void 0;
 
 if (process.env.NODE_ENV === "development") {
   // eslint-disable-next-line global-require
-  DevTools = __webpack_require__(45).default;
+  DevTools = __webpack_require__(46).default;
 }
 
 var _ref = (0, _jsx3.default)(DevTools, {});
@@ -4999,7 +5019,7 @@ var _PostActions = __webpack_require__(29);
 
 var _AppActions = __webpack_require__(27);
 
-var _AppReducer = __webpack_require__(39);
+var _AppReducer = __webpack_require__(40);
 
 var _PostReducer = __webpack_require__(28);
 
@@ -5839,9 +5859,140 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _jsx2 = __webpack_require__(1);
+
+var _jsx3 = _interopRequireDefault(_jsx2);
+
+var _classCallCheck2 = __webpack_require__(4);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(5);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = __webpack_require__(6);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(7);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(3);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _Share = __webpack_require__(112);
+
+var _Share2 = _interopRequireDefault(_Share);
+
+var _Popover = __webpack_require__(113);
+
+var _Popover2 = _interopRequireDefault(_Popover);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ShareButton = function (_React$Component) {
+  (0, _inherits3.default)(ShareButton, _React$Component);
+
+  function ShareButton() {
+    (0, _classCallCheck3.default)(this, ShareButton);
+
+    var _this = (0, _possibleConstructorReturn3.default)(this, (ShareButton.__proto__ || Object.getPrototypeOf(ShareButton)).call(this));
+
+    _this.copyToClipboard = function (e) {
+      var textField = document.createElement("textarea");
+      textField.innerText = _this.props.link;
+      document.body.appendChild(textField);
+      textField.select();
+      document.execCommand("copy");
+      textField.remove();
+      _this.handleClick(e);
+    };
+
+    _this.handleClick = function (e) {
+      _this.setState({ anchorEl: e.currentTarget });
+    };
+
+    _this.handleClose = function () {
+      _this.setState({ anchorEl: null });
+    };
+
+    _this.state = {
+      anchorEl: null
+    };
+
+    _this.copyToClipboard = _this.copyToClipboard.bind(_this);
+    _this.handleClick = _this.handleClick.bind(_this);
+    _this.handleClose = _this.handleClose.bind(_this);
+    return _this;
+  }
+
+  (0, _createClass3.default)(ShareButton, [{
+    key: "render",
+    value: function render() {
+      var anchorEl = this.state.anchorEl;
+
+      var open = Boolean(anchorEl);
+
+      return (0, _jsx3.default)("div", {}, void 0, /* Logical shortcut for only displaying the 
+                                                      button if the copy command exists */
+      document.queryCommandSupported("copy") && (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(_Share2.default, {
+        onClick: this.copyToClipboard
+      })), (0, _jsx3.default)(_Popover2.default, {
+        open: open,
+        anchorEl: anchorEl,
+        onClose: this.handleClose,
+        anchorOrigin: {
+          vertical: "bottom",
+          horizontal: "left"
+        },
+        transformOrigin: {
+          vertical: "top",
+          horizontal: "right"
+        },
+        styles: { margin: "1em" }
+      }, void 0, "Copied to Clipboard!"));
+    }
+  }]);
+  return ShareButton;
+}(_react2.default.Component);
+
+exports.default = (0, _reactRedux.connect)(null, {})(ShareButton);
+
+/***/ }),
+/* 112 */
+/***/ (function(module, exports) {
+
+module.exports = require("@material-ui/icons/Share");
+
+/***/ }),
+/* 113 */
+/***/ (function(module, exports) {
+
+module.exports = require("@material-ui/core/Popover");
+
+/***/ }),
+/* 114 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.fetchComponentData = fetchComponentData;
 
-var _promiseUtils = __webpack_require__(112);
+var _promiseUtils = __webpack_require__(115);
 
 function fetchComponentData(store, components, params) {
   var needs = components.reduce(function (prev, current) {
@@ -5857,7 +6008,7 @@ function fetchComponentData(store, components, params) {
   */
 
 /***/ }),
-/* 112 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5888,7 +6039,7 @@ function sequence(items, consumer) {
 }
 
 /***/ }),
-/* 113 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5900,7 +6051,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _express = __webpack_require__(18);
 
-var _post = __webpack_require__(114);
+var _post = __webpack_require__(117);
 
 var PostController = _interopRequireWildcard(_post);
 
@@ -5923,7 +6074,7 @@ router.route('/posts/:cuid').delete(PostController.deletePost);
 exports.default = router;
 
 /***/ }),
-/* 114 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5937,19 +6088,19 @@ exports.addPost = addPost;
 exports.getPost = getPost;
 exports.deletePost = deletePost;
 
-var _post = __webpack_require__(56);
+var _post = __webpack_require__(57);
 
 var _post2 = _interopRequireDefault(_post);
 
-var _cuid = __webpack_require__(115);
+var _cuid = __webpack_require__(118);
 
 var _cuid2 = _interopRequireDefault(_cuid);
 
-var _limax = __webpack_require__(116);
+var _limax = __webpack_require__(119);
 
 var _limax2 = _interopRequireDefault(_limax);
 
-var _sanitizeHtml = __webpack_require__(57);
+var _sanitizeHtml = __webpack_require__(58);
 
 var _sanitizeHtml2 = _interopRequireDefault(_sanitizeHtml);
 
@@ -6032,19 +6183,19 @@ function deletePost(req, res) {
 }
 
 /***/ }),
-/* 115 */
+/* 118 */
 /***/ (function(module, exports) {
 
 module.exports = require("cuid");
 
 /***/ }),
-/* 116 */
+/* 119 */
 /***/ (function(module, exports) {
 
 module.exports = require("limax");
 
 /***/ }),
-/* 117 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6056,7 +6207,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _express = __webpack_require__(18);
 
-var _user = __webpack_require__(118);
+var _user = __webpack_require__(121);
 
 var UserController = _interopRequireWildcard(_user);
 
@@ -6082,7 +6233,7 @@ router.route("/user/login").post(UserController.loginUser);
 exports.default = router;
 
 /***/ }),
-/* 118 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6158,7 +6309,7 @@ var getAllUsers = exports.getAllUsers = function () {
 
 var addUser = exports.addUser = function () {
   var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(req, res) {
-    var _validateUserSignupIn, errors, isValid, user, newUser, salt, hash, _errors;
+    var _validateUserSignupIn, errors, isValid, user, universe, newUser, salt, hash, _errors;
 
     return _regenerator2.default.wrap(function _callee2$(_context2) {
       while (1) {
@@ -6192,42 +6343,53 @@ var addUser = exports.addUser = function () {
             return _context2.abrupt("return", res.status(400).json(errors));
 
           case 14:
+            universe = new _universe2.default({
+              title: req.body.name + "'s Universe"
+            });
+
             // Define new user
+
             newUser = new _user2.default({
               name: req.body.name,
               email: req.body.email,
-              password: req.body.password
+              password: req.body.password,
+              personalUniverse: universe._id
             });
 
-            // Hash password
 
-            _context2.next = 17;
+            universe.users.push(newUser._id);
+
+            // Hash password
+            _context2.next = 19;
             return _bcryptjs2.default.genSalt(10);
 
-          case 17:
+          case 19:
             salt = _context2.sent;
-            _context2.next = 20;
+            _context2.next = 22;
             return _bcryptjs2.default.hash(newUser.password, salt);
 
-          case 20:
+          case 22:
             hash = _context2.sent;
 
             newUser.password = hash;
-            _context2.next = 24;
+            _context2.next = 26;
             return newUser.save();
 
-          case 24:
+          case 26:
             user = _context2.sent;
+            _context2.next = 29;
+            return universe.save();
 
+          case 29:
 
             res.json(user);
 
-          case 26:
-            _context2.next = 34;
+          case 30:
+            _context2.next = 38;
             break;
 
-          case 28:
-            _context2.prev = 28;
+          case 32:
+            _context2.prev = 32;
             _context2.t0 = _context2["catch"](0);
 
             console.log(_context2.t0);
@@ -6236,12 +6398,12 @@ var addUser = exports.addUser = function () {
             _errors.general = _context2.t0;
             res.status(500).json(_errors);
 
-          case 34:
+          case 38:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, this, [[0, 28]]);
+    }, _callee2, this, [[0, 32]]);
   }));
 
   return function addUser(_x3, _x4) {
@@ -6373,52 +6535,56 @@ var _user = __webpack_require__(35);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _sanitizeHtml = __webpack_require__(57);
+var _universe = __webpack_require__(36);
+
+var _universe2 = _interopRequireDefault(_universe);
+
+var _sanitizeHtml = __webpack_require__(58);
 
 var _sanitizeHtml2 = _interopRequireDefault(_sanitizeHtml);
 
-var _bcryptjs = __webpack_require__(119);
+var _bcryptjs = __webpack_require__(122);
 
 var _bcryptjs2 = _interopRequireDefault(_bcryptjs);
 
-var _jsonwebtoken = __webpack_require__(120);
+var _jsonwebtoken = __webpack_require__(123);
 
 var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
 
-var _validateUserSignupInputs = __webpack_require__(121);
+var _validateUserSignupInputs = __webpack_require__(124);
 
 var _validateUserSignupInputs2 = _interopRequireDefault(_validateUserSignupInputs);
 
-var _validateLoginInput2 = __webpack_require__(122);
+var _validateLoginInput2 = __webpack_require__(125);
 
 var _validateLoginInput3 = _interopRequireDefault(_validateLoginInput2);
 
-var _keys = __webpack_require__(58);
+var _keys = __webpack_require__(59);
 
 var _keys2 = _interopRequireDefault(_keys);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 119 */
+/* 122 */
 /***/ (function(module, exports) {
 
 module.exports = require("bcryptjs");
 
 /***/ }),
-/* 120 */
+/* 123 */
 /***/ (function(module, exports) {
 
 module.exports = require("jsonwebtoken");
 
 /***/ }),
-/* 121 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Validator = __webpack_require__(36);
+var Validator = __webpack_require__(37);
 var _ = __webpack_require__(24);
 
 module.exports = function validateWebAdminSignupInput(data) {
@@ -6477,13 +6643,13 @@ module.exports = function validateWebAdminSignupInput(data) {
 };
 
 /***/ }),
-/* 122 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Validator = __webpack_require__(36);
+var Validator = __webpack_require__(37);
 var _ = __webpack_require__(24);
 
 module.exports = function validateLoginInput(data) {
@@ -6514,7 +6680,7 @@ module.exports = function validateLoginInput(data) {
 };
 
 /***/ }),
-/* 123 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6528,7 +6694,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 124 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6542,7 +6708,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 125 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6554,7 +6720,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _express = __webpack_require__(18);
 
-var _node = __webpack_require__(126);
+var _node = __webpack_require__(129);
 
 var NodeController = _interopRequireWildcard(_node);
 
@@ -6603,7 +6769,7 @@ router.route("/node/remove/duplicates/all/legacy").get(NodeController.legacyRemo
 exports.default = router;
 
 /***/ }),
-/* 126 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6773,7 +6939,7 @@ var createNode = exports.createNode = function () {
             node = _context.sent;
 
 
-            res.end();
+            res.json(node);
             _context.next = 83;
             break;
 
@@ -6856,7 +7022,7 @@ var createNode = exports.createNode = function () {
             _node = _context.sent;
 
 
-            res.end();
+            res.json(_node);
 
           case 83:
             _context.next = 91;
@@ -7914,7 +8080,7 @@ var _node2 = __webpack_require__(26);
 
 var _node3 = _interopRequireDefault(_node2);
 
-var _connection6 = __webpack_require__(37);
+var _connection6 = __webpack_require__(38);
 
 var _connection7 = _interopRequireDefault(_connection6);
 
@@ -7922,36 +8088,36 @@ var _user = __webpack_require__(35);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _universe = __webpack_require__(59);
+var _universe = __webpack_require__(36);
 
 var _universe2 = _interopRequireDefault(_universe);
 
-var _mongodb = __webpack_require__(127);
+var _mongodb = __webpack_require__(130);
 
-var _validateNodeInput2 = __webpack_require__(128);
+var _validateNodeInput2 = __webpack_require__(131);
 
 var _validateNodeInput3 = _interopRequireDefault(_validateNodeInput2);
 
-var _addSourceConnections = __webpack_require__(129);
+var _addSourceConnections = __webpack_require__(132);
 
-var _addSubtopicConnections = __webpack_require__(130);
+var _addSubtopicConnections = __webpack_require__(133);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 127 */
+/* 130 */
 /***/ (function(module, exports) {
 
 module.exports = require("mongodb");
 
 /***/ }),
-/* 128 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Validator = __webpack_require__(36);
+var Validator = __webpack_require__(37);
 var _ = __webpack_require__(24);
 
 module.exports = function validateNodeInput(data) {
@@ -7977,7 +8143,7 @@ module.exports = function validateNodeInput(data) {
 };
 
 /***/ }),
-/* 129 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8168,7 +8334,7 @@ var _node = __webpack_require__(26);
 
 var _node2 = _interopRequireDefault(_node);
 
-var _connection = __webpack_require__(37);
+var _connection = __webpack_require__(38);
 
 var _connection2 = _interopRequireDefault(_connection);
 
@@ -8179,7 +8345,7 @@ var _mongoose2 = _interopRequireDefault(_mongoose);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 130 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8371,7 +8537,7 @@ var _node = __webpack_require__(26);
 
 var _node2 = _interopRequireDefault(_node);
 
-var _connection = __webpack_require__(37);
+var _connection = __webpack_require__(38);
 
 var _connection2 = _interopRequireDefault(_connection);
 
@@ -8382,7 +8548,7 @@ var _mongoose2 = _interopRequireDefault(_mongoose);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 131 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8394,7 +8560,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _express = __webpack_require__(18);
 
-var _universe = __webpack_require__(132);
+var _universe = __webpack_require__(135);
 
 var UniverseController = _interopRequireWildcard(_universe);
 
@@ -8423,7 +8589,7 @@ router.route("/universe/create/public").get(UniverseController.createPublicUnive
 exports.default = router;
 
 /***/ }),
-/* 132 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8839,7 +9005,7 @@ var createPublicUniverse = exports.createPublicUniverse = function () {
   };
 }();
 
-var _universe = __webpack_require__(59);
+var _universe = __webpack_require__(36);
 
 var _universe2 = _interopRequireDefault(_universe);
 
@@ -8854,7 +9020,7 @@ var _user2 = _interopRequireDefault(_user);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 133 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8885,23 +9051,23 @@ exports.default = function () {
   });
 };
 
-var _post = __webpack_require__(56);
+var _post = __webpack_require__(57);
 
 var _post2 = _interopRequireDefault(_post);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 134 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(__dirname) {
 
 var webpack = __webpack_require__(60);
-var cssnext = __webpack_require__(135);
-var postcssFocus = __webpack_require__(136);
-var postcssReporter = __webpack_require__(137);
+var cssnext = __webpack_require__(138);
+var postcssFocus = __webpack_require__(139);
+var postcssReporter = __webpack_require__(140);
 
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
@@ -8981,31 +9147,31 @@ module.exports = {
 /* WEBPACK VAR INJECTION */}.call(exports, ""))
 
 /***/ }),
-/* 135 */
+/* 138 */
 /***/ (function(module, exports) {
 
 module.exports = require("postcss-cssnext");
 
 /***/ }),
-/* 136 */
+/* 139 */
 /***/ (function(module, exports) {
 
 module.exports = require("postcss-focus");
 
 /***/ }),
-/* 137 */
+/* 140 */
 /***/ (function(module, exports) {
 
 module.exports = require("postcss-reporter");
 
 /***/ }),
-/* 138 */
+/* 141 */
 /***/ (function(module, exports) {
 
 module.exports = require("webpack-dev-middleware");
 
 /***/ }),
-/* 139 */
+/* 142 */
 /***/ (function(module, exports) {
 
 module.exports = require("webpack-hot-middleware");

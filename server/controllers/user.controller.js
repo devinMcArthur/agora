@@ -1,4 +1,6 @@
 import User from "../models/user";
+import Universe from "../models/universe";
+
 import sanitizeHtml from "sanitize-html";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -46,18 +48,26 @@ export async function addUser(req, res) {
       console.log(errors);
       return res.status(400).json(errors);
     } else {
+      let universe = new Universe({
+        title: `${req.body.name}'s Universe`
+      });
+
       // Define new user
       const newUser = new User({
         name: req.body.name,
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
+        personalUniverse: universe._id
       });
+
+      universe.users.push(newUser._id);
 
       // Hash password
       var salt = await bcrypt.genSalt(10);
       var hash = await bcrypt.hash(newUser.password, salt);
       newUser.password = hash;
       user = await newUser.save();
+      await universe.save();
 
       res.json(user);
     }
