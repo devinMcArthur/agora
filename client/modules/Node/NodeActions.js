@@ -28,7 +28,7 @@ export const createNode = node => dispatch => {
 // Edit a node
 export const editNode = node => dispatch => {
   return callApi(`node/${node.id}/edit`, "post", node)
-    .then(res => location.reload())
+    .then(res => dispatch({ type: GET_NODE, payload: res }))
     .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
 };
 

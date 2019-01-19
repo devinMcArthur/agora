@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Link } from "react-router";
 import { browserHistory } from "react-router";
+import _ from "lodash";
 
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
@@ -134,6 +135,14 @@ class Node extends Component {
     if (this.props.subtopicToggle !== prevProps.subtopicToggle) {
       this.setState({ subtopicToggle: this.props.subtopicToggle });
     }
+    // Update state node on update (edit)
+    if (
+      !_.isEqual(this.state.node, this.props.node.node) &&
+      this.props.node.node !== null &&
+      this.state.node !== null
+    ) {
+      this.setState({ node: this.props.node.node, editFormToggle: false });
+    }
   }
 
   toggleNodeForm() {
@@ -141,6 +150,7 @@ class Node extends Component {
   }
 
   render() {
+    console.log(this.state);
     let { editFormToggle, toggleNodeForm } = this.state;
     let content;
     if (this.state.node !== null) {

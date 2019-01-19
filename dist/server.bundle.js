@@ -180,7 +180,7 @@ var createNode = exports.createNode = function createNode(node) {
 var editNode = exports.editNode = function editNode(node) {
   return function (dispatch) {
     return (0, _apiCaller2.default)("node/" + node.id + "/edit", "post", node).then(function (res) {
-      return location.reload();
+      return dispatch({ type: GET_NODE, payload: res });
     }).catch(function (err) {
       return dispatch({ type: _ErrorActions.GET_ERRORS, payload: err });
     });
@@ -619,31 +619,31 @@ function callApi(endpoint) {
 /* 20 */
 /***/ (function(module, exports) {
 
-module.exports = require("babel-runtime/helpers/defineProperty");
+module.exports = require("lodash");
 
 /***/ }),
 /* 21 */
 /***/ (function(module, exports) {
 
-module.exports = require("@material-ui/core/TextField");
+module.exports = require("babel-runtime/helpers/defineProperty");
 
 /***/ }),
 /* 22 */
 /***/ (function(module, exports) {
 
-module.exports = require("babel-runtime/regenerator");
+module.exports = require("@material-ui/core/TextField");
 
 /***/ }),
 /* 23 */
 /***/ (function(module, exports) {
 
-module.exports = require("babel-runtime/helpers/asyncToGenerator");
+module.exports = require("babel-runtime/regenerator");
 
 /***/ }),
 /* 24 */
 /***/ (function(module, exports) {
 
-module.exports = require("lodash");
+module.exports = require("babel-runtime/helpers/asyncToGenerator");
 
 /***/ }),
 /* 25 */
@@ -964,7 +964,7 @@ var _jsx2 = __webpack_require__(1);
 
 var _jsx3 = _interopRequireDefault(_jsx2);
 
-var _defineProperty2 = __webpack_require__(20);
+var _defineProperty2 = __webpack_require__(21);
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
@@ -1008,7 +1008,7 @@ var _Paper = __webpack_require__(15);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
-var _TextField = __webpack_require__(21);
+var _TextField = __webpack_require__(22);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
@@ -1541,6 +1541,10 @@ var _reactRedux = __webpack_require__(3);
 
 var _reactRouter = __webpack_require__(9);
 
+var _lodash = __webpack_require__(20);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
 var _Paper = __webpack_require__(15);
 
 var _Paper2 = _interopRequireDefault(_Paper);
@@ -1675,6 +1679,10 @@ var Node = function (_Component) {
       if (this.props.subtopicToggle !== prevProps.subtopicToggle) {
         this.setState({ subtopicToggle: this.props.subtopicToggle });
       }
+      // Update state node on update (edit)
+      if (!_lodash2.default.isEqual(this.state.node, this.props.node.node) && this.props.node.node !== null && this.state.node !== null) {
+        this.setState({ node: this.props.node.node, editFormToggle: false });
+      }
     }
   }, {
     key: "toggleNodeForm",
@@ -1686,6 +1694,7 @@ var Node = function (_Component) {
     value: function render() {
       var _this2 = this;
 
+      console.log(this.state);
       var _state = this.state,
           editFormToggle = _state.editFormToggle,
           toggleNodeForm = _state.toggleNodeForm;
@@ -2390,7 +2399,7 @@ var _jsx2 = __webpack_require__(1);
 
 var _jsx3 = _interopRequireDefault(_jsx2);
 
-var _defineProperty2 = __webpack_require__(20);
+var _defineProperty2 = __webpack_require__(21);
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
@@ -2426,7 +2435,7 @@ var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
 var _reactRouter = __webpack_require__(9);
 
-var _TextField = __webpack_require__(21);
+var _TextField = __webpack_require__(22);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
@@ -2612,7 +2621,7 @@ var _jsx2 = __webpack_require__(1);
 
 var _jsx3 = _interopRequireDefault(_jsx2);
 
-var _defineProperty2 = __webpack_require__(20);
+var _defineProperty2 = __webpack_require__(21);
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
@@ -2650,7 +2659,7 @@ var _reactIntl = __webpack_require__(12);
 
 var _reactRouter = __webpack_require__(9);
 
-var _TextField = __webpack_require__(21);
+var _TextField = __webpack_require__(22);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
@@ -3285,7 +3294,7 @@ var _jsx2 = __webpack_require__(1);
 
 var _jsx3 = _interopRequireDefault(_jsx2);
 
-var _defineProperty2 = __webpack_require__(20);
+var _defineProperty2 = __webpack_require__(21);
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
@@ -3319,7 +3328,7 @@ var _reactHelmet = __webpack_require__(8);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _TextField = __webpack_require__(21);
+var _TextField = __webpack_require__(22);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
@@ -4149,7 +4158,7 @@ var _extends2 = __webpack_require__(13);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _lodash = __webpack_require__(24);
+var _lodash = __webpack_require__(20);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
@@ -5550,7 +5559,7 @@ var _jsx2 = __webpack_require__(1);
 
 var _jsx3 = _interopRequireDefault(_jsx2);
 
-var _defineProperty2 = __webpack_require__(20);
+var _defineProperty2 = __webpack_require__(21);
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
@@ -5598,7 +5607,7 @@ var _Paper = __webpack_require__(15);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
-var _TextField = __webpack_require__(21);
+var _TextField = __webpack_require__(22);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
@@ -6255,11 +6264,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.loginUser = exports.addUser = exports.getAllUsers = undefined;
 
-var _regenerator = __webpack_require__(22);
+var _regenerator = __webpack_require__(23);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _asyncToGenerator2 = __webpack_require__(23);
+var _asyncToGenerator2 = __webpack_require__(24);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -6596,7 +6605,7 @@ module.exports = require("jsonwebtoken");
 
 
 var Validator = __webpack_require__(37);
-var _ = __webpack_require__(24);
+var _ = __webpack_require__(20);
 
 module.exports = function validateWebAdminSignupInput(data) {
   var errors = {};
@@ -6661,7 +6670,7 @@ module.exports = function validateWebAdminSignupInput(data) {
 
 
 var Validator = __webpack_require__(37);
-var _ = __webpack_require__(24);
+var _ = __webpack_require__(20);
 
 module.exports = function validateLoginInput(data) {
   var errors = {};
@@ -6791,11 +6800,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.updateNodeConnections = exports.legacyRemoveDuplicateSourcesAndSubtopics = exports.removeDuplicateSourcesAndSubtopics = exports.getAllPrivateNodesForSelect = exports.getAllPublicNodesForSelect = exports.getUniverseRootNodes = exports.getNodeSubtopics = exports.getNodeSources = exports.getNodeByID = exports.deleteNode = exports.editNode = exports.createNode = undefined;
 
-var _regenerator = __webpack_require__(22);
+var _regenerator = __webpack_require__(23);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _asyncToGenerator2 = __webpack_require__(23);
+var _asyncToGenerator2 = __webpack_require__(24);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -7103,13 +7112,15 @@ var editNode = exports.editNode = function () {
             return node.save();
 
           case 10:
+            node = _context2.sent;
 
-            res.end();
-            _context2.next = 19;
+
+            res.json(node);
+            _context2.next = 20;
             break;
 
-          case 13:
-            _context2.prev = 13;
+          case 14:
+            _context2.prev = 14;
             _context2.t0 = _context2["catch"](0);
 
             console.log(_context2.t0);
@@ -7118,12 +7129,12 @@ var editNode = exports.editNode = function () {
             errors.general = _context2.t0;
             res.status(500).json(errors);
 
-          case 19:
+          case 20:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, this, [[0, 13]]);
+    }, _callee2, this, [[0, 14]]);
   }));
 
   return function editNode(_x3, _x4) {
@@ -8139,7 +8150,7 @@ module.exports = require("mongodb");
 
 
 var Validator = __webpack_require__(37);
-var _ = __webpack_require__(24);
+var _ = __webpack_require__(20);
 
 module.exports = function validateNodeInput(data) {
   var errors = {};
@@ -8175,11 +8186,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.addSourceConnections = undefined;
 
-var _regenerator = __webpack_require__(22);
+var _regenerator = __webpack_require__(23);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _asyncToGenerator2 = __webpack_require__(23);
+var _asyncToGenerator2 = __webpack_require__(24);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -8380,11 +8391,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.addSubtopicConnections = undefined;
 
-var _regenerator = __webpack_require__(22);
+var _regenerator = __webpack_require__(23);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _asyncToGenerator2 = __webpack_require__(23);
+var _asyncToGenerator2 = __webpack_require__(24);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -8627,11 +8638,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.createPublicUniverse = exports.getUsersUniverses = exports.createPersonalUniverse = exports.getPublicUniverse = exports.getUniverse = exports.createUniverse = undefined;
 
-var _regenerator = __webpack_require__(22);
+var _regenerator = __webpack_require__(23);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _asyncToGenerator2 = __webpack_require__(23);
+var _asyncToGenerator2 = __webpack_require__(24);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
