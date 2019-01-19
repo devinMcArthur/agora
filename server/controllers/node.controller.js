@@ -166,9 +166,8 @@ export async function editNode(req, res) {
     node.version++;
 
     (node.title = req.body.title), (node.content.string = req.body.content);
-    addSourceConnections(node, req.body);
-    addSubtopicConnections(node, req.body);
-    node = await node.save();
+    node = await addSourceConnections(node, req.body);
+    node = await addSubtopicConnections(node, req.body);
 
     res.json(node);
   } catch (e) {

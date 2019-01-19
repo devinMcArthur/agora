@@ -93,7 +93,8 @@ class Node extends Component {
     // Grab appropriate subtopics for this node
     if (
       this.props.node.subtopics !== null &&
-      this.state.subtopics === null &&
+      (this.state.subtopics === null ||
+        !_.isEqual(this.state.subtopics, this.props.node.subtopics)) &&
       this.state.node !== null &&
       this.state.node._id.toString() ===
         this.props.node.subtopics[0].connection.sourceNode.toString()
@@ -104,7 +105,8 @@ class Node extends Component {
     // Grab appropriate sources for this node
     if (
       this.props.node.sources !== null &&
-      this.state.sources === null &&
+      (this.state.sources === null ||
+        !_.isEqual(this.state.sources, this.props.node.sources)) &&
       this.state.node &&
       this.state.node._id.toString() ===
         this.props.node.sources[0].connection.subtopicNode.toString()
@@ -142,6 +144,18 @@ class Node extends Component {
       this.state.node !== null
     ) {
       this.setState({ node: this.props.node.node, editFormToggle: false });
+      if (
+        this.props.node.node.subtopicConnections &&
+        this.props.node.node.subtopicConnections.length > 0
+      ) {
+        this.props.getSubtopics(this.props.node.node._id);
+      }
+      if (
+        this.props.node.node.sourceConnections &&
+        this.props.node.node.sourceConnections.length > 0
+      ) {
+        this.props.getSources(this.props.node.node._id);
+      }
     }
   }
 

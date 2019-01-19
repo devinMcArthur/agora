@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 61);
+/******/ 	return __webpack_require__(__webpack_require__.s = 62);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -575,11 +575,11 @@ Object.defineProperty(exports, "__esModule", {
 exports.API_URL = undefined;
 exports.default = callApi;
 
-var _isomorphicFetch = __webpack_require__(70);
+var _isomorphicFetch = __webpack_require__(71);
 
 var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
 
-var _config = __webpack_require__(71);
+var _config = __webpack_require__(72);
 
 var _config2 = _interopRequireDefault(_config);
 
@@ -804,7 +804,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getPost = exports.getPosts = undefined;
 
-var _toConsumableArray2 = __webpack_require__(69);
+var _toConsumableArray2 = __webpack_require__(70);
 
 var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 
@@ -1205,7 +1205,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _classnames = __webpack_require__(107);
+var _classnames = __webpack_require__(108);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -1213,7 +1213,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactSelect = __webpack_require__(108);
+var _reactSelect = __webpack_require__(109);
 
 var _reactSelect2 = _interopRequireDefault(_reactSelect);
 
@@ -1340,7 +1340,7 @@ var _NodeForm = __webpack_require__(30);
 
 var _NodeForm2 = _interopRequireDefault(_NodeForm);
 
-var _RootNodeList = __webpack_require__(109);
+var _RootNodeList = __webpack_require__(110);
 
 var _RootNodeList2 = _interopRequireDefault(_RootNodeList);
 
@@ -1556,7 +1556,7 @@ var _Grid = __webpack_require__(53);
 
 var _Grid2 = _interopRequireDefault(_Grid);
 
-var _EditNodeForm = __webpack_require__(110);
+var _EditNodeForm = __webpack_require__(111);
 
 var _EditNodeForm2 = _interopRequireDefault(_EditNodeForm);
 
@@ -1568,7 +1568,7 @@ var _Spinner = __webpack_require__(34);
 
 var _Spinner2 = _interopRequireDefault(_Spinner);
 
-var _ShareButton = __webpack_require__(111);
+var _ShareButton = __webpack_require__(112);
 
 var _ShareButton2 = _interopRequireDefault(_ShareButton);
 
@@ -1652,12 +1652,12 @@ var Node = function (_Component) {
     key: "componentDidUpdate",
     value: function componentDidUpdate(prevProps) {
       // Grab appropriate subtopics for this node
-      if (this.props.node.subtopics !== null && this.state.subtopics === null && this.state.node !== null && this.state.node._id.toString() === this.props.node.subtopics[0].connection.sourceNode.toString()) {
+      if (this.props.node.subtopics !== null && (this.state.subtopics === null || !_lodash2.default.isEqual(this.state.subtopics, this.props.node.subtopics)) && this.state.node !== null && this.state.node._id.toString() === this.props.node.subtopics[0].connection.sourceNode.toString()) {
         this.setState({ subtopics: this.props.node.subtopics });
         this.props.clearSubtopics();
       }
       // Grab appropriate sources for this node
-      if (this.props.node.sources !== null && this.state.sources === null && this.state.node && this.state.node._id.toString() === this.props.node.sources[0].connection.subtopicNode.toString()) {
+      if (this.props.node.sources !== null && (this.state.sources === null || !_lodash2.default.isEqual(this.state.sources, this.props.node.sources)) && this.state.node && this.state.node._id.toString() === this.props.node.sources[0].connection.subtopicNode.toString()) {
         this.setState({ sources: this.props.node.sources });
         this.props.clearSources();
       }
@@ -1681,6 +1681,12 @@ var Node = function (_Component) {
       // Update state node on update (edit)
       if (!_lodash2.default.isEqual(this.state.node, this.props.node.node) && this.props.node.node !== null && this.state.node !== null) {
         this.setState({ node: this.props.node.node, editFormToggle: false });
+        if (this.props.node.node.subtopicConnections && this.props.node.node.subtopicConnections.length > 0) {
+          this.props.getSubtopics(this.props.node.node._id);
+        }
+        if (this.props.node.node.sourceConnections && this.props.node.node.sourceConnections.length > 0) {
+          this.props.getSources(this.props.node.node._id);
+        }
       }
     }
   }, {
@@ -2142,31 +2148,31 @@ exports.localizationData = exports.enabledLanguages = undefined;
 
 var _reactIntl = __webpack_require__(12);
 
-var _intl = __webpack_require__(74);
+var _intl = __webpack_require__(75);
 
 var _intl2 = _interopRequireDefault(_intl);
 
-var _intlLocalesSupported = __webpack_require__(75);
+var _intlLocalesSupported = __webpack_require__(76);
 
 var _intlLocalesSupported2 = _interopRequireDefault(_intlLocalesSupported);
 
-__webpack_require__(76);
+__webpack_require__(77);
 
-var _en = __webpack_require__(77);
+var _en = __webpack_require__(78);
 
 var _en2 = _interopRequireDefault(_en);
 
-var _en3 = __webpack_require__(78);
+var _en3 = __webpack_require__(79);
 
 var _en4 = _interopRequireDefault(_en3);
 
-__webpack_require__(79);
+__webpack_require__(80);
 
-var _fr = __webpack_require__(80);
+var _fr = __webpack_require__(81);
 
 var _fr2 = _interopRequireDefault(_fr);
 
-var _fr3 = __webpack_require__(81);
+var _fr3 = __webpack_require__(82);
 
 var _fr4 = _interopRequireDefault(_fr3);
 
@@ -2273,7 +2279,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _axios = __webpack_require__(83);
+var _axios = __webpack_require__(84);
 
 var _axios2 = _interopRequireDefault(_axios);
 
@@ -2366,13 +2372,13 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reduxDevtools = __webpack_require__(88);
+var _reduxDevtools = __webpack_require__(89);
 
-var _reduxDevtoolsLogMonitor = __webpack_require__(89);
+var _reduxDevtoolsLogMonitor = __webpack_require__(90);
 
 var _reduxDevtoolsLogMonitor2 = _interopRequireDefault(_reduxDevtoolsLogMonitor);
 
-var _reduxDevtoolsDockMonitor = __webpack_require__(90);
+var _reduxDevtoolsDockMonitor = __webpack_require__(91);
 
 var _reduxDevtoolsDockMonitor2 = _interopRequireDefault(_reduxDevtoolsDockMonitor);
 
@@ -3554,19 +3560,25 @@ module.exports = require("sanitize-html");
 
 
 if (process.env.NODE_ENV === "production") {
-  module.exports = __webpack_require__(126);
-} else {
   module.exports = __webpack_require__(127);
+} else {
+  module.exports = __webpack_require__(128);
 }
 
 /***/ }),
 /* 60 */
 /***/ (function(module, exports) {
 
-module.exports = require("webpack");
+module.exports = require("assert");
 
 /***/ }),
 /* 61 */
+/***/ (function(module, exports) {
+
+module.exports = require("webpack");
+
+/***/ }),
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3584,7 +3596,7 @@ var _express = __webpack_require__(18);
 
 var _express2 = _interopRequireDefault(_express);
 
-var _compression = __webpack_require__(62);
+var _compression = __webpack_require__(63);
 
 var _compression2 = _interopRequireDefault(_compression);
 
@@ -3592,19 +3604,19 @@ var _mongoose = __webpack_require__(11);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _bodyParser = __webpack_require__(63);
+var _bodyParser = __webpack_require__(64);
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
-var _path = __webpack_require__(64);
+var _path = __webpack_require__(65);
 
 var _path2 = _interopRequireDefault(_path);
 
-var _IntlWrapper = __webpack_require__(65);
+var _IntlWrapper = __webpack_require__(66);
 
 var _IntlWrapper2 = _interopRequireDefault(_IntlWrapper);
 
-var _store = __webpack_require__(66);
+var _store = __webpack_require__(67);
 
 var _reactRedux = __webpack_require__(3);
 
@@ -3612,7 +3624,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _server = __webpack_require__(91);
+var _server = __webpack_require__(92);
 
 var _reactRouter = __webpack_require__(9);
 
@@ -3620,29 +3632,29 @@ var _reactHelmet = __webpack_require__(8);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _routes = __webpack_require__(92);
+var _routes = __webpack_require__(93);
 
 var _routes2 = _interopRequireDefault(_routes);
 
-var _fetchData = __webpack_require__(114);
+var _fetchData = __webpack_require__(115);
 
-var _post = __webpack_require__(116);
+var _post = __webpack_require__(117);
 
 var _post2 = _interopRequireDefault(_post);
 
-var _user = __webpack_require__(120);
+var _user = __webpack_require__(121);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _node = __webpack_require__(128);
+var _node = __webpack_require__(129);
 
 var _node2 = _interopRequireDefault(_node);
 
-var _universe = __webpack_require__(134);
+var _universe = __webpack_require__(135);
 
 var _universe2 = _interopRequireDefault(_universe);
 
-var _dummyData = __webpack_require__(136);
+var _dummyData = __webpack_require__(137);
 
 var _dummyData2 = _interopRequireDefault(_dummyData);
 
@@ -3663,13 +3675,13 @@ var isProdMode = process.env.NODE_ENV === "production" || false;
 if (isDevMode) {
   // Webpack Requirements
   // eslint-disable-next-line global-require
-  var webpack = __webpack_require__(60);
+  var webpack = __webpack_require__(61);
   // eslint-disable-next-line global-require
-  var config = __webpack_require__(137);
+  var config = __webpack_require__(138);
   // eslint-disable-next-line global-require
-  var webpackDevMiddleware = __webpack_require__(141);
+  var webpackDevMiddleware = __webpack_require__(142);
   // eslint-disable-next-line global-require
-  var webpackHotMiddleware = __webpack_require__(142);
+  var webpackHotMiddleware = __webpack_require__(143);
   var compiler = webpack(config);
   app.use(webpackDevMiddleware(compiler, {
     noInfo: true,
@@ -3775,25 +3787,25 @@ exports.default = app;
 /* WEBPACK VAR INJECTION */}.call(exports, "server"))
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports) {
 
 module.exports = require("compression");
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports) {
 
 module.exports = require("body-parser");
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports) {
 
 module.exports = require("path");
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3836,7 +3848,7 @@ function mapStateToProps(store) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(IntlWrapper);
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3849,11 +3861,11 @@ exports.configureStore = configureStore;
 
 var _redux = __webpack_require__(39);
 
-var _reduxThunk = __webpack_require__(67);
+var _reduxThunk = __webpack_require__(68);
 
 var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
-var _reducers = __webpack_require__(68);
+var _reducers = __webpack_require__(69);
 
 var _reducers2 = _interopRequireDefault(_reducers);
 
@@ -3894,13 +3906,13 @@ function configureStore() {
 }
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux-thunk");
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3920,27 +3932,27 @@ var _PostReducer = __webpack_require__(28);
 
 var _PostReducer2 = _interopRequireDefault(_PostReducer);
 
-var _IntlReducer = __webpack_require__(72);
+var _IntlReducer = __webpack_require__(73);
 
 var _IntlReducer2 = _interopRequireDefault(_IntlReducer);
 
-var _AuthReducer = __webpack_require__(82);
+var _AuthReducer = __webpack_require__(83);
 
 var _AuthReducer2 = _interopRequireDefault(_AuthReducer);
 
-var _ErrorReducer = __webpack_require__(84);
+var _ErrorReducer = __webpack_require__(85);
 
 var _ErrorReducer2 = _interopRequireDefault(_ErrorReducer);
 
-var _NodeReducer = __webpack_require__(85);
+var _NodeReducer = __webpack_require__(86);
 
 var _NodeReducer2 = _interopRequireDefault(_NodeReducer);
 
-var _UniverseReducer = __webpack_require__(86);
+var _UniverseReducer = __webpack_require__(87);
 
 var _UniverseReducer2 = _interopRequireDefault(_UniverseReducer);
 
-var _UserReducer = __webpack_require__(87);
+var _UserReducer = __webpack_require__(88);
 
 var _UserReducer2 = _interopRequireDefault(_UserReducer);
 
@@ -3964,19 +3976,19 @@ exports.default = (0, _redux.combineReducers)({
      */
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports) {
 
 module.exports = require("babel-runtime/helpers/toConsumableArray");
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports) {
 
 module.exports = require("isomorphic-fetch");
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3993,7 +4005,7 @@ var config = {
 exports.default = config;
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4003,7 +4015,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _objectWithoutProperties2 = __webpack_require__(73);
+var _objectWithoutProperties2 = __webpack_require__(74);
 
 var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
 
@@ -4045,37 +4057,37 @@ var IntlReducer = function IntlReducer() {
 exports.default = IntlReducer;
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports) {
 
 module.exports = require("babel-runtime/helpers/objectWithoutProperties");
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports) {
 
 module.exports = require("intl");
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports) {
 
 module.exports = require("intl-locales-supported");
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports) {
 
 module.exports = require("intl/locale-data/jsonp/en");
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-intl/locale-data/en");
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4105,19 +4117,19 @@ exports.default = {
 };
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports) {
 
 module.exports = require("intl/locale-data/jsonp/fr");
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-intl/locale-data/fr");
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4147,7 +4159,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4192,13 +4204,13 @@ var AuthReducer = function AuthReducer() {
 exports.default = AuthReducer;
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports) {
 
 module.exports = require("axios");
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4227,7 +4239,7 @@ var _ErrorActions = __webpack_require__(25);
 var initialState = {};
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4331,7 +4343,7 @@ var NodeReducer = function NodeReducer() {
 exports.default = NodeReducer;
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4386,7 +4398,7 @@ var UniverseReducer = function UniverseReducer() {
 exports.default = UniverseReducer;
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4435,31 +4447,31 @@ var UserReducer = function UserReducer() {
 exports.default = UserReducer;
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux-devtools");
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux-devtools-log-monitor");
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux-devtools-dock-monitor");
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-dom/server");
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4479,7 +4491,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouter = __webpack_require__(9);
 
-var _App = __webpack_require__(93);
+var _App = __webpack_require__(94);
 
 var _App2 = _interopRequireDefault(_App);
 
@@ -4499,8 +4511,8 @@ if (false) {
 /* eslint-disable global-require */
 if (process.env.NODE_ENV !== "production") {
   // Require async routes only in development for react-hot-reloader to work.
-  __webpack_require__(102);
-  __webpack_require__(106);
+  __webpack_require__(103);
+  __webpack_require__(107);
   // Auth Components
   __webpack_require__(47);
   __webpack_require__(51);
@@ -4572,7 +4584,7 @@ exports.default = (0, _jsx3.default)(_reactRouter.Route, {
 }));
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4623,11 +4635,11 @@ var _reactHelmet = __webpack_require__(8);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _Header = __webpack_require__(94);
+var _Header = __webpack_require__(95);
 
 var _Header2 = _interopRequireDefault(_Header);
 
-var _Footer = __webpack_require__(101);
+var _Footer = __webpack_require__(102);
 
 var _Footer2 = _interopRequireDefault(_Footer);
 
@@ -4719,7 +4731,7 @@ function mapStateToProps(store) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(App);
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4761,17 +4773,17 @@ var _reactRouter = __webpack_require__(9);
 
 var _reactRedux = __webpack_require__(3);
 
-var _styles = __webpack_require__(95);
+var _styles = __webpack_require__(96);
 
-var _AppBar = __webpack_require__(96);
+var _AppBar = __webpack_require__(97);
 
 var _AppBar2 = _interopRequireDefault(_AppBar);
 
-var _Toolbar = __webpack_require__(97);
+var _Toolbar = __webpack_require__(98);
 
 var _Toolbar2 = _interopRequireDefault(_Toolbar);
 
-var _Typography = __webpack_require__(98);
+var _Typography = __webpack_require__(99);
 
 var _Typography2 = _interopRequireDefault(_Typography);
 
@@ -4779,11 +4791,11 @@ var _Button = __webpack_require__(17);
 
 var _Button2 = _interopRequireDefault(_Button);
 
-var _IconButton = __webpack_require__(99);
+var _IconButton = __webpack_require__(100);
 
 var _IconButton2 = _interopRequireDefault(_IconButton);
 
-var _Menu = __webpack_require__(100);
+var _Menu = __webpack_require__(101);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
@@ -4898,43 +4910,43 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { logoutUser: _AuthActions.logoutUser })((0, _styles.withStyles)(matStyles)(Header));
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/styles");
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/AppBar");
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/Toolbar");
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/Typography");
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/IconButton");
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/icons/Menu");
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4982,7 +4994,7 @@ function Footer() {
 exports.default = Footer;
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5022,11 +5034,11 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _PostList = __webpack_require__(103);
+var _PostList = __webpack_require__(104);
 
 var _PostList2 = _interopRequireDefault(_PostList);
 
-var _PostCreateWidget = __webpack_require__(105);
+var _PostCreateWidget = __webpack_require__(106);
 
 var _PostCreateWidget2 = _interopRequireDefault(_PostCreateWidget);
 
@@ -5114,7 +5126,7 @@ PostListPage.contextTypes = {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(PostListPage);
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5136,7 +5148,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _PostListItem = __webpack_require__(104);
+var _PostListItem = __webpack_require__(105);
 
 var _PostListItem2 = _interopRequireDefault(_PostListItem);
 
@@ -5159,7 +5171,7 @@ function PostList(props) {
 exports.default = PostList;
 
 /***/ }),
-/* 104 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5234,7 +5246,7 @@ function PostListItem(props) {
 exports.default = PostListItem;
 
 /***/ }),
-/* 105 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5359,7 +5371,7 @@ var PostCreateWidget = exports.PostCreateWidget = function (_Component) {
 exports.default = (0, _reactIntl.injectIntl)(PostCreateWidget);
 
 /***/ }),
-/* 106 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5449,19 +5461,19 @@ function mapStateToProps(state, props) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(PostDetailPage);
 
 /***/ }),
-/* 107 */
+/* 108 */
 /***/ (function(module, exports) {
 
 module.exports = require("classnames");
 
 /***/ }),
-/* 108 */
+/* 109 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-select");
 
 /***/ }),
-/* 109 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5548,7 +5560,7 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, {})(RootNodeList);
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5873,7 +5885,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, {
 })(EditNodeForm);
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5913,11 +5925,11 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _Share = __webpack_require__(112);
+var _Share = __webpack_require__(113);
 
 var _Share2 = _interopRequireDefault(_Share);
 
-var _Popover = __webpack_require__(113);
+var _Popover = __webpack_require__(114);
 
 var _Popover2 = _interopRequireDefault(_Popover);
 
@@ -5992,19 +6004,19 @@ var ShareButton = function (_React$Component) {
 exports.default = (0, _reactRedux.connect)(null, {})(ShareButton);
 
 /***/ }),
-/* 112 */
+/* 113 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/icons/Share");
 
 /***/ }),
-/* 113 */
+/* 114 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/Popover");
 
 /***/ }),
-/* 114 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6015,7 +6027,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.fetchComponentData = fetchComponentData;
 
-var _promiseUtils = __webpack_require__(115);
+var _promiseUtils = __webpack_require__(116);
 
 function fetchComponentData(store, components, params) {
   var needs = components.reduce(function (prev, current) {
@@ -6031,7 +6043,7 @@ function fetchComponentData(store, components, params) {
   */
 
 /***/ }),
-/* 115 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6062,7 +6074,7 @@ function sequence(items, consumer) {
 }
 
 /***/ }),
-/* 116 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6074,7 +6086,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _express = __webpack_require__(18);
 
-var _post = __webpack_require__(117);
+var _post = __webpack_require__(118);
 
 var PostController = _interopRequireWildcard(_post);
 
@@ -6097,7 +6109,7 @@ router.route('/posts/:cuid').delete(PostController.deletePost);
 exports.default = router;
 
 /***/ }),
-/* 117 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6115,11 +6127,11 @@ var _post = __webpack_require__(57);
 
 var _post2 = _interopRequireDefault(_post);
 
-var _cuid = __webpack_require__(118);
+var _cuid = __webpack_require__(119);
 
 var _cuid2 = _interopRequireDefault(_cuid);
 
-var _limax = __webpack_require__(119);
+var _limax = __webpack_require__(120);
 
 var _limax2 = _interopRequireDefault(_limax);
 
@@ -6206,19 +6218,19 @@ function deletePost(req, res) {
 }
 
 /***/ }),
-/* 118 */
+/* 119 */
 /***/ (function(module, exports) {
 
 module.exports = require("cuid");
 
 /***/ }),
-/* 119 */
+/* 120 */
 /***/ (function(module, exports) {
 
 module.exports = require("limax");
 
 /***/ }),
-/* 120 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6230,7 +6242,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _express = __webpack_require__(18);
 
-var _user = __webpack_require__(121);
+var _user = __webpack_require__(122);
 
 var UserController = _interopRequireWildcard(_user);
 
@@ -6256,7 +6268,7 @@ router.route("/user/login").post(UserController.loginUser);
 exports.default = router;
 
 /***/ }),
-/* 121 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6566,19 +6578,19 @@ var _sanitizeHtml = __webpack_require__(58);
 
 var _sanitizeHtml2 = _interopRequireDefault(_sanitizeHtml);
 
-var _bcryptjs = __webpack_require__(122);
+var _bcryptjs = __webpack_require__(123);
 
 var _bcryptjs2 = _interopRequireDefault(_bcryptjs);
 
-var _jsonwebtoken = __webpack_require__(123);
+var _jsonwebtoken = __webpack_require__(124);
 
 var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
 
-var _validateUserSignupInputs = __webpack_require__(124);
+var _validateUserSignupInputs = __webpack_require__(125);
 
 var _validateUserSignupInputs2 = _interopRequireDefault(_validateUserSignupInputs);
 
-var _validateLoginInput2 = __webpack_require__(125);
+var _validateLoginInput2 = __webpack_require__(126);
 
 var _validateLoginInput3 = _interopRequireDefault(_validateLoginInput2);
 
@@ -6589,19 +6601,19 @@ var _keys2 = _interopRequireDefault(_keys);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 122 */
+/* 123 */
 /***/ (function(module, exports) {
 
 module.exports = require("bcryptjs");
 
 /***/ }),
-/* 123 */
+/* 124 */
 /***/ (function(module, exports) {
 
 module.exports = require("jsonwebtoken");
 
 /***/ }),
-/* 124 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6666,7 +6678,7 @@ module.exports = function validateWebAdminSignupInput(data) {
 };
 
 /***/ }),
-/* 125 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6703,7 +6715,7 @@ module.exports = function validateLoginInput(data) {
 };
 
 /***/ }),
-/* 126 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6717,7 +6729,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 127 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6731,7 +6743,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 128 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6743,7 +6755,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _express = __webpack_require__(18);
 
-var _node = __webpack_require__(129);
+var _node = __webpack_require__(130);
 
 var NodeController = _interopRequireWildcard(_node);
 
@@ -6792,7 +6804,7 @@ router.route("/node/remove/duplicates/all/legacy").get(NodeController.legacyRemo
 exports.default = router;
 
 /***/ }),
-/* 129 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7109,21 +7121,24 @@ var editNode = exports.editNode = function () {
             node.version++;
 
             node.title = req.body.title, node.content.string = req.body.content;
-            (0, _addSourceConnections.addSourceConnections)(node, req.body);
-            (0, _addSubtopicConnections.addSubtopicConnections)(node, req.body);
-            _context2.next = 10;
-            return node.save();
+            _context2.next = 8;
+            return (0, _addSourceConnections.addSourceConnections)(node, req.body);
 
-          case 10:
+          case 8:
+            node = _context2.sent;
+            _context2.next = 11;
+            return (0, _addSubtopicConnections.addSubtopicConnections)(node, req.body);
+
+          case 11:
             node = _context2.sent;
 
 
             res.json(node);
-            _context2.next = 20;
+            _context2.next = 21;
             break;
 
-          case 14:
-            _context2.prev = 14;
+          case 15:
+            _context2.prev = 15;
             _context2.t0 = _context2["catch"](0);
 
             console.log(_context2.t0);
@@ -7132,12 +7147,12 @@ var editNode = exports.editNode = function () {
             errors.general = _context2.t0;
             res.status(500).json(errors);
 
-          case 20:
+          case 21:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, this, [[0, 14]]);
+    }, _callee2, this, [[0, 15]]);
   }));
 
   return function editNode(_x3, _x4) {
@@ -8127,26 +8142,26 @@ var _universe = __webpack_require__(36);
 
 var _universe2 = _interopRequireDefault(_universe);
 
-var _mongodb = __webpack_require__(130);
+var _mongodb = __webpack_require__(131);
 
-var _validateNodeInput2 = __webpack_require__(131);
+var _validateNodeInput2 = __webpack_require__(132);
 
 var _validateNodeInput3 = _interopRequireDefault(_validateNodeInput2);
 
-var _addSourceConnections = __webpack_require__(132);
+var _addSourceConnections = __webpack_require__(133);
 
-var _addSubtopicConnections = __webpack_require__(133);
+var _addSubtopicConnections = __webpack_require__(134);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 130 */
+/* 131 */
 /***/ (function(module, exports) {
 
 module.exports = require("mongodb");
 
 /***/ }),
-/* 131 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8178,211 +8193,6 @@ module.exports = function validateNodeInput(data) {
 };
 
 /***/ }),
-/* 132 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.addSourceConnections = undefined;
-
-var _regenerator = __webpack_require__(23);
-
-var _regenerator2 = _interopRequireDefault(_regenerator);
-
-var _asyncToGenerator2 = __webpack_require__(24);
-
-var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
-
-var addSourceConnections = exports.addSourceConnections = function () {
-  var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(node, data) {
-    var _this = this;
-
-    var sourceConnections, author, nodeId, oldSourcesConnections, newSourceConnections, errors;
-    return _regenerator2.default.wrap(function _callee4$(_context4) {
-      while (1) {
-        switch (_context4.prev = _context4.next) {
-          case 0:
-            _context4.prev = 0;
-            sourceConnections = data.sources;
-            author = data.author;
-            nodeId = _mongoose2.default.Types.ObjectId(node._id);
-
-            if (!(sourceConnections && sourceConnections.length > 0)) {
-              _context4.next = 13;
-              break;
-            }
-
-            // Find items that have been removed, remove subtopic relationship from that node
-            oldSourcesConnections = node.sourceConnections.filter(function (existingConnection) {
-              return !sourceConnections.includes(existingConnection.toString());
-            });
-
-            oldSourcesConnections.forEach(function () {
-              var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(sourceConnection) {
-                var connection;
-                return _regenerator2.default.wrap(function _callee$(_context) {
-                  while (1) {
-                    switch (_context.prev = _context.next) {
-                      case 0:
-                        _context.next = 2;
-                        return _connection2.default.findById(sourceConnection);
-
-                      case 2:
-                        connection = _context.sent;
-                        _context.next = 5;
-                        return _node2.default.findByIdAndUpdate(nodeId, { $pull: { sourceConnections: connection._id } }, { new: true });
-
-                      case 5:
-                        _context.next = 7;
-                        return _node2.default.findByIdAndUpdate(connection.sourceNode, { $pull: { subtopicConnections: connection._id } }, { new: true });
-
-                      case 7:
-                        _context.next = 9;
-                        return _connection2.default.findByIdAndRemove(sourceConnection);
-
-                      case 9:
-                      case "end":
-                        return _context.stop();
-                    }
-                  }
-                }, _callee, _this);
-              }));
-
-              return function (_x3) {
-                return _ref2.apply(this, arguments);
-              };
-            }());
-
-            // Find objects that are new, add subtopic relationship from that node
-            if (sourceConnections.length > 0) {
-              newSourceConnections = sourceConnections.filter(function (newSourceConnection) {
-                return !node.sourceConnections.some(function (existingSourceConnection) {
-                  return existingSourceConnection.equals(_mongoose2.default.Types.ObjectId(newSourceConnection));
-                });
-              });
-
-              newSourceConnections.forEach(function () {
-                var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(sourceConnection) {
-                  var connection;
-                  return _regenerator2.default.wrap(function _callee2$(_context2) {
-                    while (1) {
-                      switch (_context2.prev = _context2.next) {
-                        case 0:
-                          // Create Connection Object
-                          connection = new _connection2.default({
-                            sourceNode: sourceConnection,
-                            subtopicNode: nodeId,
-                            author: author
-                          });
-                          // Add Connection to this node (subtopic node)
-
-                          _context2.next = 3;
-                          return _node2.default.findByIdAndUpdate(nodeId, { $push: { sourceConnections: connection._id } }, { new: true });
-
-                        case 3:
-                          _context2.next = 5;
-                          return _node2.default.findByIdAndUpdate(sourceConnection, { $push: { subtopicConnections: connection._id } }, { new: true });
-
-                        case 5:
-                          _context2.next = 7;
-                          return connection.save();
-
-                        case 7:
-                        case "end":
-                          return _context2.stop();
-                      }
-                    }
-                  }, _callee2, _this);
-                }));
-
-                return function (_x4) {
-                  return _ref3.apply(this, arguments);
-                };
-              }());
-            }
-
-            _context4.next = 10;
-            return node.save();
-
-          case 10:
-            return _context4.abrupt("return");
-
-          case 13:
-            // Remove from subtopic of related nodes
-            node.sources.forEach(function () {
-              var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(source) {
-                return _regenerator2.default.wrap(function _callee3$(_context3) {
-                  while (1) {
-                    switch (_context3.prev = _context3.next) {
-                      case 0:
-                        _context3.next = 2;
-                        return _node2.default.findByIdAndUpdate(source, { $pull: { subtopics: nodeId } }, { new: true });
-
-                      case 2:
-                      case "end":
-                        return _context3.stop();
-                    }
-                  }
-                }, _callee3, _this);
-              }));
-
-              return function (_x5) {
-                return _ref4.apply(this, arguments);
-              };
-            }());
-            node.sources = [];
-            _context4.next = 17;
-            return node.save();
-
-          case 17:
-            return _context4.abrupt("return");
-
-          case 18:
-            _context4.next = 26;
-            break;
-
-          case 20:
-            _context4.prev = 20;
-            _context4.t0 = _context4["catch"](0);
-
-            console.log(_context4.t0);
-            errors = {};
-
-            errors.general = _context4.t0;
-            return _context4.abrupt("return", new Error(errors));
-
-          case 26:
-          case "end":
-            return _context4.stop();
-        }
-      }
-    }, _callee4, this, [[0, 20]]);
-  }));
-
-  return function addSourceConnections(_x, _x2) {
-    return _ref.apply(this, arguments);
-  };
-}();
-
-var _node = __webpack_require__(26);
-
-var _node2 = _interopRequireDefault(_node);
-
-var _connection = __webpack_require__(38);
-
-var _connection2 = _interopRequireDefault(_connection);
-
-var _mongoose = __webpack_require__(11);
-
-var _mongoose2 = _interopRequireDefault(_mongoose);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/***/ }),
 /* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8392,7 +8202,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.addSubtopicConnections = undefined;
 
 var _regenerator = __webpack_require__(23);
 
@@ -8402,191 +8211,184 @@ var _asyncToGenerator2 = __webpack_require__(24);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
-var addSubtopicConnections = exports.addSubtopicConnections = function () {
-  var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(node, data) {
-    var _this = this;
-
-    var subtopicConnections, author, nodeId, oldSubtopicConnections, newSubtopicConnections, errors;
-    return _regenerator2.default.wrap(function _callee4$(_context4) {
-      while (1) {
-        switch (_context4.prev = _context4.next) {
-          case 0:
-            _context4.prev = 0;
-            subtopicConnections = data.subtopics;
-            author = data.author;
-            nodeId = _mongoose2.default.Types.ObjectId(node._id);
-
-            if (!(subtopicConnections && subtopicConnections.length > 0)) {
-              _context4.next = 13;
-              break;
-            }
-
-            // Find items that have been removed, remove source relationship in that node
-            oldSubtopicConnections = node.subtopicConnections.filter(function (existingConnection) {
-              return !subtopicConnections.includes(existingConnection.toString());
-            });
-            // Remove oldSubtopicConnections from both nodes involved, and delete connection object
-
-            oldSubtopicConnections.forEach(function () {
-              var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(subtopicConnection) {
-                var connection;
-                return _regenerator2.default.wrap(function _callee$(_context) {
-                  while (1) {
-                    switch (_context.prev = _context.next) {
-                      case 0:
-                        _context.next = 2;
-                        return _connection2.default.findById(subtopicConnection);
-
-                      case 2:
-                        connection = _context.sent;
-                        _context.next = 5;
-                        return _node2.default.findByIdAndUpdate(nodeId, { $pull: { subtopicConnections: connection._id } }, { new: true });
-
-                      case 5:
-                        _context.next = 7;
-                        return _node2.default.findByIdAndUpdate(connection.subtopicNode, { $pull: { sourceConnections: connection._id } }, { new: true });
-
-                      case 7:
-                        _context.next = 9;
-                        return _connection2.default.findByIdAndRemove(subtopicConnection);
-
-                      case 9:
-                      case "end":
-                        return _context.stop();
-                    }
-                  }
-                }, _callee, _this);
-              }));
-
-              return function (_x3) {
-                return _ref2.apply(this, arguments);
-              };
-            }());
-
-            // Find objects that are new, add source relationship in that node
-            if (subtopicConnections.length > 0) {
-              newSubtopicConnections = subtopicConnections.filter(function (newSubtopicConnection) {
-                return !node.subtopicConnections.some(function (existingSubtopicConnection) {
-                  return existingSubtopicConnection.equals(_mongoose2.default.Types.ObjectId(newSubtopicConnection));
-                });
-              });
-
-              newSubtopicConnections.forEach(function () {
-                var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(subtopicConnection) {
-                  var connection;
-                  return _regenerator2.default.wrap(function _callee2$(_context2) {
-                    while (1) {
-                      switch (_context2.prev = _context2.next) {
-                        case 0:
-                          // Create Connection Object
-                          connection = new _connection2.default({
-                            sourceNode: nodeId,
-                            subtopicNode: subtopicConnection,
-                            author: author
-                          });
-                          // Add connection to this node
-
-                          _context2.next = 3;
-                          return _node2.default.findByIdAndUpdate(nodeId, { $push: { subtopicConnections: connection._id } }, { new: true });
-
-                        case 3:
-                          _context2.next = 5;
-                          return _node2.default.findByIdAndUpdate(subtopicConnection, { $push: { sourceConnections: connection._id } }, { new: true });
-
-                        case 5:
-                          _context2.next = 7;
-                          return connection.save();
-
-                        case 7:
-                        case "end":
-                          return _context2.stop();
-                      }
-                    }
-                  }, _callee2, _this);
-                }));
-
-                return function (_x4) {
-                  return _ref3.apply(this, arguments);
-                };
-              }());
-            }
-
-            _context4.next = 10;
-            return node.save();
-
-          case 10:
-            return _context4.abrupt("return");
-
-          case 13:
-            // Remove from source of related nodes
-            node.subtopics.forEach(function () {
-              var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(source) {
-                return _regenerator2.default.wrap(function _callee3$(_context3) {
-                  while (1) {
-                    switch (_context3.prev = _context3.next) {
-                      case 0:
-                        _context3.next = 2;
-                        return _node2.default.findByIdAndUpdate(source, { $pull: { sources: nodeId } }, { new: true });
-
-                      case 2:
-                      case "end":
-                        return _context3.stop();
-                    }
-                  }
-                }, _callee3, _this);
-              }));
-
-              return function (_x5) {
-                return _ref4.apply(this, arguments);
-              };
-            }());
-            node.subtopics = [];
-            _context4.next = 17;
-            return node.save();
-
-          case 17:
-            return _context4.abrupt("return");
-
-          case 18:
-            _context4.next = 26;
-            break;
-
-          case 20:
-            _context4.prev = 20;
-            _context4.t0 = _context4["catch"](0);
-
-            console.log(_context4.t0);
-            errors = {};
-
-            errors.general = _context4.t0;
-            return _context4.abrupt("return", new Error(errors));
-
-          case 26:
-          case "end":
-            return _context4.stop();
-        }
-      }
-    }, _callee4, this, [[0, 20]]);
-  }));
-
-  return function addSubtopicConnections(_x, _x2) {
-    return _ref.apply(this, arguments);
-  };
-}();
+exports.addSourceConnections = addSourceConnections;
 
 var _node = __webpack_require__(26);
 
 var _node2 = _interopRequireDefault(_node);
 
-var _connection = __webpack_require__(38);
+var _connection2 = __webpack_require__(38);
 
-var _connection2 = _interopRequireDefault(_connection);
+var _connection3 = _interopRequireDefault(_connection2);
 
 var _mongoose = __webpack_require__(11);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
+var _assert = __webpack_require__(60);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function addSourceConnections(node, data) {
+  var _this = this;
+
+  return new Promise(function () {
+    var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(resolve, reject) {
+      var sourceConnections, author, nodeId, oldSourcesConnections, i, sourceConnection, connection, newSourceConnections, _sourceConnection, _connection, errors;
+
+      return _regenerator2.default.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.prev = 0;
+              sourceConnections = data.sources;
+              author = data.author;
+              nodeId = _mongoose2.default.Types.ObjectId(node._id);
+
+              if (!(sourceConnections && sourceConnections.length > 0)) {
+                _context2.next = 41;
+                break;
+              }
+
+              // Find items that have been removed, remove subtopic relationship from that node
+              oldSourcesConnections = node.sourceConnections.filter(function (existingConnection) {
+                return !sourceConnections.includes(existingConnection.toString());
+              });
+              i = 0;
+
+            case 7:
+              if (!(i < oldSourcesConnections.length)) {
+                _context2.next = 22;
+                break;
+              }
+
+              sourceConnection = oldSourcesConnections[i];
+              _context2.next = 11;
+              return _connection3.default.findById(sourceConnection);
+
+            case 11:
+              connection = _context2.sent;
+              _context2.next = 14;
+              return _node2.default.findByIdAndUpdate(nodeId, { $pull: { sourceConnections: connection._id } }, { new: true });
+
+            case 14:
+              node = _context2.sent;
+              _context2.next = 17;
+              return _node2.default.findByIdAndUpdate(connection.sourceNode, { $pull: { subtopicConnections: connection._id } }, { new: true });
+
+            case 17:
+              _context2.next = 19;
+              return _connection3.default.findByIdAndRemove(sourceConnection);
+
+            case 19:
+              i++;
+              _context2.next = 7;
+              break;
+
+            case 22:
+              if (!(sourceConnections.length > 0)) {
+                _context2.next = 38;
+                break;
+              }
+
+              newSourceConnections = sourceConnections.filter(function (newSourceConnection) {
+                return !node.sourceConnections.some(function (existingSourceConnection) {
+                  return existingSourceConnection.equals(_mongoose2.default.Types.ObjectId(newSourceConnection));
+                });
+              });
+              i = 0;
+
+            case 25:
+              if (!(i < newSourceConnections.length)) {
+                _context2.next = 38;
+                break;
+              }
+
+              _sourceConnection = newSourceConnections[i];
+              // Create Connection Object
+
+              _connection = new _connection3.default({
+                sourceNode: _sourceConnection,
+                subtopicNode: nodeId,
+                author: author
+              });
+              // Add Connection to this node (subtopic node)
+
+              _context2.next = 30;
+              return _node2.default.findByIdAndUpdate(nodeId, { $push: { sourceConnections: _connection._id } }, { new: true });
+
+            case 30:
+              node = _context2.sent;
+              _context2.next = 33;
+              return _node2.default.findByIdAndUpdate(_sourceConnection, { $push: { subtopicConnections: _connection._id } }, { new: true });
+
+            case 33:
+              _context2.next = 35;
+              return _connection.save();
+
+            case 35:
+              i++;
+              _context2.next = 25;
+              break;
+
+            case 38:
+              resolve(node);
+              _context2.next = 44;
+              break;
+
+            case 41:
+              // Remove from subtopic of related nodes
+              node.sources.forEach(function () {
+                var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(source) {
+                  return _regenerator2.default.wrap(function _callee$(_context) {
+                    while (1) {
+                      switch (_context.prev = _context.next) {
+                        case 0:
+                          _context.next = 2;
+                          return _node2.default.findByIdAndUpdate(source, { $pull: { subtopics: nodeId } }, { new: true });
+
+                        case 2:
+                        case "end":
+                          return _context.stop();
+                      }
+                    }
+                  }, _callee, _this);
+                }));
+
+                return function (_x3) {
+                  return _ref2.apply(this, arguments);
+                };
+              }());
+              node.sources = [];
+              resolve(node);
+
+            case 44:
+              _context2.next = 52;
+              break;
+
+            case 46:
+              _context2.prev = 46;
+              _context2.t0 = _context2["catch"](0);
+
+              console.log(_context2.t0);
+              errors = {};
+
+              errors.general = _context2.t0;
+              reject(errors);
+
+            case 52:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2, _this, [[0, 46]]);
+    }));
+
+    return function (_x, _x2) {
+      return _ref.apply(this, arguments);
+    };
+  }());
+}
 
 /***/ }),
 /* 134 */
@@ -8599,9 +8401,212 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _regenerator = __webpack_require__(23);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _asyncToGenerator2 = __webpack_require__(24);
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+
+exports.addSubtopicConnections = addSubtopicConnections;
+
+var _node = __webpack_require__(26);
+
+var _node2 = _interopRequireDefault(_node);
+
+var _connection2 = __webpack_require__(38);
+
+var _connection3 = _interopRequireDefault(_connection2);
+
+var _mongoose = __webpack_require__(11);
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+var _assert = __webpack_require__(60);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function addSubtopicConnections(node, data) {
+  var _this = this;
+
+  return new Promise(function () {
+    var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(resolve, reject) {
+      var subtopicConnections, author, nodeId, oldSubtopicConnections, i, subtopicConnection, connection, newSubtopicConnections, _subtopicConnection, _connection, errors;
+
+      return _regenerator2.default.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.prev = 0;
+              subtopicConnections = data.subtopics;
+              author = data.author;
+              nodeId = _mongoose2.default.Types.ObjectId(node._id);
+
+              if (!(subtopicConnections && subtopicConnections.length > 0)) {
+                _context2.next = 45;
+                break;
+              }
+
+              _context2.next = 7;
+              return node.subtopicConnections.filter(function (existingConnection) {
+                return !subtopicConnections.includes(existingConnection.toString());
+              });
+
+            case 7:
+              oldSubtopicConnections = _context2.sent;
+              i = 0;
+
+            case 9:
+              if (!(i < oldSubtopicConnections.length)) {
+                _context2.next = 24;
+                break;
+              }
+
+              subtopicConnection = oldSubtopicConnections[i];
+              _context2.next = 13;
+              return _connection3.default.findById(subtopicConnection);
+
+            case 13:
+              connection = _context2.sent;
+              _context2.next = 16;
+              return _node2.default.findByIdAndUpdate(nodeId, { $pull: { subtopicConnections: connection._id } }, { new: true });
+
+            case 16:
+              node = _context2.sent;
+              _context2.next = 19;
+              return _node2.default.findByIdAndUpdate(connection.subtopicNode, { $pull: { sourceConnections: connection._id } }, { new: true });
+
+            case 19:
+              _context2.next = 21;
+              return _connection3.default.findByIdAndRemove(subtopicConnection);
+
+            case 21:
+              i++;
+              _context2.next = 9;
+              break;
+
+            case 24:
+              if (!(subtopicConnections.length > 0)) {
+                _context2.next = 42;
+                break;
+              }
+
+              _context2.next = 27;
+              return subtopicConnections.filter(function (newSubtopicConnection) {
+                return !node.subtopicConnections.some(function (existingSubtopicConnection) {
+                  return existingSubtopicConnection.equals(_mongoose2.default.Types.ObjectId(newSubtopicConnection));
+                });
+              });
+
+            case 27:
+              newSubtopicConnections = _context2.sent;
+              i = 0;
+
+            case 29:
+              if (!(i < newSubtopicConnections.length)) {
+                _context2.next = 42;
+                break;
+              }
+
+              _subtopicConnection = newSubtopicConnections[i];
+              // Create Connection Object
+
+              _connection = new _connection3.default({
+                sourceNode: nodeId,
+                subtopicNode: _subtopicConnection,
+                author: author
+              });
+              _context2.next = 34;
+              return _connection.save();
+
+            case 34:
+              _context2.next = 36;
+              return _node2.default.findByIdAndUpdate(nodeId, { $push: { subtopicConnections: _connection._id } }, { new: true });
+
+            case 36:
+              node = _context2.sent;
+              _context2.next = 39;
+              return _node2.default.findByIdAndUpdate(_subtopicConnection, { $push: { sourceConnections: _connection._id } }, { new: true });
+
+            case 39:
+              i++;
+              _context2.next = 29;
+              break;
+
+            case 42:
+              resolve(node);
+              _context2.next = 48;
+              break;
+
+            case 45:
+              // Remove from source of related nodes
+              node.subtopics.forEach(function () {
+                var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(source) {
+                  return _regenerator2.default.wrap(function _callee$(_context) {
+                    while (1) {
+                      switch (_context.prev = _context.next) {
+                        case 0:
+                          _context.next = 2;
+                          return _node2.default.findByIdAndUpdate(source, { $pull: { sources: nodeId } }, { new: true });
+
+                        case 2:
+                        case "end":
+                          return _context.stop();
+                      }
+                    }
+                  }, _callee, _this);
+                }));
+
+                return function (_x3) {
+                  return _ref2.apply(this, arguments);
+                };
+              }());
+              node.subtopics = [];
+              resolve(node);
+
+            case 48:
+              _context2.next = 56;
+              break;
+
+            case 50:
+              _context2.prev = 50;
+              _context2.t0 = _context2["catch"](0);
+
+              console.log(_context2.t0);
+              errors = {};
+
+              errors.general = _context2.t0;
+              reject(errors);
+
+            case 56:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2, _this, [[0, 50]]);
+    }));
+
+    return function (_x, _x2) {
+      return _ref.apply(this, arguments);
+    };
+  }());
+}
+
+/***/ }),
+/* 135 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _express = __webpack_require__(18);
 
-var _universe = __webpack_require__(135);
+var _universe = __webpack_require__(136);
 
 var UniverseController = _interopRequireWildcard(_universe);
 
@@ -8630,7 +8635,7 @@ router.route("/universe/create/public").get(UniverseController.createPublicUnive
 exports.default = router;
 
 /***/ }),
-/* 135 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9061,7 +9066,7 @@ var _user2 = _interopRequireDefault(_user);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 136 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9099,16 +9104,16 @@ var _post2 = _interopRequireDefault(_post);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 137 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(__dirname) {
 
-var webpack = __webpack_require__(60);
-var cssnext = __webpack_require__(138);
-var postcssFocus = __webpack_require__(139);
-var postcssReporter = __webpack_require__(140);
+var webpack = __webpack_require__(61);
+var cssnext = __webpack_require__(139);
+var postcssFocus = __webpack_require__(140);
+var postcssReporter = __webpack_require__(141);
 
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
@@ -9188,31 +9193,31 @@ module.exports = {
 /* WEBPACK VAR INJECTION */}.call(exports, ""))
 
 /***/ }),
-/* 138 */
+/* 139 */
 /***/ (function(module, exports) {
 
 module.exports = require("postcss-cssnext");
 
 /***/ }),
-/* 139 */
+/* 140 */
 /***/ (function(module, exports) {
 
 module.exports = require("postcss-focus");
 
 /***/ }),
-/* 140 */
+/* 141 */
 /***/ (function(module, exports) {
 
 module.exports = require("postcss-reporter");
 
 /***/ }),
-/* 141 */
+/* 142 */
 /***/ (function(module, exports) {
 
 module.exports = require("webpack-dev-middleware");
 
 /***/ }),
-/* 142 */
+/* 143 */
 /***/ (function(module, exports) {
 
 module.exports = require("webpack-hot-middleware");
