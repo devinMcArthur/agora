@@ -7131,14 +7131,19 @@ var editNode = exports.editNode = function () {
 
           case 11:
             node = _context2.sent;
+            _context2.next = 14;
+            return node.save();
+
+          case 14:
+            node = _context2.sent;
 
 
             res.json(node);
-            _context2.next = 21;
+            _context2.next = 24;
             break;
 
-          case 15:
-            _context2.prev = 15;
+          case 18:
+            _context2.prev = 18;
             _context2.t0 = _context2["catch"](0);
 
             console.log(_context2.t0);
@@ -7147,12 +7152,12 @@ var editNode = exports.editNode = function () {
             errors.general = _context2.t0;
             res.status(500).json(errors);
 
-          case 21:
+          case 24:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, this, [[0, 15]]);
+    }, _callee2, this, [[0, 18]]);
   }));
 
   return function editNode(_x3, _x4) {
