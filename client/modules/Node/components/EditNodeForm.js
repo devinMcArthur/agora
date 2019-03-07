@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import Helmet from "react-helmet";
 
 import {
   editNode,
@@ -10,7 +9,9 @@ import {
   getSources,
   getSubtopics,
   clearSources,
-  clearSubtopics
+  clearSubtopics,
+  uploadNodeFile,
+  retrieveNodeFiles
 } from "../NodeActions";
 
 import Spinner from "../../App/components/Common/Spinner";
@@ -34,6 +35,8 @@ class EditNodeForm extends Component {
       subtopicObjects: null,
       sourceOptions: [],
       subtopicOptions: [],
+      file: null,
+      imageTitle: "",
       errors: {}
     };
 
@@ -47,6 +50,8 @@ class EditNodeForm extends Component {
     this.createDefaultSourceConnections = this.createDefaultSourceConnections.bind(
       this
     );
+    this.fileChosen = this.fileChosen.bind(this);
+    this.uploadImage = this.uploadImage.bind(this);
   }
 
   componentDidMount() {
@@ -74,9 +79,13 @@ class EditNodeForm extends Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate() {
     // Place source and subtopic connections into state
-    if (this.props.node.subtopics !== null && this.state.subtopics === null) {
+    if (
+      this.props.node.subtopics !== null &&
+      this.state.subtopics === null &&
+      this.props.node.formNodes !== null
+    ) {
       let subtopics = [];
       this.props.node.subtopics.forEach(subtopicObject => {
         subtopics.push(subtopicObject.connection._id);
@@ -89,7 +98,11 @@ class EditNodeForm extends Component {
       );
       this.props.clearSubtopics();
     }
-    if (this.props.node.sources !== null && this.state.sources === null) {
+    if (
+      this.props.node.sources !== null &&
+      this.state.sources === null &&
+      this.props.node.formNodes !== null
+    ) {
       let sources = [];
       this.props.node.sources.forEach(sourceObject => {
         sources.push(sourceObject.connection._id);
@@ -178,15 +191,58 @@ class EditNodeForm extends Component {
     this.setState({ subtopicOf });
   }
 
+  fileChosen(e) {
+    // Validate file type
+    if (
+      e.target.files[0].type.includes("image/png") ||
+      e.target.files[0].type.includes("image/jpeg") ||
+      e.target.files[0].type.includes("image/gif")
+    ) {
+      // Reset file error
+      let errors = {
+        ...this.state.errors
+      };
+      if (errors.file) {
+        delete errors.file;
+      }
+
+      this.setState({ file: e.target.files[0], errors });
+    } else {
+      let errors = {
+        file:
+          "This file type is not accepted, can only submit image files that are either PNG, JPEG, or GIF"
+      };
+      e.target.value = null;
+      this.setState({ errors });
+    }
+  }
+
+  uploadImage(e) {
+    e.preventDefault();
+    let file = this.state.file;
+    this.props.uploadNodeFile(file, this.state.node._id);
+  }
+
   render() {
-    let content;
+    console.log(this.state);
+    console.log(this.state.node.subtopicConnections.length);
+    console.log(
+      (this.state.node.subtopicConnections &&
+        this.state.node.subtopicConnections.length > 0 &&
+        this.state.subtopicOptions.length > 0) ||
+        this.state.node.subtopicConnections.length === 0
+    );
+    let content,
+      { errors } = this.state;
     if (
       this.state.node !== null &&
       this.props.node.formNodes !== null &&
       ((this.state.node.sourceConnections &&
+        this.state.node.sourceConnections.length > 0 &&
         this.state.sourceOptions.length > 0) ||
         this.state.node.sourceConnections.length === 0) &&
       ((this.state.node.subtopicConnections &&
+        this.state.node.subtopicConnections.length > 0 &&
         this.state.subtopicOptions.length > 0) ||
         this.state.node.subtopicConnections.length === 0)
     ) {
@@ -234,6 +290,23 @@ class EditNodeForm extends Component {
                 Submit
               </Button>
             </form>
+            <br />
+            <form onSubmit={this.uploadImage}>
+              {/* <TextField
+                id="image-title"
+                label="Title of Photo"
+                name="imageTitle"
+                onChange={this.onChange}
+                value={this.state.imageTitle}
+                margin="normal"
+                variant="outlined"
+              /> */}
+              <input type="file" name="file" onChange={this.fileChosen} />
+              {errors.file ? errors.file : ""}
+              <Button type="submit" color="primary">
+                Submit
+              </Button>
+            </form>
           </Paper>
         </div>
       );
@@ -271,6 +344,8 @@ export default connect(
     getSources,
     getSubtopics,
     clearSources,
-    clearSubtopics
+    clearSubtopics,
+    uploadNodeFile,
+    retrieveNodeFiles
   }
 )(EditNodeForm);

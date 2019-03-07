@@ -2,12 +2,42 @@ import Node from "../models/node";
 import Connection from "../models/connection";
 import User from "../models/user";
 import Universe from "../models/universe";
-import { ObjectId } from "mongodb";
+
+import multer from "multer";
+import GridFsStorage from "multer-gridfs-storage";
+import MongoClient from "mongodb";
 
 import validateNodeInput from "../validators/validateNodeInput";
+import keys from "../config/keys";
 
 import { addSourceConnections } from "../util/addSourceConnections";
 import { addSubtopicConnections } from "../util/addSubtopicConnections";
+
+let storage = new GridFsStorage({
+  url: keys.mongoURI,
+  file: (req, file) => {
+    return {
+      bucketName: "nodeFiles",
+      filename: `nodefile-${Date.now()}`
+    };
+  }
+});
+let upload = null;
+storage.on("connection", db => {
+  upload = multer({
+    storage,
+    fileFilter: function(req, file, cb) {
+      if (
+        file.mimetype !== "image/png" &&
+        file.mimetype !== "image/jpeg" &&
+        file.mimetype !== "image/gif"
+      ) {
+        return cb(new Error("Only PNG, GIF, and JPEG file types allowed"));
+      }
+      cb(null, true);
+    }
+  }).single("file");
+});
 
 // Highlight Array Legend
 // 0: Nothing
@@ -224,6 +254,96 @@ export async function deleteNode(req, res) {
     await Node.findByIdAndRemove(req.params.id);
 
     res.end();
+  } catch (e) {
+    console.log(e);
+    let errors = {};
+    errors.general = e;
+    res.status(500).json(errors);
+  }
+}
+
+/**
+ * Upload Image to node (JPEG, GIF, PNG) validation is done above
+ * @param req
+ * @param res
+ * @returns void
+ */
+export async function uploadImageToNode(req, res) {
+  try {
+    upload(req, res, async err => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({
+          general: "Uploaded Error",
+          message: "File could not be uploaded",
+          error: err
+        });
+      }
+      let node = await Node.findByIdAndUpdate(
+        req.params.id,
+        { $push: { files: req.file.filename } },
+        { new: true }
+      );
+      res.json(node);
+    });
+  } catch (e) {
+    console.log(e);
+    let errors = {};
+    errors.general = e;
+    res.status(500).json(errors);
+  }
+}
+
+/**
+ * Get all files for a given node
+ * @param req
+ * @param res
+ * @returns void
+ */
+export async function retrieveNodeFiles(req, res) {
+  try {
+    let node = await Node.findById(req.params.id);
+    let files = node.files;
+    let returnArray = [];
+    if (files && files.length > 0) {
+      for (var i = 0; i < files.length; i++) {
+        let filename = files[i];
+        let client = await MongoClient.connect(keys.mongoURI);
+        let dbName = keys.mongoURI.split("/")[
+          keys.mongoURI.split("/").length - 1
+        ];
+        const db = client.db(dbName);
+        const collection = db.collection("nodeFiles.files");
+        const collectionChunks = db.collection("nodeFiles.chunks");
+        let docs = await collection.find({ filename }).toArray();
+        if (!docs || docs.length === 0) {
+          console.log("Error finding files");
+          let errors = {};
+          errors.general = "Error finding files";
+          return res.status(500).json(errors);
+        } else {
+          let chunks = await collectionChunks
+            .find({ files_id: docs[0]._id })
+            .sort({ n: 1 })
+            .toArray();
+          if (!chunks || chunks.length === 0) {
+            console.log("No data found");
+            let errors = {};
+            errors.general = "No data found";
+            return res.status(500).json(errors);
+          }
+          let fileData = [];
+          for (let j = 0; j < chunks.length; j++) {
+            fileData.push(chunks[j].data.toString("base64"));
+          }
+          let finalFile = `data:${docs[0].contentType};base64,${fileData.join(
+            ""
+          )}`;
+          returnArray.push(finalFile);
+        }
+      }
+      res.json(returnArray);
+    }
   } catch (e) {
     console.log(e);
     let errors = {};

@@ -5,6 +5,8 @@ import bodyParser from "body-parser";
 import path from "path";
 import IntlWrapper from "../client/modules/Intl/IntlWrapper";
 
+import busboy from "connect-busboy";
+
 // Initialize the Express App
 const app = new Express();
 
@@ -74,6 +76,9 @@ if (process.env.NODE_ENV !== "test") {
     }
   );
 }
+
+// For File Submission
+app.use(busboy());
 
 // Apply body Parser and server public assets and routes
 app.use(compression());

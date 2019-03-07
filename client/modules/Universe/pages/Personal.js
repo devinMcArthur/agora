@@ -33,6 +33,7 @@ class Personal extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props);
     if (!this.props.auth.isAuthenticated) {
       browserHistory.push("/login");
     }

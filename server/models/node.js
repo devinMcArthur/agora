@@ -84,6 +84,9 @@ const nodeSchema = new Schema({
   // List of users that can view this node when hidden
   hiddenWhitelist: {
     type: [Schema.Types.ObjectId]
+  },
+  files: {
+    type: [String]
   }
 });
 

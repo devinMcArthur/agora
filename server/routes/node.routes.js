@@ -23,6 +23,12 @@ router
 // Delete Node
 router.route("/node/:id/delete").get(NodeController.deleteNode);
 
+// Upload Image to Node (JPEG, GIF, PNG)
+router.route("/node/:id/upload/file").post(NodeController.uploadImageToNode);
+
+// Retrieve Node files
+router.route("/node/:id/retrieve/files").get(NodeController.retrieveNodeFiles);
+
 // Get Node sources
 router.route("/node/:id/sources").get(NodeController.getNodeSources);
 

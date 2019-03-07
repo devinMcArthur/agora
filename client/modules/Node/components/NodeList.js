@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import Node from "./Node";
+import NodePreview from "./NodePreview";
 
 class RootNodeList extends Component {
   render() {
@@ -15,7 +15,7 @@ class RootNodeList extends Component {
       this.props.nodes.forEach(node => {
         nodeArray.push(
           <div key={node._id}>
-            <Node
+            <NodePreview
               onNavigation={this.props.onNavigation}
               singleNode={node}
               subtopicToggle={subtopicToggle}

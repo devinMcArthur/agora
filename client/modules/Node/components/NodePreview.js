@@ -9,8 +9,6 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 
-import EditNodeForm from "./EditNodeForm";
-import NodeForm from "./NodeForm";
 import Spinner from "../../App/components/Common/Spinner";
 
 import ShareButton from "../../../components/ShareButton";
@@ -30,7 +28,7 @@ import {
 } from "../NodeActions";
 import { getUniverse, clearUniverse } from "../../Universe/UniverseActions";
 
-class Node extends Component {
+class NodePreview extends Component {
   constructor(props) {
     super(props);
 
@@ -46,8 +44,7 @@ class Node extends Component {
       subtopicToggle,
       subtopics: null,
       sources: null,
-      files: null,
-      universe: null
+      files: null
     };
 
     this.toggleEditForm = this.toggleEditForm.bind(this);
@@ -59,9 +56,6 @@ class Node extends Component {
     // Handle component loading
     let { node } = this.state;
     if (node) {
-      if (node.originUniverse) {
-        this.props.getUniverse(node.originUniverse);
-      }
       if (node.files && node.files.length > 0) {
         this.props.retrieveNodeFiles(node._id);
       }
@@ -88,7 +82,6 @@ class Node extends Component {
 
   componentWillUnmount() {
     this.props.clearNodes();
-    this.props.clearUniverse();
   }
 
   toggleSubtopics() {
@@ -101,10 +94,6 @@ class Node extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    // Handle loaded Universe
-    if (this.props.universe.universe !== null && this.state.universe === null) {
-      this.setState({ universe: this.props.universe.universe });
-    }
     // Put loaded Files into State
     if (
       this.state.node &&
@@ -200,7 +189,7 @@ class Node extends Component {
   }
 
   render() {
-    let { editFormToggle, toggleNodeForm, universe } = this.state;
+    let { editFormToggle, toggleNodeForm } = this.state;
     let content;
     if (this.state.node !== null) {
       let sourceJSX = [],
@@ -254,7 +243,7 @@ class Node extends Component {
             <span key={source._id}>
               <Button
                 onClick={() => {
-                  this.props.onNavigation(source._id);
+                  browserHistory.push(`/node/${source._id}`);
                 }}
               >
                 #{source.title}
@@ -268,8 +257,8 @@ class Node extends Component {
             <span key={"root-link"}>
               <Button
                 onClick={() => {
-                  this.props.onNavigation(
-                    `root-${this.props.universe.universe._id}`
+                  browserHistory.push(
+                    `/universe/${this.props.universe.universe._id}`
                   );
                 }}
               >
@@ -299,7 +288,7 @@ class Node extends Component {
               <h3
                 style={{ cursor: "pointer" }}
                 onClick={() => {
-                  this.props.onNavigation(subtopic._id);
+                  browserHistory.push(`/node/${subtopic._id}`);
                 }}
               >
                 {subtopic.title}
@@ -374,27 +363,6 @@ class Node extends Component {
         nodeContent = "";
       }
 
-      let deleteButton;
-      if (this.props.auth.user && this.props.auth.user.admin) {
-        deleteButton = (
-          <span>
-            {" | "}
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => {
-                if (
-                  window.confirm("Are you sure you want to delete this Node?")
-                )
-                  this.props.deleteNode(node._id);
-              }}
-            >
-              Delete Node
-            </Button>
-          </span>
-        );
-      }
-
       // FINAL CONTENT THAT WILL BE LOADED
       content = (
         <div key={node._id}>
@@ -422,47 +390,6 @@ class Node extends Component {
                 <ShareButton link={`${location.origin}/node/${node._id}`} />
               </Grid>
             </Grid>
-            {universe ? (
-              <Button
-                variant="contained"
-                onClick={() => {
-                  browserHistory.push(
-                    `/universe/${this.props.universe.universe._id}`
-                  );
-                }}
-                style={{ margin: "0.5em 0" }}
-              >
-                Universe: {this.props.universe.universe.title}
-              </Button>
-            ) : (
-              <span>This Node has no Home :(</span>
-            )}
-            <div className="row">
-              <div className="col">
-                {this.props.auth.isAuthenticated ? (
-                  <span>
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      style={{ marginRight: "0.5em" }}
-                      onClick={this.toggleEditForm}
-                    >
-                      Edit Node
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      onClick={this.toggleNodeForm}
-                    >
-                      Add Node
-                    </Button>
-                    {deleteButton}
-                  </span>
-                ) : (
-                  ""
-                )}
-              </div>
-            </div>
             {nodeForm}
             {editForm}
             {sourceJSX}
@@ -488,7 +415,7 @@ const mapStateToProps = state => ({
   universe: state.universe
 });
 
-Node.defaultProps = {
+NodePreview.defaultProps = {
   onNavigation: e => {
     if (e.includes("root")) {
       browserHistory.push(`/universe/${e.split("-")[1]}`);
@@ -500,7 +427,7 @@ Node.defaultProps = {
   singleNode: null
 };
 
-Node.propTypes = {
+NodePreview.propTypes = {
   auth: PropTypes.object.isRequired,
   onNavigation: PropTypes.func,
   singleNode: PropTypes.object,
@@ -524,4 +451,4 @@ export default connect(
     retrieveNodeFiles,
     clearFiles
   }
-)(Node);
+)(NodePreview);

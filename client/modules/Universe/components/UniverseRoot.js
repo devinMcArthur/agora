@@ -9,7 +9,7 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 
 import NodeForm from "../../Node/components/NodeForm";
-import RootNodeList from "../../Node/components/RootNodeList";
+import NodeList from "../../Node/components/NodeList";
 
 import {
   getUniverseRootNodes,
@@ -38,8 +38,15 @@ class UniverseRoot extends Component {
     this.onNavigation = this.onNavigation.bind(this);
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.universe !== null && prevState.universe === null) {
+      this.props.getUniverseRootNodes(this.state.universe._id);
+    }
+  }
+
   componentDidMount() {
     if (this.props.universe.universe._id !== null) {
+      this.setState({ universe: this.props.universe.universe });
       this.props.clearNodes();
       this.props.clearNode();
       this.props.getUniverseRootNodes(this.props.universe.universe._id);
@@ -70,7 +77,7 @@ class UniverseRoot extends Component {
         return node._id.toString() === id;
       });
       if (newNode.length === 1) {
-        this.props.setNode(newNode[0]);
+        browserHistory.push(`/node/${newNode[0]._id}`);
       } else {
         this.props.getNodeByID(id);
       }
@@ -102,14 +109,14 @@ class UniverseRoot extends Component {
       this.props.node.node === null
     ) {
       content = (
-        <RootNodeList
+        <NodeList
           nodes={this.props.node.nodes}
           onNavigation={this.onNavigation}
         />
       );
     } else if (this.props.node.node !== null) {
       content = (
-        <RootNodeList
+        <NodeList
           nodes={new Array(this.props.node.node)}
           onNavigation={this.onNavigation}
         />

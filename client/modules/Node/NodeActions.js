@@ -1,7 +1,6 @@
 import callApi from "../../util/apiCaller";
-import setAuthToken from "../../util/setAuthToken";
+import callApiFile from "../../util/apiCallerFile";
 
-import jwt_decode from "jwt-decode";
 import { GET_ERRORS } from "../Error/ErrorActions";
 
 export const GET_NODE = "GET_NODE";
@@ -12,10 +11,12 @@ export const GET_SOURCES = "GET_SOURCES";
 export const GET_SUBTOPICS = "GET_SUBTOPICS";
 export const NODE_LOADING = "NODE_LOADING";
 export const SET_NODE = "SET_NODE";
+export const GET_FILES = "GET_FILES";
 export const CLEAR_NODES = "CLEAR_NODES";
 export const CLEAR_NODE = "CLEAR_NODE";
 export const CLEAR_SOURCES = "CLEAR_SOURCES";
 export const CLEAR_SUBTOPICS = "CLEAR_SUBTOPICS";
+export const CLEAR_FILES = "CLEAR_FILES";
 export const NODE_FULL_CLEAR = "NODE_FULL_CLEAR";
 
 // Create a node
@@ -65,8 +66,22 @@ export const getNodeByID = id => dispatch => {
 
 // Remove duplicate sources and subtopics from all nodes
 export const deleteNode = id => dispatch => {
-  return callApi(`/node/${id}/delete`, "get")
+  return callApi(`node/${id}/delete`, "get")
     .then(res => location.reload())
+    .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
+};
+
+// Upload file to a node
+export const uploadNodeFile = (file, id) => dispatch => {
+  return callApiFile(`node/${id}/upload/file`, "post", file)
+    .then(res => dispatch({ type: GET_NODE, payload: res }))
+    .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
+};
+
+// Upload image to a node
+export const retrieveNodeFiles = id => dispatch => {
+  return callApi(`node/${id}/retrieve/files`, "get")
+    .then(res => dispatch({ type: GET_FILES, payload: res }))
     .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
 };
 
@@ -151,6 +166,12 @@ export const clearSources = () => {
 export const clearSubtopics = () => {
   return {
     type: CLEAR_SUBTOPICS
+  };
+};
+
+export const clearFiles = () => {
+  return {
+    type: CLEAR_FILES
   };
 };
 

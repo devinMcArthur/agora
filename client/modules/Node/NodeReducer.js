@@ -7,10 +7,12 @@ import {
   GET_SUBTOPICS,
   NODE_LOADING,
   SET_NODE,
+  GET_FILES,
   CLEAR_NODES,
   CLEAR_NODE,
   CLEAR_SOURCES,
   CLEAR_SUBTOPICS,
+  CLEAR_FILES,
   NODE_FULL_CLEAR
 } from "./NodeActions";
 
@@ -21,6 +23,7 @@ const initialState = {
   formNodes: null,
   subtopics: null,
   sources: null,
+  files: null,
   loading: false
 };
 
@@ -72,6 +75,11 @@ const NodeReducer = (state = initialState, action) => {
         ...state,
         node: action.payload
       };
+    case GET_FILES:
+      return {
+        ...state,
+        files: action.payload
+      };
     case CLEAR_NODES:
       return {
         ...state,
@@ -91,6 +99,11 @@ const NodeReducer = (state = initialState, action) => {
       return {
         ...state,
         subtopics: null
+      };
+    case CLEAR_FILES:
+      return {
+        ...state,
+        files: null
       };
     case NODE_FULL_CLEAR:
       return {
