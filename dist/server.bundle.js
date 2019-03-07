@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 62);
+/******/ 	return __webpack_require__(__webpack_require__.s = 63);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -115,16 +115,10 @@ module.exports = require("babel-runtime/helpers/inherits");
 /* 8 */
 /***/ (function(module, exports) {
 
-module.exports = require("react-helmet");
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports) {
-
 module.exports = require("react-router");
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -133,19 +127,15 @@ module.exports = require("react-router");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.nodeFullClear = exports.setNodeLoading = exports.clearSubtopics = exports.clearSources = exports.clearNode = exports.clearNodes = exports.setNode = exports.updateNodeConnections = exports.clearDuplicateSourceAndSubtopics = exports.legacyClearDuplicateSourceAndSubtopics = exports.getSubtopics = exports.getSources = exports.getAllPrivateNodesForSelect = exports.getAllPublicNodesForSelect = exports.deleteNode = exports.getNodeByID = exports.getUniverseRootNodes = exports.editNode = exports.createNode = exports.NODE_FULL_CLEAR = exports.CLEAR_SUBTOPICS = exports.CLEAR_SOURCES = exports.CLEAR_NODE = exports.CLEAR_NODES = exports.SET_NODE = exports.NODE_LOADING = exports.GET_SUBTOPICS = exports.GET_SOURCES = exports.GET_ALL_PRIVATE_NODES = exports.GET_ALL_PUBLIC_NODES = exports.GET_NODES = exports.GET_NODE = undefined;
+exports.nodeFullClear = exports.setNodeLoading = exports.clearFiles = exports.clearSubtopics = exports.clearSources = exports.clearNode = exports.clearNodes = exports.setNode = exports.updateNodeConnections = exports.clearDuplicateSourceAndSubtopics = exports.legacyClearDuplicateSourceAndSubtopics = exports.getSubtopics = exports.getSources = exports.getAllPrivateNodesForSelect = exports.getAllPublicNodesForSelect = exports.retrieveNodeFiles = exports.uploadNodeFile = exports.deleteNode = exports.getNodeByID = exports.getUniverseRootNodes = exports.editNode = exports.createNode = exports.NODE_FULL_CLEAR = exports.CLEAR_FILES = exports.CLEAR_SUBTOPICS = exports.CLEAR_SOURCES = exports.CLEAR_NODE = exports.CLEAR_NODES = exports.GET_FILES = exports.SET_NODE = exports.NODE_LOADING = exports.GET_SUBTOPICS = exports.GET_SOURCES = exports.GET_ALL_PRIVATE_NODES = exports.GET_ALL_PUBLIC_NODES = exports.GET_NODES = exports.GET_NODE = undefined;
 
-var _apiCaller = __webpack_require__(19);
+var _apiCaller = __webpack_require__(20);
 
 var _apiCaller2 = _interopRequireDefault(_apiCaller);
 
-var _setAuthToken = __webpack_require__(43);
+var _apiCallerFile = __webpack_require__(89);
 
-var _setAuthToken2 = _interopRequireDefault(_setAuthToken);
-
-var _jwtDecode = __webpack_require__(44);
-
-var _jwtDecode2 = _interopRequireDefault(_jwtDecode);
+var _apiCallerFile2 = _interopRequireDefault(_apiCallerFile);
 
 var _ErrorActions = __webpack_require__(25);
 
@@ -159,10 +149,12 @@ var GET_SOURCES = exports.GET_SOURCES = "GET_SOURCES";
 var GET_SUBTOPICS = exports.GET_SUBTOPICS = "GET_SUBTOPICS";
 var NODE_LOADING = exports.NODE_LOADING = "NODE_LOADING";
 var SET_NODE = exports.SET_NODE = "SET_NODE";
+var GET_FILES = exports.GET_FILES = "GET_FILES";
 var CLEAR_NODES = exports.CLEAR_NODES = "CLEAR_NODES";
 var CLEAR_NODE = exports.CLEAR_NODE = "CLEAR_NODE";
 var CLEAR_SOURCES = exports.CLEAR_SOURCES = "CLEAR_SOURCES";
 var CLEAR_SUBTOPICS = exports.CLEAR_SUBTOPICS = "CLEAR_SUBTOPICS";
+var CLEAR_FILES = exports.CLEAR_FILES = "CLEAR_FILES";
 var NODE_FULL_CLEAR = exports.NODE_FULL_CLEAR = "NODE_FULL_CLEAR";
 
 // Create a node
@@ -223,8 +215,30 @@ var getNodeByID = exports.getNodeByID = function getNodeByID(id) {
 // Remove duplicate sources and subtopics from all nodes
 var deleteNode = exports.deleteNode = function deleteNode(id) {
   return function (dispatch) {
-    return (0, _apiCaller2.default)("/node/" + id + "/delete", "get").then(function (res) {
+    return (0, _apiCaller2.default)("node/" + id + "/delete", "get").then(function (res) {
       return location.reload();
+    }).catch(function (err) {
+      return dispatch({ type: _ErrorActions.GET_ERRORS, payload: err });
+    });
+  };
+};
+
+// Upload file to a node
+var uploadNodeFile = exports.uploadNodeFile = function uploadNodeFile(file, id) {
+  return function (dispatch) {
+    return (0, _apiCallerFile2.default)("node/" + id + "/upload/file", "post", file).then(function (res) {
+      return dispatch({ type: GET_NODE, payload: res });
+    }).catch(function (err) {
+      return dispatch({ type: _ErrorActions.GET_ERRORS, payload: err });
+    });
+  };
+};
+
+// Upload image to a node
+var retrieveNodeFiles = exports.retrieveNodeFiles = function retrieveNodeFiles(id) {
+  return function (dispatch) {
+    return (0, _apiCaller2.default)("node/" + id + "/retrieve/files", "get").then(function (res) {
+      return dispatch({ type: GET_FILES, payload: res });
     }).catch(function (err) {
       return dispatch({ type: _ErrorActions.GET_ERRORS, payload: err });
     });
@@ -337,6 +351,12 @@ var clearSubtopics = exports.clearSubtopics = function clearSubtopics() {
   };
 };
 
+var clearFiles = exports.clearFiles = function clearFiles() {
+  return {
+    type: CLEAR_FILES
+  };
+};
+
 var setNodeLoading = exports.setNodeLoading = function setNodeLoading() {
   return {
     type: NODE_LOADING
@@ -350,6 +370,12 @@ var nodeFullClear = exports.nodeFullClear = function nodeFullClear() {
 };
 
 /***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+module.exports = require("react-helmet");
+
+/***/ }),
 /* 11 */
 /***/ (function(module, exports) {
 
@@ -359,16 +385,10 @@ module.exports = require("mongoose");
 /* 12 */
 /***/ (function(module, exports) {
 
-module.exports = require("react-intl");
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports) {
-
 module.exports = require("babel-runtime/helpers/extends");
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -379,13 +399,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.setUniverseLoading = exports.clearUniverse = exports.createPublicUniverse = exports.getUserUniverses = exports.createPersonalUniverse = exports.getPublicUniverse = exports.getUniverse = exports.createUniverse = exports.CLEAR_UNIVERSE = exports.UNIVERSE_LOADING = exports.GET_UNIVERSES = exports.GET_UNIVERSE = undefined;
 
-var _apiCaller = __webpack_require__(19);
+var _apiCaller = __webpack_require__(20);
 
 var _apiCaller2 = _interopRequireDefault(_apiCaller);
 
 var _ErrorActions = __webpack_require__(25);
 
-var _AuthActions = __webpack_require__(16);
+var _AuthActions = __webpack_require__(18);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -474,13 +494,31 @@ var setUniverseLoading = exports.setUniverseLoading = function setUniverseLoadin
 };
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/Paper");
 
 /***/ }),
+/* 15 */
+/***/ (function(module, exports) {
+
+module.exports = require("react-intl");
+
+/***/ }),
 /* 16 */
+/***/ (function(module, exports) {
+
+module.exports = require("@material-ui/core/Button");
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports) {
+
+module.exports = require("lodash");
+
+/***/ }),
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -491,15 +529,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.logoutUser = exports.setCurrentUser = exports.loginUser = exports.registerUser = exports.GET_ERRORS = exports.SET_CURRENT_USER = undefined;
 
-var _apiCaller = __webpack_require__(19);
+var _apiCaller = __webpack_require__(20);
 
 var _apiCaller2 = _interopRequireDefault(_apiCaller);
 
-var _setAuthToken = __webpack_require__(43);
+var _setAuthToken = __webpack_require__(85);
 
 var _setAuthToken2 = _interopRequireDefault(_setAuthToken);
 
-var _jwtDecode = __webpack_require__(44);
+var _jwtDecode = __webpack_require__(86);
 
 var _jwtDecode2 = _interopRequireDefault(_jwtDecode);
 
@@ -551,19 +589,13 @@ var logoutUser = exports.logoutUser = function logoutUser() {
 };
 
 /***/ }),
-/* 17 */
-/***/ (function(module, exports) {
-
-module.exports = require("@material-ui/core/Button");
-
-/***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports) {
 
 module.exports = require("express");
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -575,11 +607,11 @@ Object.defineProperty(exports, "__esModule", {
 exports.API_URL = undefined;
 exports.default = callApi;
 
-var _isomorphicFetch = __webpack_require__(71);
+var _isomorphicFetch = __webpack_require__(73);
 
 var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
 
-var _config = __webpack_require__(72);
+var _config = __webpack_require__(42);
 
 var _config2 = _interopRequireDefault(_config);
 
@@ -614,12 +646,6 @@ function callApi(endpoint) {
     return error;
   });
 }
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports) {
-
-module.exports = require("lodash");
 
 /***/ }),
 /* 21 */
@@ -668,6 +694,39 @@ var clearErrors = exports.clearErrors = function clearErrors() {
 
 /***/ }),
 /* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _jsx2 = __webpack_require__(1);
+
+var _jsx3 = _interopRequireDefault(_jsx2);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _spinner = "/" + "559144c0218bc96a80bbd151315aeb99.gif";
+
+var _spinner2 = _interopRequireDefault(_spinner);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = function () {
+  return (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)("img", {
+    src: _spinner2.default,
+    alt: "Loading...",
+    style: { width: "200px", margin: "auto", display: "block" }
+  }));
+};
+
+/***/ }),
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -766,13 +825,16 @@ var nodeSchema = new Schema({
   // List of users that can view this node when hidden
   hiddenWhitelist: {
     type: [Schema.Types.ObjectId]
+  },
+  files: {
+    type: [String]
   }
 });
 
 exports.default = _mongoose2.default.model("Node", nodeSchema);
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -793,7 +855,7 @@ function toggleAddPost() {
 }
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -804,11 +866,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getPost = exports.getPosts = undefined;
 
-var _toConsumableArray2 = __webpack_require__(70);
+var _toConsumableArray2 = __webpack_require__(72);
 
 var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 
-var _PostActions = __webpack_require__(29);
+var _PostActions = __webpack_require__(30);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -860,7 +922,7 @@ var getPost = exports.getPost = function getPost(state, cuid) {
 exports.default = PostReducer;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -878,7 +940,7 @@ exports.fetchPost = fetchPost;
 exports.deletePost = deletePost;
 exports.deletePostRequest = deletePostRequest;
 
-var _apiCaller = __webpack_require__(19);
+var _apiCaller = __webpack_require__(20);
 
 var _apiCaller2 = _interopRequireDefault(_apiCaller);
 
@@ -950,7 +1012,7 @@ function deletePostRequest(cuid) {
 }
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -994,17 +1056,17 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _reactHelmet = __webpack_require__(8);
+var _reactHelmet = __webpack_require__(10);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _NodeActions = __webpack_require__(10);
+var _NodeActions = __webpack_require__(9);
 
-var _SelectMultiple = __webpack_require__(31);
+var _SelectMultiple = __webpack_require__(32);
 
 var _SelectMultiple2 = _interopRequireDefault(_SelectMultiple);
 
-var _Paper = __webpack_require__(15);
+var _Paper = __webpack_require__(14);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
@@ -1012,7 +1074,7 @@ var _TextField = __webpack_require__(22);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
-var _Button = __webpack_require__(17);
+var _Button = __webpack_require__(16);
 
 var _Button2 = _interopRequireDefault(_Button);
 
@@ -1183,7 +1245,7 @@ NodeForm.defaultProps = {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { createNode: _NodeActions.createNode, getAllPublicNodesForSelect: _NodeActions.getAllPublicNodesForSelect, getAllPrivateNodesForSelect: _NodeActions.getAllPrivateNodesForSelect })(NodeForm);
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1197,7 +1259,7 @@ var _jsx2 = __webpack_require__(1);
 
 var _jsx3 = _interopRequireDefault(_jsx2);
 
-var _extends2 = __webpack_require__(13);
+var _extends2 = __webpack_require__(12);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
@@ -1205,7 +1267,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _classnames = __webpack_require__(108);
+var _classnames = __webpack_require__(112);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -1213,7 +1275,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactSelect = __webpack_require__(109);
+var _reactSelect = __webpack_require__(113);
 
 var _reactSelect2 = _interopRequireDefault(_reactSelect);
 
@@ -1278,7 +1340,7 @@ var SelectMultiple = function SelectMultiple(_ref) {
 exports.default = SelectMultiple;
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1318,35 +1380,35 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _reactHelmet = __webpack_require__(8);
+var _reactHelmet = __webpack_require__(10);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _reactRouter = __webpack_require__(9);
+var _reactRouter = __webpack_require__(8);
 
-var _Paper = __webpack_require__(15);
+var _Paper = __webpack_require__(14);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
-var _Button = __webpack_require__(17);
+var _Button = __webpack_require__(16);
 
 var _Button2 = _interopRequireDefault(_Button);
 
-var _Grid = __webpack_require__(53);
+var _Grid = __webpack_require__(34);
 
 var _Grid2 = _interopRequireDefault(_Grid);
 
-var _NodeForm = __webpack_require__(30);
+var _NodeForm = __webpack_require__(31);
 
 var _NodeForm2 = _interopRequireDefault(_NodeForm);
 
-var _RootNodeList = __webpack_require__(110);
+var _NodeList = __webpack_require__(114);
 
-var _RootNodeList2 = _interopRequireDefault(_RootNodeList);
+var _NodeList2 = _interopRequireDefault(_NodeList);
 
-var _NodeActions = __webpack_require__(10);
+var _NodeActions = __webpack_require__(9);
 
-var _UniverseActions = __webpack_require__(14);
+var _UniverseActions = __webpack_require__(13);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1373,9 +1435,17 @@ var UniverseRoot = function (_Component) {
   }
 
   (0, _createClass3.default)(UniverseRoot, [{
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps, prevState) {
+      if (this.state.universe !== null && prevState.universe === null) {
+        this.props.getUniverseRootNodes(this.state.universe._id);
+      }
+    }
+  }, {
     key: "componentDidMount",
     value: function componentDidMount() {
       if (this.props.universe.universe._id !== null) {
+        this.setState({ universe: this.props.universe.universe });
         this.props.clearNodes();
         this.props.clearNode();
         this.props.getUniverseRootNodes(this.props.universe.universe._id);
@@ -1407,7 +1477,7 @@ var UniverseRoot = function (_Component) {
           return node._id.toString() === id;
         });
         if (newNode.length === 1) {
-          this.props.setNode(newNode[0]);
+          _reactRouter.browserHistory.push("/node/" + newNode[0]._id);
         } else {
           this.props.getNodeByID(id);
         }
@@ -1438,12 +1508,12 @@ var UniverseRoot = function (_Component) {
 
       var content = void 0;
       if (this.props.node.nodes !== null && this.props.node.nodes.length > 0 && this.props.node.node === null) {
-        content = (0, _jsx3.default)(_RootNodeList2.default, {
+        content = (0, _jsx3.default)(_NodeList2.default, {
           nodes: this.props.node.nodes,
           onNavigation: this.onNavigation
         });
       } else if (this.props.node.node !== null) {
-        content = (0, _jsx3.default)(_RootNodeList2.default, {
+        content = (0, _jsx3.default)(_NodeList2.default, {
           nodes: new Array(this.props.node.node),
           onNavigation: this.onNavigation
         });
@@ -1498,454 +1568,10 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, {
 })(UniverseRoot);
 
 /***/ }),
-/* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _jsx2 = __webpack_require__(1);
-
-var _jsx3 = _interopRequireDefault(_jsx2);
-
-var _classCallCheck2 = __webpack_require__(4);
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-var _createClass2 = __webpack_require__(5);
-
-var _createClass3 = _interopRequireDefault(_createClass2);
-
-var _possibleConstructorReturn2 = __webpack_require__(6);
-
-var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-var _inherits2 = __webpack_require__(7);
-
-var _inherits3 = _interopRequireDefault(_inherits2);
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _propTypes = __webpack_require__(2);
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _reactRedux = __webpack_require__(3);
-
-var _reactRouter = __webpack_require__(9);
-
-var _lodash = __webpack_require__(20);
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-var _Paper = __webpack_require__(15);
-
-var _Paper2 = _interopRequireDefault(_Paper);
-
-var _Button = __webpack_require__(17);
-
-var _Button2 = _interopRequireDefault(_Button);
-
-var _Grid = __webpack_require__(53);
-
-var _Grid2 = _interopRequireDefault(_Grid);
-
-var _EditNodeForm = __webpack_require__(111);
-
-var _EditNodeForm2 = _interopRequireDefault(_EditNodeForm);
-
-var _NodeForm = __webpack_require__(30);
-
-var _NodeForm2 = _interopRequireDefault(_NodeForm);
-
-var _Spinner = __webpack_require__(34);
-
-var _Spinner2 = _interopRequireDefault(_Spinner);
-
-var _ShareButton = __webpack_require__(112);
-
-var _ShareButton2 = _interopRequireDefault(_ShareButton);
-
-var _NodeActions = __webpack_require__(10);
-
-var _UniverseActions = __webpack_require__(14);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _ref = (0, _jsx3.default)(_Spinner2.default, {});
-
-var _ref2 = (0, _jsx3.default)(_Spinner2.default, {});
-
-var Node = function (_Component) {
-  (0, _inherits3.default)(Node, _Component);
-
-  function Node(props) {
-    (0, _classCallCheck3.default)(this, Node);
-
-    var _this = (0, _possibleConstructorReturn3.default)(this, (Node.__proto__ || Object.getPrototypeOf(Node)).call(this, props));
-
-    var subtopicToggle = void 0;
-    _this.props.subtopicToggle !== undefined ? subtopicToggle = _this.props.subtopicToggle : subtopicToggle = true;
-
-    _this.state = {
-      node: _this.props.singleNode || null,
-      editFormToggle: false,
-      toggleNodeForm: false,
-      subtopicToggle: subtopicToggle,
-      subtopics: null,
-      sources: null
-    };
-
-    _this.toggleEditForm = _this.toggleEditForm.bind(_this);
-    _this.toggleNodeForm = _this.toggleNodeForm.bind(_this);
-    _this.toggleSubtopics = _this.toggleSubtopics.bind(_this);
-    return _this;
-  }
-
-  (0, _createClass3.default)(Node, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      // Handle component loading
-      var node = this.state.node;
-
-      if (node) {
-        if (node.subtopicConnections && node.subtopicConnections.length > 0) {
-          this.props.getSubtopics(node._id);
-        }
-        if (node.sourceConnections && node.sourceConnections.length > 0) {
-          this.props.getSources(node._id);
-        }
-      }
-      // Handle loading node through url
-      if (this.props.singleNode === null && this.props.node.node === null && !this.props.node.loading) {
-        this.props.getNodeByID(this.props.params.nodeID);
-      }
-    }
-  }, {
-    key: "toggleEditForm",
-    value: function toggleEditForm() {
-      this.setState({ editFormToggle: !this.state.editFormToggle });
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      this.props.clearNodes();
-    }
-  }, {
-    key: "toggleSubtopics",
-    value: function toggleSubtopics() {
-      this.setState({ subtopicToggle: !this.state.subtopicToggle });
-    }
-  }, {
-    key: "copyNodeAddressToClipboard",
-    value: function copyNodeAddressToClipboard() {
-      var textField = document.createElement("textarea");
-      textField.innerText = "";
-    }
-  }, {
-    key: "componentDidUpdate",
-    value: function componentDidUpdate(prevProps) {
-      // Grab appropriate subtopics for this node
-      if (this.props.node.subtopics !== null && (this.state.subtopics === null || !_lodash2.default.isEqual(this.state.subtopics, this.props.node.subtopics)) && this.state.node !== null && this.state.node._id.toString() === this.props.node.subtopics[0].connection.sourceNode.toString()) {
-        this.setState({ subtopics: this.props.node.subtopics });
-        this.props.clearSubtopics();
-      }
-      // Grab appropriate sources for this node
-      if (this.props.node.sources !== null && (this.state.sources === null || !_lodash2.default.isEqual(this.state.sources, this.props.node.sources)) && this.state.node && this.state.node._id.toString() === this.props.node.sources[0].connection.subtopicNode.toString()) {
-        this.setState({ sources: this.props.node.sources });
-        this.props.clearSources();
-      }
-      // Grab loaded node if necessary
-      if (this.props.node.node !== null && this.state.node === null) {
-        this.setState({
-          node: this.props.node.node
-        });
-        this.props.getUniverse(this.props.node.node.originUniverse);
-        if (this.props.node.node.subtopicConnections && this.props.node.node.subtopicConnections.length > 0) {
-          this.props.getSubtopics(this.props.node.node._id);
-        }
-        if (this.props.node.node.sourceConnections && this.props.node.node.sourceConnections.length > 0) {
-          this.props.getSources(this.props.node.node._id);
-        }
-      }
-      // Update subtopicToggle
-      if (this.props.subtopicToggle !== prevProps.subtopicToggle) {
-        this.setState({ subtopicToggle: this.props.subtopicToggle });
-      }
-      // Update state node on update (edit)
-      if (!_lodash2.default.isEqual(this.state.node, this.props.node.node) && this.props.node.node !== null && this.state.node !== null) {
-        this.setState({ node: this.props.node.node, editFormToggle: false });
-        if (this.props.node.node.subtopicConnections && this.props.node.node.subtopicConnections.length > 0) {
-          this.props.getSubtopics(this.props.node.node._id);
-        }
-        if (this.props.node.node.sourceConnections && this.props.node.node.sourceConnections.length > 0) {
-          this.props.getSources(this.props.node.node._id);
-        }
-      }
-    }
-  }, {
-    key: "toggleNodeForm",
-    value: function toggleNodeForm() {
-      this.setState({ toggleNodeForm: !this.state.toggleNodeForm });
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this2 = this;
-
-      console.log(this.state);
-      var _state = this.state,
-          editFormToggle = _state.editFormToggle,
-          toggleNodeForm = _state.toggleNodeForm;
-
-      var content = void 0;
-      if (this.state.node !== null) {
-        var sourceJSX = [],
-            subtopicJSX = [],
-            editForm = void 0,
-            nodeForm = void 0,
-            subtopicToggleButtonText = void 0;
-        var node = this.state.node;
-
-        if (editFormToggle) {
-          editForm = (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(_EditNodeForm2.default, {
-            singleNode: node,
-            "private": !this.props.universe.universe.public
-          }));
-        } else {
-          editForm = "";
-        }
-
-        if (toggleNodeForm) {
-          nodeForm = (0, _jsx3.default)(_NodeForm2.default, {
-            "private": !this.props.universe.universe.public,
-            sourceNode: this.state.node
-          });
-        }
-
-        var _state2 = this.state,
-            subtopics = _state2.subtopics,
-            sources = _state2.sources;
-
-        // Sources
-
-        if (sources && sources.length > 0) {
-          sources.forEach(function (source) {
-            source = source.source;
-            sourceJSX.push((0, _jsx3.default)("span", {}, source._id, (0, _jsx3.default)(_Button2.default, {
-              onClick: function onClick() {
-                _this2.props.onNavigation(source._id);
-              }
-            }, void 0, "#", source.title), " "));
-          });
-        } else {
-          if (this.props.universe.universe !== null) {
-            sourceJSX.push((0, _jsx3.default)("span", {}, "root-link", (0, _jsx3.default)(_Button2.default, {
-              onClick: function onClick() {
-                _this2.props.onNavigation("root-" + _this2.props.universe.universe._id);
-              }
-            }, void 0, "#root")));
-          } else {
-            sourceJSX.push("Loading . . .");
-          }
-        }
-
-        // Subtopics
-        if (subtopics && subtopics.length > 0 && this.state.subtopicToggle) {
-          subtopicToggleButtonText = "Hide Subtopics";
-          subtopics.forEach(function (subtopic) {
-            subtopic = subtopic.subtopic;
-            subtopicJSX.push((0, _jsx3.default)(_Paper2.default, {
-              style: {
-                padding: "0.5em",
-                marginTop: "0.5em",
-                border: "solid black 1px"
-              }
-            }, subtopic._id, (0, _jsx3.default)("h3", {
-              style: { cursor: "pointer" },
-              onClick: function onClick() {
-                _this2.props.onNavigation(subtopic._id);
-              }
-            }, void 0, subtopic.title), subtopic.content.string === "" ? "No Content" : (0, _jsx3.default)("p", {}, void 0, subtopic.content.string)));
-          });
-        } else if (this.props.node.loading && this.state.node.subtopicConnections.length > 0) {
-          subtopicToggleButtonText = "Subtopics Loading . . .";
-          subtopicJSX = _ref;
-        } else {
-          subtopicToggleButtonText = "Show Subtopics";
-          subtopicJSX = "";
-        }
-
-        var subtopicToggleJSX = void 0;
-        if (subtopics && subtopics.length > 0) {
-          subtopicToggleJSX = (0, _jsx3.default)(_Grid2.default, {
-            container: true,
-            spacing: 0,
-            direction: "column",
-            alignItems: "center",
-            justify: "center"
-          }, void 0, (0, _jsx3.default)(_Button2.default, {
-            onClick: this.toggleSubtopics
-          }, void 0, subtopicToggleButtonText));
-        }
-
-        var lineArray = void 0,
-            nodeContent = void 0;
-        if (node.content.string) {
-          // render new lines
-          var count = 0;
-          lineArray = [];
-          node.content.string.split("\n").forEach(function (line) {
-            lineArray.push((0, _jsx3.default)("p", {
-              style: { color: "white" }
-            }, "line-" + count, line));
-            count++;
-          });
-          nodeContent = (0, _jsx3.default)(_Paper2.default, {
-            style: {
-              padding: "0.5em",
-              marginTop: "0.5em",
-              backgroundColor: "gray"
-            },
-            square: true
-          }, "node-content", lineArray);
-        } else {
-          nodeContent = "";
-        }
-
-        var deleteButton = void 0;
-        if (this.props.auth.user && this.props.auth.user.admin) {
-          deleteButton = (0, _jsx3.default)("span", {}, void 0, " | ", (0, _jsx3.default)(_Button2.default, {
-            variant: "outlined",
-            color: "secondary",
-            onClick: function onClick() {
-              if (window.confirm("Are you sure you want to delete this Node?")) _this2.props.deleteNode(node._id);
-            }
-          }, void 0, "Delete Node"));
-        }
-
-        // FINAL CONTENT THAT WILL BE LOADED
-        content = (0, _jsx3.default)("div", {}, node._id, (0, _jsx3.default)(_Paper2.default, {
-          style: {
-            padding: "0.5em",
-            margin: "1em",
-            border: "solid black 1px"
-          }
-        }, void 0, (0, _jsx3.default)(_Grid2.default, {
-          justify: "space-between",
-          container: true,
-          spacing: 24
-        }, void 0, (0, _jsx3.default)(_Grid2.default, {
-          item: true
-        }, void 0, " ", (0, _jsx3.default)("h1", {
-          style: { cursor: "pointer" },
-          className: "link-text",
-          onClick: function onClick() {
-            _this2.props.onNavigation(node._id);
-          }
-        }, void 0, node.title)), (0, _jsx3.default)(_Grid2.default, {
-          item: true
-        }, void 0, (0, _jsx3.default)(_ShareButton2.default, {
-          link: location.origin + "/node/" + node._id
-        }))), (0, _jsx3.default)("div", {
-          className: "row"
-        }, void 0, (0, _jsx3.default)("div", {
-          className: "col"
-        }, void 0, this.props.auth.isAuthenticated ? (0, _jsx3.default)("span", {}, void 0, (0, _jsx3.default)(_Button2.default, {
-          variant: "outlined",
-          color: "primary",
-          style: { marginRight: "0.5em" },
-          onClick: this.toggleEditForm
-        }, void 0, "Edit Node"), (0, _jsx3.default)(_Button2.default, {
-          variant: "outlined",
-          color: "primary",
-          onClick: this.toggleNodeForm
-        }, void 0, "Add Node"), deleteButton) : "")), nodeForm, editForm, sourceJSX, nodeContent, (0, _jsx3.default)("div", {}, void 0, subtopicJSX), subtopicToggleJSX));
-      } else {
-        content = _ref2;
-      }
-
-      return (0, _jsx3.default)("div", {}, void 0, content);
-    }
-  }]);
-  return Node;
-}(_react.Component);
-
-// Retrieve data from store as props
-
-
-var mapStateToProps = function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-    node: state.node,
-    universe: state.universe
-  };
-};
-
-Node.defaultProps = {
-  onNavigation: function onNavigation(e) {
-    if (e.includes("root")) {
-      _reactRouter.browserHistory.push("/universe/" + e.split("-")[1]);
-    } else {
-      _reactRouter.browserHistory.push("/node/" + e);
-      location.reload();
-    }
-  },
-  singleNode: null
-};
-
-exports.default = (0, _reactRedux.connect)(mapStateToProps, {
-  getNodeByID: _NodeActions.getNodeByID,
-  getSubtopics: _NodeActions.getSubtopics,
-  getSources: _NodeActions.getSources,
-  nodeFullClear: _NodeActions.nodeFullClear,
-  getUniverse: _UniverseActions.getUniverse,
-  clearUniverse: _UniverseActions.clearUniverse,
-  clearSources: _NodeActions.clearSources,
-  clearSubtopics: _NodeActions.clearSubtopics,
-  clearNodes: _NodeActions.clearNodes,
-  clearNode: _NodeActions.clearNode,
-  deleteNode: _NodeActions.deleteNode
-})(Node);
-
-/***/ }),
 /* 34 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _jsx2 = __webpack_require__(1);
-
-var _jsx3 = _interopRequireDefault(_jsx2);
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _spinner = "/" + "559144c0218bc96a80bbd151315aeb99.gif";
-
-var _spinner2 = _interopRequireDefault(_spinner);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = function () {
-  return (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)("img", {
-    src: _spinner2.default,
-    alt: "Loading...",
-    style: { width: "200px", margin: "auto", display: "block" }
-  }));
-};
+module.exports = require("@material-ui/core/Grid");
 
 /***/ }),
 /* 35 */
@@ -2036,6 +1662,19 @@ module.exports = require("validator");
 "use strict";
 
 
+if (process.env.NODE_ENV === "production") {
+  module.exports = __webpack_require__(131);
+} else {
+  module.exports = __webpack_require__(132);
+}
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -2084,13 +1723,13 @@ var connectionSchema = new Schema({
 exports.default = _mongoose2.default.model("Connection", connectionSchema);
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux");
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2101,7 +1740,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getShowAddPost = undefined;
 
-var _AppActions = __webpack_require__(27);
+var _AppActions = __webpack_require__(28);
 
 // Initial State
 var initialState = {
@@ -2135,7 +1774,24 @@ var getShowAddPost = exports.getShowAddPost = function getShowAddPost(state) {
 exports.default = AppReducer;
 
 /***/ }),
-/* 41 */
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var config = {
+  mongoURL: process.env.MONGO_URL || "mongodb://devinMcArthur:chaos1@ds139934.mlab.com:39934/agora-dev",
+  port: process.env.PORT || 8000
+};
+
+exports.default = config;
+
+/***/ }),
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2146,33 +1802,33 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.localizationData = exports.enabledLanguages = undefined;
 
-var _reactIntl = __webpack_require__(12);
+var _reactIntl = __webpack_require__(15);
 
-var _intl = __webpack_require__(75);
+var _intl = __webpack_require__(76);
 
 var _intl2 = _interopRequireDefault(_intl);
 
-var _intlLocalesSupported = __webpack_require__(76);
+var _intlLocalesSupported = __webpack_require__(77);
 
 var _intlLocalesSupported2 = _interopRequireDefault(_intlLocalesSupported);
 
-__webpack_require__(77);
+__webpack_require__(78);
 
-var _en = __webpack_require__(78);
+var _en = __webpack_require__(79);
 
 var _en2 = _interopRequireDefault(_en);
 
-var _en3 = __webpack_require__(79);
+var _en3 = __webpack_require__(80);
 
 var _en4 = _interopRequireDefault(_en3);
 
-__webpack_require__(80);
+__webpack_require__(81);
 
-var _fr = __webpack_require__(81);
+var _fr = __webpack_require__(82);
 
 var _fr2 = _interopRequireDefault(_fr);
 
-var _fr3 = __webpack_require__(82);
+var _fr3 = __webpack_require__(83);
 
 var _fr4 = _interopRequireDefault(_fr3);
 
@@ -2238,7 +1894,7 @@ localizationData.fr = _fr4.default;
 localizationData.fr.messages = flattenMessages(localizationData.fr.messages);
 
 /***/ }),
-/* 42 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2249,13 +1905,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.SWITCH_LANGUAGE = undefined;
 
-var _extends2 = __webpack_require__(13);
+var _extends2 = __webpack_require__(12);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
 exports.switchLanguage = switchLanguage;
 
-var _setup = __webpack_require__(41);
+var _setup = __webpack_require__(43);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2269,42 +1925,13 @@ function switchLanguage(newLang) {
 }
 
 /***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _axios = __webpack_require__(84);
-
-var _axios2 = _interopRequireDefault(_axios);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var setAuthToken = function setAuthToken(token) {
-  if (token) {
-    // Apply to every request
-    _axios2.default.defaults.headers.common["Authorization"] = token;
-  } else {
-    // Delete auth header
-    delete _axios2.default.defaults.headers.common["Authorization"];
-  }
-};
-
-exports.default = setAuthToken;
-
-/***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports) {
 
-module.exports = require("jwt-decode");
+module.exports = require("axios");
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2315,13 +1942,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.setUserLoading = exports.clearUsers = exports.getAllUsers = exports.CLEAR_USERS = exports.USER_LOADING = exports.GET_ALL_USERS = undefined;
 
-var _apiCaller = __webpack_require__(19);
+var _apiCaller = __webpack_require__(20);
 
 var _apiCaller2 = _interopRequireDefault(_apiCaller);
 
 var _ErrorActions = __webpack_require__(25);
 
-var _AuthActions = __webpack_require__(16);
+var _AuthActions = __webpack_require__(18);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2354,7 +1981,7 @@ var setUserLoading = exports.setUserLoading = function setUserLoading() {
 };
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2372,13 +1999,13 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reduxDevtools = __webpack_require__(89);
+var _reduxDevtools = __webpack_require__(93);
 
-var _reduxDevtoolsLogMonitor = __webpack_require__(90);
+var _reduxDevtoolsLogMonitor = __webpack_require__(94);
 
 var _reduxDevtoolsLogMonitor2 = _interopRequireDefault(_reduxDevtoolsLogMonitor);
 
-var _reduxDevtoolsDockMonitor = __webpack_require__(91);
+var _reduxDevtoolsDockMonitor = __webpack_require__(95);
 
 var _reduxDevtoolsDockMonitor2 = _interopRequireDefault(_reduxDevtoolsDockMonitor);
 
@@ -2390,7 +2017,7 @@ exports.default = (0, _reduxDevtools.createDevTools)((0, _jsx3.default)(_reduxDe
 }, void 0, (0, _jsx3.default)(_reduxDevtoolsLogMonitor2.default, {})));
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2434,31 +2061,31 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _reactHelmet = __webpack_require__(8);
+var _reactHelmet = __webpack_require__(10);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _reactRouter = __webpack_require__(9);
+var _reactRouter = __webpack_require__(8);
 
 var _TextField = __webpack_require__(22);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
-var _Paper = __webpack_require__(15);
+var _Paper = __webpack_require__(14);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
-var _core = __webpack_require__(48);
+var _core = __webpack_require__(49);
 
-var _Switch = __webpack_require__(49);
+var _Switch = __webpack_require__(50);
 
 var _Switch2 = _interopRequireDefault(_Switch);
 
-var _FormControlLabel = __webpack_require__(50);
+var _FormControlLabel = __webpack_require__(51);
 
 var _FormControlLabel2 = _interopRequireDefault(_FormControlLabel);
 
-var _AuthActions = __webpack_require__(16);
+var _AuthActions = __webpack_require__(18);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2594,25 +2221,25 @@ function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { loginUser: _AuthActions.loginUser })(LoginPage);
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core");
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/Switch");
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/FormControlLabel");
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2656,33 +2283,33 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _reactHelmet = __webpack_require__(8);
+var _reactHelmet = __webpack_require__(10);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _reactIntl = __webpack_require__(12);
+var _reactIntl = __webpack_require__(15);
 
-var _reactRouter = __webpack_require__(9);
+var _reactRouter = __webpack_require__(8);
 
 var _TextField = __webpack_require__(22);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
-var _Paper = __webpack_require__(15);
+var _Paper = __webpack_require__(14);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
-var _core = __webpack_require__(48);
+var _core = __webpack_require__(49);
 
-var _Switch = __webpack_require__(49);
+var _Switch = __webpack_require__(50);
 
 var _Switch2 = _interopRequireDefault(_Switch);
 
-var _FormControlLabel = __webpack_require__(50);
+var _FormControlLabel = __webpack_require__(51);
 
 var _FormControlLabel2 = _interopRequireDefault(_FormControlLabel);
 
-var _AuthActions = __webpack_require__(16);
+var _AuthActions = __webpack_require__(18);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2830,7 +2457,7 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { registerUser: _AuthActions.registerUser })(SignupPage);
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2870,17 +2497,17 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _NodeForm = __webpack_require__(30);
+var _NodeForm = __webpack_require__(31);
 
 var _NodeForm2 = _interopRequireDefault(_NodeForm);
 
-var _UniverseRoot = __webpack_require__(32);
+var _UniverseRoot = __webpack_require__(33);
 
 var _UniverseRoot2 = _interopRequireDefault(_UniverseRoot);
 
-var _NodeActions = __webpack_require__(10);
+var _NodeActions = __webpack_require__(9);
 
-var _UniverseActions = __webpack_require__(14);
+var _UniverseActions = __webpack_require__(13);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2974,13 +2601,126 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { clearNodes: _NodeActions.clearNodes, clearUniverse: _UniverseActions.clearUniverse, getPublicUniverse: _UniverseActions.getPublicUniverse })(Home);
 
 /***/ }),
-/* 53 */
-/***/ (function(module, exports) {
+/* 54 */
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = require("@material-ui/core/Grid");
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _jsx2 = __webpack_require__(1);
+
+var _jsx3 = _interopRequireDefault(_jsx2);
+
+var _classCallCheck2 = __webpack_require__(4);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(5);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = __webpack_require__(6);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(7);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(3);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _Share = __webpack_require__(116);
+
+var _Share2 = _interopRequireDefault(_Share);
+
+var _Popover = __webpack_require__(117);
+
+var _Popover2 = _interopRequireDefault(_Popover);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ShareButton = function (_React$Component) {
+  (0, _inherits3.default)(ShareButton, _React$Component);
+
+  function ShareButton() {
+    (0, _classCallCheck3.default)(this, ShareButton);
+
+    var _this = (0, _possibleConstructorReturn3.default)(this, (ShareButton.__proto__ || Object.getPrototypeOf(ShareButton)).call(this));
+
+    _this.copyToClipboard = function (e) {
+      var textField = document.createElement("textarea");
+      textField.innerText = _this.props.link;
+      document.body.appendChild(textField);
+      textField.select();
+      document.execCommand("copy");
+      textField.remove();
+      _this.handleClick(e);
+    };
+
+    _this.handleClick = function (e) {
+      _this.setState({ anchorEl: e.currentTarget });
+    };
+
+    _this.handleClose = function () {
+      _this.setState({ anchorEl: null });
+    };
+
+    _this.state = {
+      anchorEl: null
+    };
+
+    _this.copyToClipboard = _this.copyToClipboard.bind(_this);
+    _this.handleClick = _this.handleClick.bind(_this);
+    _this.handleClose = _this.handleClose.bind(_this);
+    return _this;
+  }
+
+  (0, _createClass3.default)(ShareButton, [{
+    key: "render",
+    value: function render() {
+      var anchorEl = this.state.anchorEl;
+
+      var open = Boolean(anchorEl);
+
+      return (0, _jsx3.default)("div", {}, void 0, /* Logical shortcut for only displaying the 
+                                                      button if the copy command exists */
+      document.queryCommandSupported("copy") && (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(_Share2.default, {
+        onClick: this.copyToClipboard
+      })), (0, _jsx3.default)(_Popover2.default, {
+        open: open,
+        anchorEl: anchorEl,
+        onClose: this.handleClose,
+        anchorOrigin: {
+          vertical: "bottom",
+          horizontal: "left"
+        },
+        transformOrigin: {
+          vertical: "top",
+          horizontal: "right"
+        },
+        styles: { margin: "1em" }
+      }, void 0, "Copied to Clipboard!"));
+    }
+  }]);
+  return ShareButton;
+}(_react2.default.Component);
+
+exports.default = (0, _reactRedux.connect)(null, {})(ShareButton);
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3020,19 +2760,496 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _reactHelmet = __webpack_require__(8);
+var _reactRouter = __webpack_require__(8);
+
+var _lodash = __webpack_require__(17);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _Paper = __webpack_require__(14);
+
+var _Paper2 = _interopRequireDefault(_Paper);
+
+var _Button = __webpack_require__(16);
+
+var _Button2 = _interopRequireDefault(_Button);
+
+var _Grid = __webpack_require__(34);
+
+var _Grid2 = _interopRequireDefault(_Grid);
+
+var _EditNodeForm = __webpack_require__(118);
+
+var _EditNodeForm2 = _interopRequireDefault(_EditNodeForm);
+
+var _NodeForm = __webpack_require__(31);
+
+var _NodeForm2 = _interopRequireDefault(_NodeForm);
+
+var _Spinner = __webpack_require__(26);
+
+var _Spinner2 = _interopRequireDefault(_Spinner);
+
+var _ShareButton = __webpack_require__(54);
+
+var _ShareButton2 = _interopRequireDefault(_ShareButton);
+
+var _NodeActions = __webpack_require__(9);
+
+var _UniverseActions = __webpack_require__(13);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _ref = (0, _jsx3.default)("p", {}, void 0, "This file is invalid");
+
+var _ref2 = (0, _jsx3.default)(_Spinner2.default, {});
+
+var _ref3 = (0, _jsx3.default)("br", {});
+
+var _ref4 = (0, _jsx3.default)("span", {}, void 0, "This Node has no Home :(");
+
+var _ref5 = (0, _jsx3.default)(_Spinner2.default, {});
+
+var Node = function (_Component) {
+  (0, _inherits3.default)(Node, _Component);
+
+  function Node(props) {
+    (0, _classCallCheck3.default)(this, Node);
+
+    var _this = (0, _possibleConstructorReturn3.default)(this, (Node.__proto__ || Object.getPrototypeOf(Node)).call(this, props));
+
+    var subtopicToggle = void 0;
+    _this.props.subtopicToggle !== undefined ? subtopicToggle = _this.props.subtopicToggle : subtopicToggle = true;
+
+    _this.state = {
+      node: _this.props.singleNode || null,
+      editFormToggle: false,
+      toggleNodeForm: false,
+      subtopicToggle: subtopicToggle,
+      subtopics: null,
+      sources: null,
+      files: null,
+      universe: null
+    };
+
+    _this.toggleEditForm = _this.toggleEditForm.bind(_this);
+    _this.toggleNodeForm = _this.toggleNodeForm.bind(_this);
+    _this.toggleSubtopics = _this.toggleSubtopics.bind(_this);
+    return _this;
+  }
+
+  (0, _createClass3.default)(Node, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      // Handle component loading
+      var node = this.state.node;
+
+      if (node) {
+        if (node.originUniverse) {
+          this.props.getUniverse(node.originUniverse);
+        }
+        if (node.files && node.files.length > 0) {
+          this.props.retrieveNodeFiles(node._id);
+        }
+        if (node.subtopicConnections && node.subtopicConnections.length > 0) {
+          this.props.getSubtopics(node._id);
+        }
+        if (node.sourceConnections && node.sourceConnections.length > 0) {
+          this.props.getSources(node._id);
+        }
+      }
+      // Handle loading node through url
+      if (this.props.singleNode === null && this.props.node.node === null && !this.props.node.loading) {
+        this.props.getNodeByID(this.props.params.nodeID);
+      }
+    }
+  }, {
+    key: "toggleEditForm",
+    value: function toggleEditForm() {
+      this.setState({ editFormToggle: !this.state.editFormToggle });
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      this.props.clearNodes();
+      this.props.clearUniverse();
+    }
+  }, {
+    key: "toggleSubtopics",
+    value: function toggleSubtopics() {
+      this.setState({ subtopicToggle: !this.state.subtopicToggle });
+    }
+  }, {
+    key: "copyNodeAddressToClipboard",
+    value: function copyNodeAddressToClipboard() {
+      var textField = document.createElement("textarea");
+      textField.innerText = "";
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps) {
+      // Handle loaded Universe
+      if (this.props.universe.universe !== null && this.state.universe === null) {
+        this.setState({ universe: this.props.universe.universe });
+      }
+      // Put loaded Files into State
+      if (this.state.node && this.state.node.files.length > 0 && this.props.node.files !== null && this.state.files === null) {
+        this.setState({ files: this.props.node.files });
+        this.props.clearFiles();
+      }
+      // Grab appropriate subtopics for this node
+      if (this.props.node.subtopics !== null && (this.state.subtopics === null || !_lodash2.default.isEqual(this.state.subtopics, this.props.node.subtopics)) && this.state.node !== null && this.state.node._id.toString() === this.props.node.subtopics[0].connection.sourceNode.toString()) {
+        this.setState({ subtopics: this.props.node.subtopics });
+        this.props.clearSubtopics();
+      }
+      // Grab appropriate sources for this node
+      if (this.props.node.sources !== null && (this.state.sources === null || !_lodash2.default.isEqual(this.state.sources, this.props.node.sources)) && this.state.node && this.state.node._id.toString() === this.props.node.sources[0].connection.subtopicNode.toString()) {
+        this.setState({ sources: this.props.node.sources });
+        this.props.clearSources();
+      }
+      // Grab loaded node if necessary
+      if (this.props.node.node !== null && this.state.node === null) {
+        this.setState({
+          node: this.props.node.node
+        });
+        this.props.getUniverse(this.props.node.node.originUniverse);
+        if (this.props.node.node.subtopicConnections && this.props.node.node.subtopicConnections.length > 0) {
+          this.props.getSubtopics(this.props.node.node._id);
+        }
+        if (this.props.node.node.sourceConnections && this.props.node.node.sourceConnections.length > 0) {
+          this.props.getSources(this.props.node.node._id);
+        }
+        if (this.props.node.node.files && this.props.node.node.files.length > 0) {
+          this.props.retrieveNodeFiles(this.props.node.node._id);
+        }
+      }
+      // Update subtopicToggle
+      if (this.props.subtopicToggle !== prevProps.subtopicToggle) {
+        this.setState({ subtopicToggle: this.props.subtopicToggle });
+      }
+      // Update state node on update (edit or add)
+      if (!_lodash2.default.isEqual(this.state.node, this.props.node.node) && this.props.node.node !== null && this.state.node !== null) {
+        this.setState({
+          node: this.props.node.node,
+          editFormToggle: false,
+          toggleNodeForm: false
+        });
+        if (this.props.node.node.subtopicConnections && this.props.node.node.subtopicConnections.length > 0) {
+          this.props.getSubtopics(this.props.node.node._id);
+        } else {
+          this.props.clearSubtopics();
+        }
+        if (this.props.node.node.sourceConnections && this.props.node.node.sourceConnections.length > 0) {
+          this.props.getSources(this.props.node.node._id);
+        } else {
+          this.props.clearSources();
+        }
+      }
+    }
+  }, {
+    key: "toggleNodeForm",
+    value: function toggleNodeForm() {
+      this.setState({ toggleNodeForm: !this.state.toggleNodeForm });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var _state = this.state,
+          editFormToggle = _state.editFormToggle,
+          toggleNodeForm = _state.toggleNodeForm,
+          universe = _state.universe;
+
+      var content = void 0;
+      if (this.state.node !== null) {
+        var sourceJSX = [],
+            subtopicJSX = [],
+            editForm = void 0,
+            nodeForm = void 0,
+            subtopicToggleButtonText = void 0;
+        var node = this.state.node;
+        var fileArray = [];
+        if (this.state.files && this.state.files.length > 0) {
+          for (var i = 0; i < this.state.files.length; i++) {
+            if (this.state.files[i].includes("image")) {
+              fileArray.push((0, _jsx3.default)("img", {
+                style: { maxWidth: "80%" },
+                src: this.state.files[i]
+              }));
+            } else {
+              fileArray.push(_ref);
+            }
+          }
+        }
+
+        if (editFormToggle) {
+          editForm = (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(_EditNodeForm2.default, {
+            singleNode: node,
+            "private": !this.props.universe.universe.public
+          }));
+        } else {
+          editForm = "";
+        }
+
+        if (toggleNodeForm) {
+          nodeForm = (0, _jsx3.default)(_NodeForm2.default, {
+            "private": !this.props.universe.universe.public,
+            sourceNode: this.state.node
+          });
+        }
+
+        var _state2 = this.state,
+            subtopics = _state2.subtopics,
+            sources = _state2.sources;
+
+        // Sources
+
+        if (sources && sources.length > 0) {
+          sources.forEach(function (source) {
+            source = source.source;
+            sourceJSX.push((0, _jsx3.default)("span", {}, source._id, (0, _jsx3.default)(_Button2.default, {
+              onClick: function onClick() {
+                _this2.props.onNavigation(source._id);
+              }
+            }, void 0, "#", source.title), " "));
+          });
+        } else {
+          if (this.props.universe.universe !== null) {
+            sourceJSX.push((0, _jsx3.default)("span", {}, "root-link", (0, _jsx3.default)(_Button2.default, {
+              onClick: function onClick() {
+                _this2.props.onNavigation("root-" + _this2.props.universe.universe._id);
+              }
+            }, void 0, "#root")));
+          } else {
+            sourceJSX.push("Loading . . .");
+          }
+        }
+
+        // Subtopics
+        if (subtopics && subtopics.length > 0 && this.state.subtopicToggle) {
+          subtopicToggleButtonText = "Hide Subtopics";
+          subtopics.forEach(function (subtopic) {
+            subtopic = subtopic.subtopic;
+            subtopicJSX.push((0, _jsx3.default)(_Paper2.default, {
+              style: {
+                padding: "0.5em",
+                marginTop: "0.5em",
+                border: "solid black 1px"
+              }
+            }, subtopic._id, (0, _jsx3.default)("h3", {
+              style: { cursor: "pointer" },
+              onClick: function onClick() {
+                _this2.props.onNavigation(subtopic._id);
+              }
+            }, void 0, subtopic.title), subtopic.content.string === "" ? "No Content" : (0, _jsx3.default)("p", {}, void 0, subtopic.content.string)));
+          });
+        } else if (this.props.node.loading && this.state.node.subtopicConnections.length > 0) {
+          subtopicToggleButtonText = "Subtopics Loading . . .";
+          subtopicJSX = _ref2;
+        } else {
+          subtopicToggleButtonText = "Show Subtopics";
+          subtopicJSX = "";
+        }
+
+        var subtopicToggleJSX = void 0;
+        if (subtopics && subtopics.length > 0) {
+          subtopicToggleJSX = (0, _jsx3.default)(_Grid2.default, {
+            container: true,
+            spacing: 0,
+            direction: "column",
+            alignItems: "center",
+            justify: "center"
+          }, void 0, (0, _jsx3.default)(_Button2.default, {
+            onClick: this.toggleSubtopics
+          }, void 0, subtopicToggleButtonText));
+        }
+
+        var lineArray = void 0,
+            nodeContent = void 0;
+        if (node.content.string) {
+          // render new lines
+          var count = 0;
+          lineArray = [];
+          node.content.string.split("\n").forEach(function (line) {
+            if (line !== "") {
+              lineArray.push((0, _jsx3.default)("p", {
+                style: { color: "white" }
+              }, "line-" + count, line));
+            } else {
+              lineArray.push(_ref3);
+            }
+            count++;
+          });
+          nodeContent = (0, _jsx3.default)(_Paper2.default, {
+            style: {
+              padding: "0.5em",
+              marginTop: "0.5em",
+              backgroundColor: "gray"
+            },
+            square: true
+          }, "node-content", lineArray);
+        } else {
+          nodeContent = "";
+        }
+
+        var deleteButton = void 0;
+        if (this.props.auth.user && this.props.auth.user.admin) {
+          deleteButton = (0, _jsx3.default)("span", {}, void 0, " | ", (0, _jsx3.default)(_Button2.default, {
+            variant: "outlined",
+            color: "secondary",
+            onClick: function onClick() {
+              if (window.confirm("Are you sure you want to delete this Node?")) _this2.props.deleteNode(node._id);
+            }
+          }, void 0, "Delete Node"));
+        }
+
+        // FINAL CONTENT THAT WILL BE LOADED
+        content = (0, _jsx3.default)("div", {}, node._id, (0, _jsx3.default)(_Paper2.default, {
+          style: {
+            padding: "0.5em",
+            margin: "1em",
+            border: "solid black 1px"
+          }
+        }, void 0, (0, _jsx3.default)(_Grid2.default, {
+          justify: "space-between",
+          container: true,
+          spacing: 24
+        }, void 0, (0, _jsx3.default)(_Grid2.default, {
+          item: true
+        }, void 0, " ", (0, _jsx3.default)("h1", {
+          style: { cursor: "pointer" },
+          className: "link-text",
+          onClick: function onClick() {
+            _this2.props.onNavigation(node._id);
+          }
+        }, void 0, node.title)), (0, _jsx3.default)(_Grid2.default, {
+          item: true
+        }, void 0, (0, _jsx3.default)(_ShareButton2.default, {
+          link: location.origin + "/node/" + node._id
+        }))), universe ? (0, _jsx3.default)(_Button2.default, {
+          variant: "contained",
+          onClick: function onClick() {
+            _reactRouter.browserHistory.push("/universe/" + _this2.props.universe.universe._id);
+          },
+          style: { margin: "0.5em 0" }
+        }, void 0, "Universe: ", this.props.universe.universe.title) : _ref4, (0, _jsx3.default)("div", {
+          className: "row"
+        }, void 0, (0, _jsx3.default)("div", {
+          className: "col"
+        }, void 0, this.props.auth.isAuthenticated ? (0, _jsx3.default)("span", {}, void 0, (0, _jsx3.default)(_Button2.default, {
+          variant: "outlined",
+          color: "primary",
+          style: { marginRight: "0.5em" },
+          onClick: this.toggleEditForm
+        }, void 0, "Edit Node"), (0, _jsx3.default)(_Button2.default, {
+          variant: "outlined",
+          color: "primary",
+          onClick: this.toggleNodeForm
+        }, void 0, "Add Node"), deleteButton) : "")), nodeForm, editForm, sourceJSX, nodeContent, (0, _jsx3.default)("div", {}, void 0, subtopicJSX), subtopicToggleJSX, fileArray));
+      } else {
+        content = _ref5;
+      }
+
+      return (0, _jsx3.default)("div", {}, void 0, content);
+    }
+  }]);
+  return Node;
+}(_react.Component);
+
+// Retrieve data from store as props
+
+
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+    node: state.node,
+    universe: state.universe
+  };
+};
+
+Node.defaultProps = {
+  onNavigation: function onNavigation(e) {
+    if (e.includes("root")) {
+      _reactRouter.browserHistory.push("/universe/" + e.split("-")[1]);
+    } else {
+      _reactRouter.browserHistory.push("/node/" + e);
+      location.reload();
+    }
+  },
+  singleNode: null
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, {
+  getNodeByID: _NodeActions.getNodeByID,
+  getSubtopics: _NodeActions.getSubtopics,
+  getSources: _NodeActions.getSources,
+  nodeFullClear: _NodeActions.nodeFullClear,
+  getUniverse: _UniverseActions.getUniverse,
+  clearUniverse: _UniverseActions.clearUniverse,
+  clearSources: _NodeActions.clearSources,
+  clearSubtopics: _NodeActions.clearSubtopics,
+  clearNodes: _NodeActions.clearNodes,
+  clearNode: _NodeActions.clearNode,
+  deleteNode: _NodeActions.deleteNode,
+  retrieveNodeFiles: _NodeActions.retrieveNodeFiles,
+  clearFiles: _NodeActions.clearFiles
+})(Node);
+
+/***/ }),
+/* 56 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _jsx2 = __webpack_require__(1);
+
+var _jsx3 = _interopRequireDefault(_jsx2);
+
+var _classCallCheck2 = __webpack_require__(4);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(5);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = __webpack_require__(6);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(7);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _reactRedux = __webpack_require__(3);
+
+var _reactHelmet = __webpack_require__(10);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _reactRouter = __webpack_require__(9);
+var _reactRouter = __webpack_require__(8);
 
-var _UniverseRoot = __webpack_require__(32);
+var _UniverseRoot = __webpack_require__(33);
 
 var _UniverseRoot2 = _interopRequireDefault(_UniverseRoot);
 
-var _NodeActions = __webpack_require__(10);
+var _NodeActions = __webpack_require__(9);
 
-var _UniverseActions = __webpack_require__(14);
+var _UniverseActions = __webpack_require__(13);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3063,6 +3280,7 @@ var Personal = function (_Component) {
   (0, _createClass3.default)(Personal, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      console.log(this.props);
       if (!this.props.auth.isAuthenticated) {
         _reactRouter.browserHistory.push("/login");
       }
@@ -3139,7 +3357,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, {
 })(Personal);
 
 /***/ }),
-/* 55 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3179,19 +3397,19 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _reactHelmet = __webpack_require__(8);
+var _reactHelmet = __webpack_require__(10);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _reactRouter = __webpack_require__(9);
+var _reactRouter = __webpack_require__(8);
 
-var _UniverseRoot = __webpack_require__(32);
+var _UniverseRoot = __webpack_require__(33);
 
 var _UniverseRoot2 = _interopRequireDefault(_UniverseRoot);
 
-var _NodeActions = __webpack_require__(10);
+var _NodeActions = __webpack_require__(9);
 
-var _UniverseActions = __webpack_require__(14);
+var _UniverseActions = __webpack_require__(13);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3289,7 +3507,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, {
 })(Universe);
 
 /***/ }),
-/* 56 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3333,7 +3551,7 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _reactHelmet = __webpack_require__(8);
+var _reactHelmet = __webpack_require__(10);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
@@ -3341,27 +3559,27 @@ var _TextField = __webpack_require__(22);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
-var _Paper = __webpack_require__(15);
+var _Paper = __webpack_require__(14);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
-var _Button = __webpack_require__(17);
+var _Button = __webpack_require__(16);
 
 var _Button2 = _interopRequireDefault(_Button);
 
-var _SelectMultiple = __webpack_require__(31);
+var _SelectMultiple = __webpack_require__(32);
 
 var _SelectMultiple2 = _interopRequireDefault(_SelectMultiple);
 
-var _Spinner = __webpack_require__(34);
+var _Spinner = __webpack_require__(26);
 
 var _Spinner2 = _interopRequireDefault(_Spinner);
 
-var _NodeActions = __webpack_require__(10);
+var _NodeActions = __webpack_require__(9);
 
-var _UniverseActions = __webpack_require__(14);
+var _UniverseActions = __webpack_require__(13);
 
-var _UserActions = __webpack_require__(45);
+var _UserActions = __webpack_require__(46);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3517,7 +3735,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, {
 })(Admin);
 
 /***/ }),
-/* 57 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3547,38 +3765,25 @@ var postSchema = new Schema({
 exports.default = _mongoose2.default.model('Post', postSchema);
 
 /***/ }),
-/* 58 */
+/* 60 */
 /***/ (function(module, exports) {
 
 module.exports = require("sanitize-html");
 
 /***/ }),
-/* 59 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-if (process.env.NODE_ENV === "production") {
-  module.exports = __webpack_require__(127);
-} else {
-  module.exports = __webpack_require__(128);
-}
-
-/***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports) {
 
 module.exports = require("assert");
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports) {
 
 module.exports = require("webpack");
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3592,11 +3797,11 @@ var _jsx2 = __webpack_require__(1);
 
 var _jsx3 = _interopRequireDefault(_jsx2);
 
-var _express = __webpack_require__(18);
+var _express = __webpack_require__(19);
 
 var _express2 = _interopRequireDefault(_express);
 
-var _compression = __webpack_require__(63);
+var _compression = __webpack_require__(64);
 
 var _compression2 = _interopRequireDefault(_compression);
 
@@ -3604,19 +3809,23 @@ var _mongoose = __webpack_require__(11);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _bodyParser = __webpack_require__(64);
+var _bodyParser = __webpack_require__(65);
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
-var _path = __webpack_require__(65);
+var _path = __webpack_require__(66);
 
 var _path2 = _interopRequireDefault(_path);
 
-var _IntlWrapper = __webpack_require__(66);
+var _IntlWrapper = __webpack_require__(67);
 
 var _IntlWrapper2 = _interopRequireDefault(_IntlWrapper);
 
-var _store = __webpack_require__(67);
+var _connectBusboy = __webpack_require__(68);
+
+var _connectBusboy2 = _interopRequireDefault(_connectBusboy);
+
+var _store = __webpack_require__(69);
 
 var _reactRedux = __webpack_require__(3);
 
@@ -3624,41 +3833,41 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _server = __webpack_require__(92);
+var _server = __webpack_require__(96);
 
-var _reactRouter = __webpack_require__(9);
+var _reactRouter = __webpack_require__(8);
 
-var _reactHelmet = __webpack_require__(8);
+var _reactHelmet = __webpack_require__(10);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _routes = __webpack_require__(93);
+var _routes = __webpack_require__(97);
 
 var _routes2 = _interopRequireDefault(_routes);
 
-var _fetchData = __webpack_require__(115);
+var _fetchData = __webpack_require__(119);
 
-var _post = __webpack_require__(117);
+var _post = __webpack_require__(121);
 
 var _post2 = _interopRequireDefault(_post);
 
-var _user = __webpack_require__(121);
+var _user = __webpack_require__(125);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _node = __webpack_require__(129);
+var _node = __webpack_require__(133);
 
 var _node2 = _interopRequireDefault(_node);
 
-var _universe = __webpack_require__(135);
+var _universe = __webpack_require__(141);
 
 var _universe2 = _interopRequireDefault(_universe);
 
-var _dummyData = __webpack_require__(137);
+var _dummyData = __webpack_require__(143);
 
 var _dummyData2 = _interopRequireDefault(_dummyData);
 
-var _keys = __webpack_require__(59);
+var _keys = __webpack_require__(38);
 
 var _keys2 = _interopRequireDefault(_keys);
 
@@ -3675,13 +3884,13 @@ var isProdMode = process.env.NODE_ENV === "production" || false;
 if (isDevMode) {
   // Webpack Requirements
   // eslint-disable-next-line global-require
-  var webpack = __webpack_require__(61);
+  var webpack = __webpack_require__(62);
   // eslint-disable-next-line global-require
-  var config = __webpack_require__(138);
+  var config = __webpack_require__(144);
   // eslint-disable-next-line global-require
-  var webpackDevMiddleware = __webpack_require__(142);
+  var webpackDevMiddleware = __webpack_require__(148);
   // eslint-disable-next-line global-require
-  var webpackHotMiddleware = __webpack_require__(143);
+  var webpackHotMiddleware = __webpack_require__(149);
   var compiler = webpack(config);
   app.use(webpackDevMiddleware(compiler, {
     noInfo: true,
@@ -3716,6 +3925,9 @@ if (process.env.NODE_ENV !== "test") {
     }
   });
 }
+
+// For File Submission
+app.use((0, _connectBusboy2.default)());
 
 // Apply body Parser and server public assets and routes
 app.use((0, _compression2.default)());
@@ -3787,25 +3999,25 @@ exports.default = app;
 /* WEBPACK VAR INJECTION */}.call(exports, "server"))
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports) {
 
 module.exports = require("compression");
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports) {
 
 module.exports = require("body-parser");
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports) {
 
 module.exports = require("path");
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3824,7 +4036,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactIntl = __webpack_require__(12);
+var _reactIntl = __webpack_require__(15);
 
 var _reactRedux = __webpack_require__(3);
 
@@ -3848,7 +4060,13 @@ function mapStateToProps(store) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(IntlWrapper);
 
 /***/ }),
-/* 67 */
+/* 68 */
+/***/ (function(module, exports) {
+
+module.exports = require("connect-busboy");
+
+/***/ }),
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3859,13 +4077,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.configureStore = configureStore;
 
-var _redux = __webpack_require__(39);
+var _redux = __webpack_require__(40);
 
-var _reduxThunk = __webpack_require__(68);
+var _reduxThunk = __webpack_require__(70);
 
 var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
-var _reducers = __webpack_require__(69);
+var _reducers = __webpack_require__(71);
 
 var _reducers2 = _interopRequireDefault(_reducers);
 
@@ -3877,7 +4095,7 @@ var DevTools = void 0; /**
 
 if (process.env.NODE_ENV === "development") {
   // eslint-disable-next-line global-require
-  DevTools = __webpack_require__(46).default;
+  DevTools = __webpack_require__(47).default;
 }
 
 function configureStore() {
@@ -3906,13 +4124,13 @@ function configureStore() {
 }
 
 /***/ }),
-/* 68 */
+/* 70 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux-thunk");
 
 /***/ }),
-/* 69 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3922,37 +4140,37 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _redux = __webpack_require__(39);
+var _redux = __webpack_require__(40);
 
-var _AppReducer = __webpack_require__(40);
+var _AppReducer = __webpack_require__(41);
 
 var _AppReducer2 = _interopRequireDefault(_AppReducer);
 
-var _PostReducer = __webpack_require__(28);
+var _PostReducer = __webpack_require__(29);
 
 var _PostReducer2 = _interopRequireDefault(_PostReducer);
 
-var _IntlReducer = __webpack_require__(73);
+var _IntlReducer = __webpack_require__(74);
 
 var _IntlReducer2 = _interopRequireDefault(_IntlReducer);
 
-var _AuthReducer = __webpack_require__(83);
+var _AuthReducer = __webpack_require__(84);
 
 var _AuthReducer2 = _interopRequireDefault(_AuthReducer);
 
-var _ErrorReducer = __webpack_require__(85);
+var _ErrorReducer = __webpack_require__(87);
 
 var _ErrorReducer2 = _interopRequireDefault(_ErrorReducer);
 
-var _NodeReducer = __webpack_require__(86);
+var _NodeReducer = __webpack_require__(88);
 
 var _NodeReducer2 = _interopRequireDefault(_NodeReducer);
 
-var _UniverseReducer = __webpack_require__(87);
+var _UniverseReducer = __webpack_require__(91);
 
 var _UniverseReducer2 = _interopRequireDefault(_UniverseReducer);
 
-var _UserReducer = __webpack_require__(88);
+var _UserReducer = __webpack_require__(92);
 
 var _UserReducer2 = _interopRequireDefault(_UserReducer);
 
@@ -3976,36 +4194,19 @@ exports.default = (0, _redux.combineReducers)({
      */
 
 /***/ }),
-/* 70 */
+/* 72 */
 /***/ (function(module, exports) {
 
 module.exports = require("babel-runtime/helpers/toConsumableArray");
 
 /***/ }),
-/* 71 */
+/* 73 */
 /***/ (function(module, exports) {
 
 module.exports = require("isomorphic-fetch");
 
 /***/ }),
-/* 72 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var config = {
-  mongoURL: process.env.MONGO_URL || "mongodb://devinMcArthur:chaos1@ds139934.mlab.com:39934/agora-dev",
-  port: process.env.PORT || 8000
-};
-
-exports.default = config;
-
-/***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4015,17 +4216,17 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _objectWithoutProperties2 = __webpack_require__(74);
+var _objectWithoutProperties2 = __webpack_require__(75);
 
 var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
 
-var _extends2 = __webpack_require__(13);
+var _extends2 = __webpack_require__(12);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _setup = __webpack_require__(41);
+var _setup = __webpack_require__(43);
 
-var _IntlActions = __webpack_require__(42);
+var _IntlActions = __webpack_require__(44);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4057,37 +4258,37 @@ var IntlReducer = function IntlReducer() {
 exports.default = IntlReducer;
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports) {
 
 module.exports = require("babel-runtime/helpers/objectWithoutProperties");
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports) {
 
 module.exports = require("intl");
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports) {
 
 module.exports = require("intl-locales-supported");
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports) {
 
 module.exports = require("intl/locale-data/jsonp/en");
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-intl/locale-data/en");
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4117,19 +4318,19 @@ exports.default = {
 };
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports) {
 
 module.exports = require("intl/locale-data/jsonp/fr");
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-intl/locale-data/fr");
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4159,7 +4360,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4169,15 +4370,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _extends2 = __webpack_require__(13);
+var _extends2 = __webpack_require__(12);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _lodash = __webpack_require__(20);
+var _lodash = __webpack_require__(17);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _AuthActions = __webpack_require__(16);
+var _AuthActions = __webpack_require__(18);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4204,13 +4405,42 @@ var AuthReducer = function AuthReducer() {
 exports.default = AuthReducer;
 
 /***/ }),
-/* 84 */
-/***/ (function(module, exports) {
+/* 85 */
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = require("axios");
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _axios = __webpack_require__(45);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var setAuthToken = function setAuthToken(token) {
+  if (token) {
+    // Apply to every request
+    _axios2.default.defaults.headers.common["Authorization"] = token;
+  } else {
+    // Delete auth header
+    delete _axios2.default.defaults.headers.common["Authorization"];
+  }
+};
+
+exports.default = setAuthToken;
 
 /***/ }),
-/* 85 */
+/* 86 */
+/***/ (function(module, exports) {
+
+module.exports = require("jwt-decode");
+
+/***/ }),
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4239,7 +4469,7 @@ var _ErrorActions = __webpack_require__(25);
 var initialState = {};
 
 /***/ }),
-/* 86 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4249,11 +4479,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _extends2 = __webpack_require__(13);
+var _extends2 = __webpack_require__(12);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _NodeActions = __webpack_require__(10);
+var _NodeActions = __webpack_require__(9);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4264,6 +4494,7 @@ var initialState = {
   formNodes: null,
   subtopics: null,
   sources: null,
+  files: null,
   loading: false
 };
 
@@ -4310,6 +4541,10 @@ var NodeReducer = function NodeReducer() {
       return (0, _extends3.default)({}, state, {
         node: action.payload
       });
+    case _NodeActions.GET_FILES:
+      return (0, _extends3.default)({}, state, {
+        files: action.payload
+      });
     case _NodeActions.CLEAR_NODES:
       return (0, _extends3.default)({}, state, {
         nodes: null
@@ -4325,6 +4560,10 @@ var NodeReducer = function NodeReducer() {
     case _NodeActions.CLEAR_SUBTOPICS:
       return (0, _extends3.default)({}, state, {
         subtopics: null
+      });
+    case _NodeActions.CLEAR_FILES:
+      return (0, _extends3.default)({}, state, {
+        files: null
       });
     case _NodeActions.NODE_FULL_CLEAR:
       return {
@@ -4343,7 +4582,69 @@ var NodeReducer = function NodeReducer() {
 exports.default = NodeReducer;
 
 /***/ }),
-/* 87 */
+/* 89 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.API_URL = undefined;
+exports.default = callApiFile;
+
+var _config = __webpack_require__(42);
+
+var _config2 = _interopRequireDefault(_config);
+
+var _axios = __webpack_require__(45);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _formData = __webpack_require__(90);
+
+var _formData2 = _interopRequireDefault(_formData);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var API_URL = exports.API_URL = typeof window === "undefined" || process.env.NODE_ENV === "test" ? process.env.BASE_URL || "http://localhost:" + (process.env.PORT || _config2.default.port) + "/api" : "/api";
+
+function callApiFile(endpoint) {
+  var method = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "post";
+  var file = arguments[2];
+
+  var formData = new _formData2.default();
+  formData.append("file", file);
+  return _axios2.default.post(API_URL + "/" + endpoint, formData, {
+    headers: { "content-type": "multipart/form-data" }
+  }).then(function (response) {
+    return response.json().then(function (json) {
+      return { json: json, response: response };
+    });
+  }).then(function (_ref) {
+    var json = _ref.json,
+        response = _ref.response;
+
+    if (!response.ok) {
+      return Promise.reject(json);
+    }
+    return json;
+  }).then(function (response) {
+    return response;
+  }, function (error) {
+    return error;
+  });
+}
+
+/***/ }),
+/* 90 */
+/***/ (function(module, exports) {
+
+module.exports = require("form-data");
+
+/***/ }),
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4353,11 +4654,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _extends2 = __webpack_require__(13);
+var _extends2 = __webpack_require__(12);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _UniverseActions = __webpack_require__(14);
+var _UniverseActions = __webpack_require__(13);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4398,7 +4699,7 @@ var UniverseReducer = function UniverseReducer() {
 exports.default = UniverseReducer;
 
 /***/ }),
-/* 88 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4408,11 +4709,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _extends2 = __webpack_require__(13);
+var _extends2 = __webpack_require__(12);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _UserActions = __webpack_require__(45);
+var _UserActions = __webpack_require__(46);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4447,31 +4748,31 @@ var UserReducer = function UserReducer() {
 exports.default = UserReducer;
 
 /***/ }),
-/* 89 */
+/* 93 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux-devtools");
 
 /***/ }),
-/* 90 */
+/* 94 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux-devtools-log-monitor");
 
 /***/ }),
-/* 91 */
+/* 95 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux-devtools-dock-monitor");
 
 /***/ }),
-/* 92 */
+/* 96 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-dom/server");
 
 /***/ }),
-/* 93 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4489,9 +4790,9 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouter = __webpack_require__(9);
+var _reactRouter = __webpack_require__(8);
 
-var _App = __webpack_require__(94);
+var _App = __webpack_require__(98);
 
 var _App2 = _interopRequireDefault(_App);
 
@@ -4511,21 +4812,21 @@ if (false) {
 /* eslint-disable global-require */
 if (process.env.NODE_ENV !== "production") {
   // Require async routes only in development for react-hot-reloader to work.
-  __webpack_require__(103);
   __webpack_require__(107);
+  __webpack_require__(111);
   // Auth Components
-  __webpack_require__(47);
-  __webpack_require__(51);
-  // App Components
+  __webpack_require__(48);
   __webpack_require__(52);
+  // App Components
+  __webpack_require__(53);
   // Node Components
-  __webpack_require__(33);
-  // Universe Components
-  __webpack_require__(54);
   __webpack_require__(55);
+  // Universe Components
+  __webpack_require__(56);
+  __webpack_require__(57);
 
   // Admin
-  __webpack_require__(56);
+  __webpack_require__(58);
 }
 
 // react-router setup with code-splitting
@@ -4536,55 +4837,55 @@ exports.default = (0, _jsx3.default)(_reactRouter.Route, {
 }, void 0, (0, _jsx3.default)(_reactRouter.IndexRoute, {
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(52).default);
+      cb(null, __webpack_require__(53).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/login",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(47).default);
+      cb(null, __webpack_require__(48).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/signup",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(51).default);
+      cb(null, __webpack_require__(52).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/home",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(54).default);
+      cb(null, __webpack_require__(56).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/admin",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(56).default);
+      cb(null, __webpack_require__(58).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/node/:nodeID",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(33).default);
+      cb(null, __webpack_require__(55).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }), (0, _jsx3.default)(_reactRouter.Route, {
   path: "/universe/:universeID",
   getComponent: function getComponent(nextState, cb) {
     new Promise(function(resolve) { resolve(); }).then((function (require) {
-      cb(null, __webpack_require__(55).default);
+      cb(null, __webpack_require__(57).default);
     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
   }
 }));
 
 /***/ }),
-/* 94 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4631,21 +4932,21 @@ var _App = {
 
 var _App2 = _interopRequireDefault(_App);
 
-var _reactHelmet = __webpack_require__(8);
+var _reactHelmet = __webpack_require__(10);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _Header = __webpack_require__(95);
+var _Header = __webpack_require__(99);
 
 var _Header2 = _interopRequireDefault(_Header);
 
-var _Footer = __webpack_require__(102);
+var _Footer = __webpack_require__(106);
 
 var _Footer2 = _interopRequireDefault(_Footer);
 
-var _AppActions = __webpack_require__(27);
+var _AppActions = __webpack_require__(28);
 
-var _IntlActions = __webpack_require__(42);
+var _IntlActions = __webpack_require__(44);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4659,7 +4960,7 @@ var DevTools = void 0;
 
 if (process.env.NODE_ENV === "development") {
   // eslint-disable-next-line global-require
-  DevTools = __webpack_require__(46).default;
+  DevTools = __webpack_require__(47).default;
 }
 
 var _ref = (0, _jsx3.default)(DevTools, {});
@@ -4731,7 +5032,7 @@ function mapStateToProps(store) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(App);
 
 /***/ }),
-/* 95 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4769,37 +5070,37 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactRouter = __webpack_require__(9);
+var _reactRouter = __webpack_require__(8);
 
 var _reactRedux = __webpack_require__(3);
 
-var _styles = __webpack_require__(96);
+var _styles = __webpack_require__(100);
 
-var _AppBar = __webpack_require__(97);
+var _AppBar = __webpack_require__(101);
 
 var _AppBar2 = _interopRequireDefault(_AppBar);
 
-var _Toolbar = __webpack_require__(98);
+var _Toolbar = __webpack_require__(102);
 
 var _Toolbar2 = _interopRequireDefault(_Toolbar);
 
-var _Typography = __webpack_require__(99);
+var _Typography = __webpack_require__(103);
 
 var _Typography2 = _interopRequireDefault(_Typography);
 
-var _Button = __webpack_require__(17);
+var _Button = __webpack_require__(16);
 
 var _Button2 = _interopRequireDefault(_Button);
 
-var _IconButton = __webpack_require__(100);
+var _IconButton = __webpack_require__(104);
 
 var _IconButton2 = _interopRequireDefault(_IconButton);
 
-var _Menu = __webpack_require__(101);
+var _Menu = __webpack_require__(105);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
-var _AuthActions = __webpack_require__(16);
+var _AuthActions = __webpack_require__(18);
 
 var _Header = {
   "header": "_3EGjKVGKCGTGQn_m_YASdF",
@@ -4828,8 +5129,6 @@ var matStyles = {
 };
 
 // Import Style
-
-var _ref = (0, _jsx3.default)(_Menu2.default, {});
 
 var Header = function (_Component) {
   (0, _inherits3.default)(Header, _Component);
@@ -4880,11 +5179,7 @@ var Header = function (_Component) {
         className: classes.root
       }, void 0, (0, _jsx3.default)(_AppBar2.default, {
         position: "static"
-      }, void 0, (0, _jsx3.default)(_Toolbar2.default, {}, void 0, (0, _jsx3.default)(_IconButton2.default, {
-        className: classes.menuButton,
-        color: "inherit",
-        "aria-label": "Menu"
-      }, void 0, _ref), (0, _jsx3.default)(_Typography2.default, {
+      }, void 0, (0, _jsx3.default)(_Toolbar2.default, {}, void 0, (0, _jsx3.default)(_Typography2.default, {
         variant: "h6",
         color: "inherit",
         className: classes.grow
@@ -4910,43 +5205,43 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { logoutUser: _AuthActions.logoutUser })((0, _styles.withStyles)(matStyles)(Header));
 
 /***/ }),
-/* 96 */
+/* 100 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/styles");
 
 /***/ }),
-/* 97 */
+/* 101 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/AppBar");
 
 /***/ }),
-/* 98 */
+/* 102 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/Toolbar");
 
 /***/ }),
-/* 99 */
+/* 103 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/Typography");
 
 /***/ }),
-/* 100 */
+/* 104 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/core/IconButton");
 
 /***/ }),
-/* 101 */
+/* 105 */
 /***/ (function(module, exports) {
 
 module.exports = require("@material-ui/icons/Menu");
 
 /***/ }),
-/* 102 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4966,7 +5261,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactIntl = __webpack_require__(12);
+var _reactIntl = __webpack_require__(15);
 
 var _Footer = {
   "footer": "_1oiRVDtQ6fOWkhBVWcRyE_"
@@ -4994,7 +5289,7 @@ function Footer() {
 exports.default = Footer;
 
 /***/ }),
-/* 103 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5034,21 +5329,21 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _PostList = __webpack_require__(104);
+var _PostList = __webpack_require__(108);
 
 var _PostList2 = _interopRequireDefault(_PostList);
 
-var _PostCreateWidget = __webpack_require__(106);
+var _PostCreateWidget = __webpack_require__(110);
 
 var _PostCreateWidget2 = _interopRequireDefault(_PostCreateWidget);
 
-var _PostActions = __webpack_require__(29);
+var _PostActions = __webpack_require__(30);
 
-var _AppActions = __webpack_require__(27);
+var _AppActions = __webpack_require__(28);
 
-var _AppReducer = __webpack_require__(40);
+var _AppReducer = __webpack_require__(41);
 
-var _PostReducer = __webpack_require__(28);
+var _PostReducer = __webpack_require__(29);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5126,7 +5421,7 @@ PostListPage.contextTypes = {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(PostListPage);
 
 /***/ }),
-/* 104 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5148,7 +5443,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _PostListItem = __webpack_require__(105);
+var _PostListItem = __webpack_require__(109);
 
 var _PostListItem2 = _interopRequireDefault(_PostListItem);
 
@@ -5171,7 +5466,7 @@ function PostList(props) {
 exports.default = PostList;
 
 /***/ }),
-/* 105 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5193,9 +5488,9 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactRouter = __webpack_require__(9);
+var _reactRouter = __webpack_require__(8);
 
-var _reactIntl = __webpack_require__(12);
+var _reactIntl = __webpack_require__(15);
 
 var _PostListItem = {
   "single-post": "_2wFZUrnLLPIM2UvuNgnV1r",
@@ -5246,7 +5541,7 @@ function PostListItem(props) {
 exports.default = PostListItem;
 
 /***/ }),
-/* 106 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5285,7 +5580,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactIntl = __webpack_require__(12);
+var _reactIntl = __webpack_require__(15);
 
 var _PostCreateWidget = {
   "form": "_1_WEV3z8MyISJ_IVeQGbfN",
@@ -5371,7 +5666,7 @@ var PostCreateWidget = exports.PostCreateWidget = function (_Component) {
 exports.default = (0, _reactIntl.injectIntl)(PostCreateWidget);
 
 /***/ }),
-/* 107 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5397,11 +5692,11 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _reactHelmet = __webpack_require__(8);
+var _reactHelmet = __webpack_require__(10);
 
 var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
 
-var _reactIntl = __webpack_require__(12);
+var _reactIntl = __webpack_require__(15);
 
 var _PostListItem = {
   "single-post": "_2wFZUrnLLPIM2UvuNgnV1r",
@@ -5415,9 +5710,9 @@ var _PostListItem = {
 
 var _PostListItem2 = _interopRequireDefault(_PostListItem);
 
-var _PostActions = __webpack_require__(29);
+var _PostActions = __webpack_require__(30);
 
-var _PostReducer = __webpack_require__(28);
+var _PostReducer = __webpack_require__(29);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5461,19 +5756,19 @@ function mapStateToProps(state, props) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(PostDetailPage);
 
 /***/ }),
-/* 108 */
+/* 112 */
 /***/ (function(module, exports) {
 
 module.exports = require("classnames");
 
 /***/ }),
-/* 109 */
+/* 113 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-select");
 
 /***/ }),
-/* 110 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5513,9 +5808,9 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _Node = __webpack_require__(33);
+var _NodePreview = __webpack_require__(115);
 
-var _Node2 = _interopRequireDefault(_Node);
+var _NodePreview2 = _interopRequireDefault(_NodePreview);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5537,7 +5832,7 @@ var RootNodeList = function (_Component) {
       this.props.nodes.length > 1 ? subtopicToggle = false : subtopicToggle = true;
       if (this.props.nodes.length > 0) {
         this.props.nodes.forEach(function (node) {
-          nodeArray.push((0, _jsx3.default)("div", {}, node._id, (0, _jsx3.default)(_Node2.default, {
+          nodeArray.push((0, _jsx3.default)("div", {}, node._id, (0, _jsx3.default)(_NodePreview2.default, {
             onNavigation: _this2.props.onNavigation,
             singleNode: node,
             subtopicToggle: subtopicToggle
@@ -5560,7 +5855,7 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, {})(RootNodeList);
 
 /***/ }),
-/* 111 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5573,6 +5868,449 @@ Object.defineProperty(exports, "__esModule", {
 var _jsx2 = __webpack_require__(1);
 
 var _jsx3 = _interopRequireDefault(_jsx2);
+
+var _classCallCheck2 = __webpack_require__(4);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(5);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = __webpack_require__(6);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(7);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _reactRedux = __webpack_require__(3);
+
+var _reactRouter = __webpack_require__(8);
+
+var _lodash = __webpack_require__(17);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _Paper = __webpack_require__(14);
+
+var _Paper2 = _interopRequireDefault(_Paper);
+
+var _Button = __webpack_require__(16);
+
+var _Button2 = _interopRequireDefault(_Button);
+
+var _Grid = __webpack_require__(34);
+
+var _Grid2 = _interopRequireDefault(_Grid);
+
+var _Spinner = __webpack_require__(26);
+
+var _Spinner2 = _interopRequireDefault(_Spinner);
+
+var _ShareButton = __webpack_require__(54);
+
+var _ShareButton2 = _interopRequireDefault(_ShareButton);
+
+var _NodeActions = __webpack_require__(9);
+
+var _UniverseActions = __webpack_require__(13);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _ref = (0, _jsx3.default)("p", {}, void 0, "This file is invalid");
+
+var _ref2 = (0, _jsx3.default)(_Spinner2.default, {});
+
+var _ref3 = (0, _jsx3.default)("br", {});
+
+var _ref4 = (0, _jsx3.default)(_Spinner2.default, {});
+
+var NodePreview = function (_Component) {
+  (0, _inherits3.default)(NodePreview, _Component);
+
+  function NodePreview(props) {
+    (0, _classCallCheck3.default)(this, NodePreview);
+
+    var _this = (0, _possibleConstructorReturn3.default)(this, (NodePreview.__proto__ || Object.getPrototypeOf(NodePreview)).call(this, props));
+
+    var subtopicToggle = void 0;
+    _this.props.subtopicToggle !== undefined ? subtopicToggle = _this.props.subtopicToggle : subtopicToggle = true;
+
+    _this.state = {
+      node: _this.props.singleNode || null,
+      editFormToggle: false,
+      toggleNodeForm: false,
+      subtopicToggle: subtopicToggle,
+      subtopics: null,
+      sources: null,
+      files: null
+    };
+
+    _this.toggleEditForm = _this.toggleEditForm.bind(_this);
+    _this.toggleNodeForm = _this.toggleNodeForm.bind(_this);
+    _this.toggleSubtopics = _this.toggleSubtopics.bind(_this);
+    return _this;
+  }
+
+  (0, _createClass3.default)(NodePreview, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      // Handle component loading
+      var node = this.state.node;
+
+      if (node) {
+        if (node.files && node.files.length > 0) {
+          this.props.retrieveNodeFiles(node._id);
+        }
+        if (node.subtopicConnections && node.subtopicConnections.length > 0) {
+          this.props.getSubtopics(node._id);
+        }
+        if (node.sourceConnections && node.sourceConnections.length > 0) {
+          this.props.getSources(node._id);
+        }
+      }
+      // Handle loading node through url
+      if (this.props.singleNode === null && this.props.node.node === null && !this.props.node.loading) {
+        this.props.getNodeByID(this.props.params.nodeID);
+      }
+    }
+  }, {
+    key: "toggleEditForm",
+    value: function toggleEditForm() {
+      this.setState({ editFormToggle: !this.state.editFormToggle });
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      this.props.clearNodes();
+    }
+  }, {
+    key: "toggleSubtopics",
+    value: function toggleSubtopics() {
+      this.setState({ subtopicToggle: !this.state.subtopicToggle });
+    }
+  }, {
+    key: "copyNodeAddressToClipboard",
+    value: function copyNodeAddressToClipboard() {
+      var textField = document.createElement("textarea");
+      textField.innerText = "";
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps) {
+      // Put loaded Files into State
+      if (this.state.node && this.state.node.files.length > 0 && this.props.node.files !== null && this.state.files === null) {
+        this.setState({ files: this.props.node.files });
+        this.props.clearFiles();
+      }
+      // Grab appropriate subtopics for this node
+      if (this.props.node.subtopics !== null && (this.state.subtopics === null || !_lodash2.default.isEqual(this.state.subtopics, this.props.node.subtopics)) && this.state.node !== null && this.state.node._id.toString() === this.props.node.subtopics[0].connection.sourceNode.toString()) {
+        this.setState({ subtopics: this.props.node.subtopics });
+        this.props.clearSubtopics();
+      }
+      // Grab appropriate sources for this node
+      if (this.props.node.sources !== null && (this.state.sources === null || !_lodash2.default.isEqual(this.state.sources, this.props.node.sources)) && this.state.node && this.state.node._id.toString() === this.props.node.sources[0].connection.subtopicNode.toString()) {
+        this.setState({ sources: this.props.node.sources });
+        this.props.clearSources();
+      }
+      // Grab loaded node if necessary
+      if (this.props.node.node !== null && this.state.node === null) {
+        this.setState({
+          node: this.props.node.node
+        });
+        this.props.getUniverse(this.props.node.node.originUniverse);
+        if (this.props.node.node.subtopicConnections && this.props.node.node.subtopicConnections.length > 0) {
+          this.props.getSubtopics(this.props.node.node._id);
+        }
+        if (this.props.node.node.sourceConnections && this.props.node.node.sourceConnections.length > 0) {
+          this.props.getSources(this.props.node.node._id);
+        }
+        if (this.props.node.node.files && this.props.node.node.files.length > 0) {
+          this.props.retrieveNodeFiles(this.props.node.node._id);
+        }
+      }
+      // Update subtopicToggle
+      if (this.props.subtopicToggle !== prevProps.subtopicToggle) {
+        this.setState({ subtopicToggle: this.props.subtopicToggle });
+      }
+      // Update state node on update (edit or add)
+      if (!_lodash2.default.isEqual(this.state.node, this.props.node.node) && this.props.node.node !== null && this.state.node !== null) {
+        this.setState({
+          node: this.props.node.node,
+          editFormToggle: false,
+          toggleNodeForm: false
+        });
+        if (this.props.node.node.subtopicConnections && this.props.node.node.subtopicConnections.length > 0) {
+          this.props.getSubtopics(this.props.node.node._id);
+        } else {
+          this.props.clearSubtopics();
+        }
+        if (this.props.node.node.sourceConnections && this.props.node.node.sourceConnections.length > 0) {
+          this.props.getSources(this.props.node.node._id);
+        } else {
+          this.props.clearSources();
+        }
+      }
+    }
+  }, {
+    key: "toggleNodeForm",
+    value: function toggleNodeForm() {
+      this.setState({ toggleNodeForm: !this.state.toggleNodeForm });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var _state = this.state,
+          editFormToggle = _state.editFormToggle,
+          toggleNodeForm = _state.toggleNodeForm;
+
+      var content = void 0;
+      if (this.state.node !== null) {
+        var sourceJSX = [],
+            subtopicJSX = [],
+            editForm = void 0,
+            nodeForm = void 0,
+            subtopicToggleButtonText = void 0;
+        var node = this.state.node;
+        var fileArray = [];
+        if (this.state.files && this.state.files.length > 0) {
+          for (var i = 0; i < this.state.files.length; i++) {
+            if (this.state.files[i].includes("image")) {
+              fileArray.push((0, _jsx3.default)("img", {
+                style: { maxWidth: "80%" },
+                src: this.state.files[i]
+              }));
+            } else {
+              fileArray.push(_ref);
+            }
+          }
+        }
+
+        if (editFormToggle) {
+          editForm = (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(EditNodeForm, {
+            singleNode: node,
+            "private": !this.props.universe.universe.public
+          }));
+        } else {
+          editForm = "";
+        }
+
+        if (toggleNodeForm) {
+          nodeForm = (0, _jsx3.default)(NodeForm, {
+            "private": !this.props.universe.universe.public,
+            sourceNode: this.state.node
+          });
+        }
+
+        var _state2 = this.state,
+            subtopics = _state2.subtopics,
+            sources = _state2.sources;
+
+        // Sources
+
+        if (sources && sources.length > 0) {
+          sources.forEach(function (source) {
+            source = source.source;
+            sourceJSX.push((0, _jsx3.default)("span", {}, source._id, (0, _jsx3.default)(_Button2.default, {
+              onClick: function onClick() {
+                _reactRouter.browserHistory.push("/node/" + source._id);
+              }
+            }, void 0, "#", source.title), " "));
+          });
+        } else {
+          if (this.props.universe.universe !== null) {
+            sourceJSX.push((0, _jsx3.default)("span", {}, "root-link", (0, _jsx3.default)(_Button2.default, {
+              onClick: function onClick() {
+                _reactRouter.browserHistory.push("/universe/" + _this2.props.universe.universe._id);
+              }
+            }, void 0, "#root")));
+          } else {
+            sourceJSX.push("Loading . . .");
+          }
+        }
+
+        // Subtopics
+        if (subtopics && subtopics.length > 0 && this.state.subtopicToggle) {
+          subtopicToggleButtonText = "Hide Subtopics";
+          subtopics.forEach(function (subtopic) {
+            subtopic = subtopic.subtopic;
+            subtopicJSX.push((0, _jsx3.default)(_Paper2.default, {
+              style: {
+                padding: "0.5em",
+                marginTop: "0.5em",
+                border: "solid black 1px"
+              }
+            }, subtopic._id, (0, _jsx3.default)("h3", {
+              style: { cursor: "pointer" },
+              onClick: function onClick() {
+                _reactRouter.browserHistory.push("/node/" + subtopic._id);
+              }
+            }, void 0, subtopic.title), subtopic.content.string === "" ? "No Content" : (0, _jsx3.default)("p", {}, void 0, subtopic.content.string)));
+          });
+        } else if (this.props.node.loading && this.state.node.subtopicConnections.length > 0) {
+          subtopicToggleButtonText = "Subtopics Loading . . .";
+          subtopicJSX = _ref2;
+        } else {
+          subtopicToggleButtonText = "Show Subtopics";
+          subtopicJSX = "";
+        }
+
+        var subtopicToggleJSX = void 0;
+        if (subtopics && subtopics.length > 0) {
+          subtopicToggleJSX = (0, _jsx3.default)(_Grid2.default, {
+            container: true,
+            spacing: 0,
+            direction: "column",
+            alignItems: "center",
+            justify: "center"
+          }, void 0, (0, _jsx3.default)(_Button2.default, {
+            onClick: this.toggleSubtopics
+          }, void 0, subtopicToggleButtonText));
+        }
+
+        var lineArray = void 0,
+            nodeContent = void 0;
+        if (node.content.string) {
+          // render new lines
+          var count = 0;
+          lineArray = [];
+          node.content.string.split("\n").forEach(function (line) {
+            if (line !== "") {
+              lineArray.push((0, _jsx3.default)("p", {
+                style: { color: "white" }
+              }, "line-" + count, line));
+            } else {
+              lineArray.push(_ref3);
+            }
+            count++;
+          });
+          nodeContent = (0, _jsx3.default)(_Paper2.default, {
+            style: {
+              padding: "0.5em",
+              marginTop: "0.5em",
+              backgroundColor: "gray"
+            },
+            square: true
+          }, "node-content", lineArray);
+        } else {
+          nodeContent = "";
+        }
+
+        // FINAL CONTENT THAT WILL BE LOADED
+        content = (0, _jsx3.default)("div", {}, node._id, (0, _jsx3.default)(_Paper2.default, {
+          style: {
+            padding: "0.5em",
+            margin: "1em",
+            border: "solid black 1px"
+          }
+        }, void 0, (0, _jsx3.default)(_Grid2.default, {
+          justify: "space-between",
+          container: true,
+          spacing: 24
+        }, void 0, (0, _jsx3.default)(_Grid2.default, {
+          item: true
+        }, void 0, " ", (0, _jsx3.default)("h1", {
+          style: { cursor: "pointer" },
+          className: "link-text",
+          onClick: function onClick() {
+            _this2.props.onNavigation(node._id);
+          }
+        }, void 0, node.title)), (0, _jsx3.default)(_Grid2.default, {
+          item: true
+        }, void 0, (0, _jsx3.default)(_ShareButton2.default, {
+          link: location.origin + "/node/" + node._id
+        }))), nodeForm, editForm, sourceJSX, nodeContent, (0, _jsx3.default)("div", {}, void 0, subtopicJSX), subtopicToggleJSX, fileArray));
+      } else {
+        content = _ref4;
+      }
+
+      return (0, _jsx3.default)("div", {}, void 0, content);
+    }
+  }]);
+  return NodePreview;
+}(_react.Component);
+
+// Retrieve data from store as props
+
+
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+    node: state.node,
+    universe: state.universe
+  };
+};
+
+NodePreview.defaultProps = {
+  onNavigation: function onNavigation(e) {
+    if (e.includes("root")) {
+      _reactRouter.browserHistory.push("/universe/" + e.split("-")[1]);
+    } else {
+      _reactRouter.browserHistory.push("/node/" + e);
+      location.reload();
+    }
+  },
+  singleNode: null
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, {
+  getNodeByID: _NodeActions.getNodeByID,
+  getSubtopics: _NodeActions.getSubtopics,
+  getSources: _NodeActions.getSources,
+  nodeFullClear: _NodeActions.nodeFullClear,
+  getUniverse: _UniverseActions.getUniverse,
+  clearUniverse: _UniverseActions.clearUniverse,
+  clearSources: _NodeActions.clearSources,
+  clearSubtopics: _NodeActions.clearSubtopics,
+  clearNodes: _NodeActions.clearNodes,
+  clearNode: _NodeActions.clearNode,
+  deleteNode: _NodeActions.deleteNode,
+  retrieveNodeFiles: _NodeActions.retrieveNodeFiles,
+  clearFiles: _NodeActions.clearFiles
+})(NodePreview);
+
+/***/ }),
+/* 116 */
+/***/ (function(module, exports) {
+
+module.exports = require("@material-ui/icons/Share");
+
+/***/ }),
+/* 117 */
+/***/ (function(module, exports) {
+
+module.exports = require("@material-ui/core/Popover");
+
+/***/ }),
+/* 118 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _jsx2 = __webpack_require__(1);
+
+var _jsx3 = _interopRequireDefault(_jsx2);
+
+var _extends2 = __webpack_require__(12);
+
+var _extends3 = _interopRequireDefault(_extends2);
 
 var _defineProperty2 = __webpack_require__(21);
 
@@ -5604,21 +6342,17 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRedux = __webpack_require__(3);
 
-var _reactHelmet = __webpack_require__(8);
+var _NodeActions = __webpack_require__(9);
 
-var _reactHelmet2 = _interopRequireDefault(_reactHelmet);
-
-var _NodeActions = __webpack_require__(10);
-
-var _Spinner = __webpack_require__(34);
+var _Spinner = __webpack_require__(26);
 
 var _Spinner2 = _interopRequireDefault(_Spinner);
 
-var _SelectMultiple = __webpack_require__(31);
+var _SelectMultiple = __webpack_require__(32);
 
 var _SelectMultiple2 = _interopRequireDefault(_SelectMultiple);
 
-var _Paper = __webpack_require__(15);
+var _Paper = __webpack_require__(14);
 
 var _Paper2 = _interopRequireDefault(_Paper);
 
@@ -5626,7 +6360,7 @@ var _TextField = __webpack_require__(22);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
-var _Button = __webpack_require__(17);
+var _Button = __webpack_require__(16);
 
 var _Button2 = _interopRequireDefault(_Button);
 
@@ -5641,7 +6375,14 @@ var _ref3 = (0, _jsx3.default)(_Button2.default, {
   color: "primary"
 }, void 0, "Submit");
 
-var _ref4 = (0, _jsx3.default)(_Spinner2.default, {});
+var _ref4 = (0, _jsx3.default)("br", {});
+
+var _ref5 = (0, _jsx3.default)(_Button2.default, {
+  type: "submit",
+  color: "primary"
+}, void 0, "Submit");
+
+var _ref6 = (0, _jsx3.default)(_Spinner2.default, {});
 
 var EditNodeForm = function (_Component) {
   (0, _inherits3.default)(EditNodeForm, _Component);
@@ -5661,6 +6402,8 @@ var EditNodeForm = function (_Component) {
       subtopicObjects: null,
       sourceOptions: [],
       subtopicOptions: [],
+      file: null,
+      imageTitle: "",
       errors: {}
     };
 
@@ -5670,6 +6413,8 @@ var EditNodeForm = function (_Component) {
     _this.onSubtopicSelect = _this.onSubtopicSelect.bind(_this);
     _this.createDefaultSubtopicConnections = _this.createDefaultSubtopicConnections.bind(_this);
     _this.createDefaultSourceConnections = _this.createDefaultSourceConnections.bind(_this);
+    _this.fileChosen = _this.fileChosen.bind(_this);
+    _this.uploadImage = _this.uploadImage.bind(_this);
     return _this;
   }
 
@@ -5699,11 +6444,11 @@ var EditNodeForm = function (_Component) {
     }
   }, {
     key: "componentDidUpdate",
-    value: function componentDidUpdate(prevProps) {
+    value: function componentDidUpdate() {
       var _this2 = this;
 
       // Place source and subtopic connections into state
-      if (this.props.node.subtopics !== null && this.state.subtopics === null) {
+      if (this.props.node.subtopics !== null && this.state.subtopics === null && this.props.node.formNodes !== null) {
         var subtopics = [];
         this.props.node.subtopics.forEach(function (subtopicObject) {
           subtopics.push(subtopicObject.connection._id);
@@ -5713,7 +6458,7 @@ var EditNodeForm = function (_Component) {
         });
         this.props.clearSubtopics();
       }
-      if (this.props.node.sources !== null && this.state.sources === null) {
+      if (this.props.node.sources !== null && this.state.sources === null && this.props.node.formNodes !== null) {
         var sources = [];
         this.props.node.sources.forEach(function (sourceObject) {
           sources.push(sourceObject.connection._id);
@@ -5809,10 +6554,42 @@ var EditNodeForm = function (_Component) {
       this.setState({ subtopicOf: subtopicOf });
     }
   }, {
+    key: "fileChosen",
+    value: function fileChosen(e) {
+      // Validate file type
+      if (e.target.files[0].type.includes("image/png") || e.target.files[0].type.includes("image/jpeg") || e.target.files[0].type.includes("image/gif")) {
+        // Reset file error
+        var errors = (0, _extends3.default)({}, this.state.errors);
+        if (errors.file) {
+          delete errors.file;
+        }
+
+        this.setState({ file: e.target.files[0], errors: errors });
+      } else {
+        var _errors = {
+          file: "This file type is not accepted, can only submit image files that are either PNG, JPEG, or GIF"
+        };
+        e.target.value = null;
+        this.setState({ errors: _errors });
+      }
+    }
+  }, {
+    key: "uploadImage",
+    value: function uploadImage(e) {
+      e.preventDefault();
+      var file = this.state.file;
+      this.props.uploadNodeFile(file, this.state.node._id);
+    }
+  }, {
     key: "render",
     value: function render() {
-      var content = void 0;
-      if (this.state.node !== null && this.props.node.formNodes !== null && (this.state.node.sourceConnections && this.state.sourceOptions.length > 0 || this.state.node.sourceConnections.length === 0) && (this.state.node.subtopicConnections && this.state.subtopicOptions.length > 0 || this.state.node.subtopicConnections.length === 0)) {
+      console.log(this.state);
+      console.log(this.state.node.subtopicConnections.length);
+      console.log(this.state.node.subtopicConnections && this.state.node.subtopicConnections.length > 0 && this.state.subtopicOptions.length > 0 || this.state.node.subtopicConnections.length === 0);
+      var content = void 0,
+          errors = this.state.errors;
+
+      if (this.state.node !== null && this.props.node.formNodes !== null && (this.state.node.sourceConnections && this.state.node.sourceConnections.length > 0 && this.state.sourceOptions.length > 0 || this.state.node.sourceConnections.length === 0) && (this.state.node.subtopicConnections && this.state.node.subtopicConnections.length > 0 && this.state.subtopicOptions.length > 0 || this.state.node.subtopicConnections.length === 0)) {
         var _state = this.state,
             subtopicOptions = _state.subtopicOptions,
             sourceOptions = _state.sourceOptions;
@@ -5848,9 +6625,15 @@ var EditNodeForm = function (_Component) {
           onChange: this.onSubtopicSelect,
           options: this.props.node.formNodes,
           defaultValue: subtopicOptions
-        }), _ref3)));
+        }), _ref3), _ref4, (0, _jsx3.default)("form", {
+          onSubmit: this.uploadImage
+        }, void 0, (0, _jsx3.default)("input", {
+          type: "file",
+          name: "file",
+          onChange: this.fileChosen
+        }), errors.file ? errors.file : "", _ref5)));
       } else {
-        content = _ref4;
+        content = _ref6;
       }
 
       return (0, _jsx3.default)("div", {}, void 0, content);
@@ -5881,142 +6664,13 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, {
   getSources: _NodeActions.getSources,
   getSubtopics: _NodeActions.getSubtopics,
   clearSources: _NodeActions.clearSources,
-  clearSubtopics: _NodeActions.clearSubtopics
+  clearSubtopics: _NodeActions.clearSubtopics,
+  uploadNodeFile: _NodeActions.uploadNodeFile,
+  retrieveNodeFiles: _NodeActions.retrieveNodeFiles
 })(EditNodeForm);
 
 /***/ }),
-/* 112 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _jsx2 = __webpack_require__(1);
-
-var _jsx3 = _interopRequireDefault(_jsx2);
-
-var _classCallCheck2 = __webpack_require__(4);
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-var _createClass2 = __webpack_require__(5);
-
-var _createClass3 = _interopRequireDefault(_createClass2);
-
-var _possibleConstructorReturn2 = __webpack_require__(6);
-
-var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-var _inherits2 = __webpack_require__(7);
-
-var _inherits3 = _interopRequireDefault(_inherits2);
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactRedux = __webpack_require__(3);
-
-var _propTypes = __webpack_require__(2);
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _Share = __webpack_require__(113);
-
-var _Share2 = _interopRequireDefault(_Share);
-
-var _Popover = __webpack_require__(114);
-
-var _Popover2 = _interopRequireDefault(_Popover);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var ShareButton = function (_React$Component) {
-  (0, _inherits3.default)(ShareButton, _React$Component);
-
-  function ShareButton() {
-    (0, _classCallCheck3.default)(this, ShareButton);
-
-    var _this = (0, _possibleConstructorReturn3.default)(this, (ShareButton.__proto__ || Object.getPrototypeOf(ShareButton)).call(this));
-
-    _this.copyToClipboard = function (e) {
-      var textField = document.createElement("textarea");
-      textField.innerText = _this.props.link;
-      document.body.appendChild(textField);
-      textField.select();
-      document.execCommand("copy");
-      textField.remove();
-      _this.handleClick(e);
-    };
-
-    _this.handleClick = function (e) {
-      _this.setState({ anchorEl: e.currentTarget });
-    };
-
-    _this.handleClose = function () {
-      _this.setState({ anchorEl: null });
-    };
-
-    _this.state = {
-      anchorEl: null
-    };
-
-    _this.copyToClipboard = _this.copyToClipboard.bind(_this);
-    _this.handleClick = _this.handleClick.bind(_this);
-    _this.handleClose = _this.handleClose.bind(_this);
-    return _this;
-  }
-
-  (0, _createClass3.default)(ShareButton, [{
-    key: "render",
-    value: function render() {
-      var anchorEl = this.state.anchorEl;
-
-      var open = Boolean(anchorEl);
-
-      return (0, _jsx3.default)("div", {}, void 0, /* Logical shortcut for only displaying the 
-                                                      button if the copy command exists */
-      document.queryCommandSupported("copy") && (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(_Share2.default, {
-        onClick: this.copyToClipboard
-      })), (0, _jsx3.default)(_Popover2.default, {
-        open: open,
-        anchorEl: anchorEl,
-        onClose: this.handleClose,
-        anchorOrigin: {
-          vertical: "bottom",
-          horizontal: "left"
-        },
-        transformOrigin: {
-          vertical: "top",
-          horizontal: "right"
-        },
-        styles: { margin: "1em" }
-      }, void 0, "Copied to Clipboard!"));
-    }
-  }]);
-  return ShareButton;
-}(_react2.default.Component);
-
-exports.default = (0, _reactRedux.connect)(null, {})(ShareButton);
-
-/***/ }),
-/* 113 */
-/***/ (function(module, exports) {
-
-module.exports = require("@material-ui/icons/Share");
-
-/***/ }),
-/* 114 */
-/***/ (function(module, exports) {
-
-module.exports = require("@material-ui/core/Popover");
-
-/***/ }),
-/* 115 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6027,7 +6681,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.fetchComponentData = fetchComponentData;
 
-var _promiseUtils = __webpack_require__(116);
+var _promiseUtils = __webpack_require__(120);
 
 function fetchComponentData(store, components, params) {
   var needs = components.reduce(function (prev, current) {
@@ -6043,7 +6697,7 @@ function fetchComponentData(store, components, params) {
   */
 
 /***/ }),
-/* 116 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6074,7 +6728,7 @@ function sequence(items, consumer) {
 }
 
 /***/ }),
-/* 117 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6084,9 +6738,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _express = __webpack_require__(18);
+var _express = __webpack_require__(19);
 
-var _post = __webpack_require__(118);
+var _post = __webpack_require__(122);
 
 var PostController = _interopRequireWildcard(_post);
 
@@ -6109,7 +6763,7 @@ router.route('/posts/:cuid').delete(PostController.deletePost);
 exports.default = router;
 
 /***/ }),
-/* 118 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6123,19 +6777,19 @@ exports.addPost = addPost;
 exports.getPost = getPost;
 exports.deletePost = deletePost;
 
-var _post = __webpack_require__(57);
+var _post = __webpack_require__(59);
 
 var _post2 = _interopRequireDefault(_post);
 
-var _cuid = __webpack_require__(119);
+var _cuid = __webpack_require__(123);
 
 var _cuid2 = _interopRequireDefault(_cuid);
 
-var _limax = __webpack_require__(120);
+var _limax = __webpack_require__(124);
 
 var _limax2 = _interopRequireDefault(_limax);
 
-var _sanitizeHtml = __webpack_require__(58);
+var _sanitizeHtml = __webpack_require__(60);
 
 var _sanitizeHtml2 = _interopRequireDefault(_sanitizeHtml);
 
@@ -6218,19 +6872,19 @@ function deletePost(req, res) {
 }
 
 /***/ }),
-/* 119 */
+/* 123 */
 /***/ (function(module, exports) {
 
 module.exports = require("cuid");
 
 /***/ }),
-/* 120 */
+/* 124 */
 /***/ (function(module, exports) {
 
 module.exports = require("limax");
 
 /***/ }),
-/* 121 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6240,9 +6894,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _express = __webpack_require__(18);
+var _express = __webpack_require__(19);
 
-var _user = __webpack_require__(122);
+var _user = __webpack_require__(126);
 
 var UserController = _interopRequireWildcard(_user);
 
@@ -6268,7 +6922,7 @@ router.route("/user/login").post(UserController.loginUser);
 exports.default = router;
 
 /***/ }),
-/* 122 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6574,53 +7228,53 @@ var _universe = __webpack_require__(36);
 
 var _universe2 = _interopRequireDefault(_universe);
 
-var _sanitizeHtml = __webpack_require__(58);
+var _sanitizeHtml = __webpack_require__(60);
 
 var _sanitizeHtml2 = _interopRequireDefault(_sanitizeHtml);
 
-var _bcryptjs = __webpack_require__(123);
+var _bcryptjs = __webpack_require__(127);
 
 var _bcryptjs2 = _interopRequireDefault(_bcryptjs);
 
-var _jsonwebtoken = __webpack_require__(124);
+var _jsonwebtoken = __webpack_require__(128);
 
 var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
 
-var _validateUserSignupInputs = __webpack_require__(125);
+var _validateUserSignupInputs = __webpack_require__(129);
 
 var _validateUserSignupInputs2 = _interopRequireDefault(_validateUserSignupInputs);
 
-var _validateLoginInput2 = __webpack_require__(126);
+var _validateLoginInput2 = __webpack_require__(130);
 
 var _validateLoginInput3 = _interopRequireDefault(_validateLoginInput2);
 
-var _keys = __webpack_require__(59);
+var _keys = __webpack_require__(38);
 
 var _keys2 = _interopRequireDefault(_keys);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 123 */
+/* 127 */
 /***/ (function(module, exports) {
 
 module.exports = require("bcryptjs");
 
 /***/ }),
-/* 124 */
+/* 128 */
 /***/ (function(module, exports) {
 
 module.exports = require("jsonwebtoken");
 
 /***/ }),
-/* 125 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var Validator = __webpack_require__(37);
-var _ = __webpack_require__(20);
+var _ = __webpack_require__(17);
 
 module.exports = function validateWebAdminSignupInput(data) {
   var errors = {};
@@ -6678,14 +7332,14 @@ module.exports = function validateWebAdminSignupInput(data) {
 };
 
 /***/ }),
-/* 126 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var Validator = __webpack_require__(37);
-var _ = __webpack_require__(20);
+var _ = __webpack_require__(17);
 
 module.exports = function validateLoginInput(data) {
   var errors = {};
@@ -6715,7 +7369,7 @@ module.exports = function validateLoginInput(data) {
 };
 
 /***/ }),
-/* 127 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6729,7 +7383,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 128 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6743,7 +7397,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 129 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6753,9 +7407,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _express = __webpack_require__(18);
+var _express = __webpack_require__(19);
 
-var _node = __webpack_require__(130);
+var _node = __webpack_require__(134);
 
 var NodeController = _interopRequireWildcard(_node);
 
@@ -6777,6 +7431,12 @@ router.route("/nodes/form/private/:id/all").get(NodeController.getAllPrivateNode
 
 // Delete Node
 router.route("/node/:id/delete").get(NodeController.deleteNode);
+
+// Upload Image to Node (JPEG, GIF, PNG)
+router.route("/node/:id/upload/file").post(NodeController.uploadImageToNode);
+
+// Retrieve Node files
+router.route("/node/:id/retrieve/files").get(NodeController.retrieveNodeFiles);
 
 // Get Node sources
 router.route("/node/:id/sources").get(NodeController.getNodeSources);
@@ -6804,7 +7464,7 @@ router.route("/node/remove/duplicates/all/legacy").get(NodeController.legacyRemo
 exports.default = router;
 
 /***/ }),
-/* 130 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6813,7 +7473,7 @@ exports.default = router;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateNodeConnections = exports.legacyRemoveDuplicateSourcesAndSubtopics = exports.removeDuplicateSourcesAndSubtopics = exports.getAllPrivateNodesForSelect = exports.getAllPublicNodesForSelect = exports.getUniverseRootNodes = exports.getNodeSubtopics = exports.getNodeSources = exports.getNodeByID = exports.deleteNode = exports.editNode = exports.createNode = undefined;
+exports.updateNodeConnections = exports.legacyRemoveDuplicateSourcesAndSubtopics = exports.removeDuplicateSourcesAndSubtopics = exports.getAllPrivateNodesForSelect = exports.getAllPublicNodesForSelect = exports.getUniverseRootNodes = exports.getNodeSubtopics = exports.getNodeSources = exports.getNodeByID = exports.retrieveNodeFiles = exports.uploadImageToNode = exports.deleteNode = exports.editNode = exports.createNode = undefined;
 
 var _regenerator = __webpack_require__(23);
 
@@ -7287,6 +7947,213 @@ var deleteNode = exports.deleteNode = function () {
 }();
 
 /**
+ * Upload Image to node (JPEG, GIF, PNG) validation is done above
+ * @param req
+ * @param res
+ * @returns void
+ */
+
+
+var uploadImageToNode = exports.uploadImageToNode = function () {
+  var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5(req, res) {
+    var _this = this;
+
+    var errors;
+    return _regenerator2.default.wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            try {
+              upload(req, res, function () {
+                var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(err) {
+                  var node;
+                  return _regenerator2.default.wrap(function _callee4$(_context4) {
+                    while (1) {
+                      switch (_context4.prev = _context4.next) {
+                        case 0:
+                          if (!err) {
+                            _context4.next = 3;
+                            break;
+                          }
+
+                          console.log(err);
+                          return _context4.abrupt("return", res.status(500).json({
+                            general: "Uploaded Error",
+                            message: "File could not be uploaded",
+                            error: err
+                          }));
+
+                        case 3:
+                          _context4.next = 5;
+                          return _node3.default.findByIdAndUpdate(req.params.id, { $push: { files: req.file.filename } }, { new: true });
+
+                        case 5:
+                          node = _context4.sent;
+
+                          res.json(node);
+
+                        case 7:
+                        case "end":
+                          return _context4.stop();
+                      }
+                    }
+                  }, _callee4, _this);
+                }));
+
+                return function (_x9) {
+                  return _ref5.apply(this, arguments);
+                };
+              }());
+            } catch (e) {
+              console.log(e);
+              errors = {};
+
+              errors.general = e;
+              res.status(500).json(errors);
+            }
+
+          case 1:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5, this);
+  }));
+
+  return function uploadImageToNode(_x7, _x8) {
+    return _ref4.apply(this, arguments);
+  };
+}();
+
+/**
+ * Get all files for a given node
+ * @param req
+ * @param res
+ * @returns void
+ */
+
+
+var retrieveNodeFiles = exports.retrieveNodeFiles = function () {
+  var _ref6 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee6(req, res) {
+    var node, files, returnArray, i, filename, client, dbName, db, collection, collectionChunks, docs, errors, chunks, _errors2, fileData, j, finalFile, _errors3;
+
+    return _regenerator2.default.wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            _context6.prev = 0;
+            _context6.next = 3;
+            return _node3.default.findById(req.params.id);
+
+          case 3:
+            node = _context6.sent;
+            files = node.files;
+            returnArray = [];
+
+            if (!(files && files.length > 0)) {
+              _context6.next = 43;
+              break;
+            }
+
+            i = 0;
+
+          case 8:
+            if (!(i < files.length)) {
+              _context6.next = 42;
+              break;
+            }
+
+            filename = files[i];
+            _context6.next = 12;
+            return _mongodb2.default.connect(_keys2.default.mongoURI);
+
+          case 12:
+            client = _context6.sent;
+            dbName = _keys2.default.mongoURI.split("/")[_keys2.default.mongoURI.split("/").length - 1];
+            db = client.db(dbName);
+            collection = db.collection("nodeFiles.files");
+            collectionChunks = db.collection("nodeFiles.chunks");
+            _context6.next = 19;
+            return collection.find({ filename: filename }).toArray();
+
+          case 19:
+            docs = _context6.sent;
+
+            if (!(!docs || docs.length === 0)) {
+              _context6.next = 27;
+              break;
+            }
+
+            console.log("Error finding files");
+            errors = {};
+
+            errors.general = "Error finding files";
+            return _context6.abrupt("return", res.status(500).json(errors));
+
+          case 27:
+            _context6.next = 29;
+            return collectionChunks.find({ files_id: docs[0]._id }).sort({ n: 1 }).toArray();
+
+          case 29:
+            chunks = _context6.sent;
+
+            if (!(!chunks || chunks.length === 0)) {
+              _context6.next = 35;
+              break;
+            }
+
+            console.log("No data found");
+            _errors2 = {};
+
+            _errors2.general = "No data found";
+            return _context6.abrupt("return", res.status(500).json(_errors2));
+
+          case 35:
+            fileData = [];
+
+            for (j = 0; j < chunks.length; j++) {
+              fileData.push(chunks[j].data.toString("base64"));
+            }
+            finalFile = "data:" + docs[0].contentType + ";base64," + fileData.join("");
+
+            returnArray.push(finalFile);
+
+          case 39:
+            i++;
+            _context6.next = 8;
+            break;
+
+          case 42:
+            res.json(returnArray);
+
+          case 43:
+            _context6.next = 51;
+            break;
+
+          case 45:
+            _context6.prev = 45;
+            _context6.t0 = _context6["catch"](0);
+
+            console.log(_context6.t0);
+            _errors3 = {};
+
+            _errors3.general = _context6.t0;
+            res.status(500).json(_errors3);
+
+          case 51:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6, this, [[0, 45]]);
+  }));
+
+  return function retrieveNodeFiles(_x10, _x11) {
+    return _ref6.apply(this, arguments);
+  };
+}();
+
+/**
  * Get a node by its ID
  * @param req
  * @param res
@@ -7295,43 +8162,43 @@ var deleteNode = exports.deleteNode = function () {
 
 
 var getNodeByID = exports.getNodeByID = function () {
-  var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(req, res) {
+  var _ref7 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee7(req, res) {
     var node, errors;
-    return _regenerator2.default.wrap(function _callee4$(_context4) {
+    return _regenerator2.default.wrap(function _callee7$(_context7) {
       while (1) {
-        switch (_context4.prev = _context4.next) {
+        switch (_context7.prev = _context7.next) {
           case 0:
-            _context4.prev = 0;
-            _context4.next = 3;
+            _context7.prev = 0;
+            _context7.next = 3;
             return _node3.default.findById(req.params.nodeID);
 
           case 3:
-            node = _context4.sent;
+            node = _context7.sent;
 
             res.json(node);
-            _context4.next = 13;
+            _context7.next = 13;
             break;
 
           case 7:
-            _context4.prev = 7;
-            _context4.t0 = _context4["catch"](0);
+            _context7.prev = 7;
+            _context7.t0 = _context7["catch"](0);
 
-            console.log(_context4.t0);
+            console.log(_context7.t0);
             errors = {};
 
-            errors.general = _context4.t0;
+            errors.general = _context7.t0;
             res.status(500).json(errors);
 
           case 13:
           case "end":
-            return _context4.stop();
+            return _context7.stop();
         }
       }
-    }, _callee4, this, [[0, 7]]);
+    }, _callee7, this, [[0, 7]]);
   }));
 
-  return function getNodeByID(_x7, _x8) {
-    return _ref4.apply(this, arguments);
+  return function getNodeByID(_x12, _x13) {
+    return _ref7.apply(this, arguments);
   };
 }();
 
@@ -7344,22 +8211,22 @@ var getNodeByID = exports.getNodeByID = function () {
 
 
 var getNodeSources = exports.getNodeSources = function () {
-  var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5(req, res) {
+  var _ref8 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee8(req, res) {
     var node, returnArray, i, connection, sourceNode, errors;
-    return _regenerator2.default.wrap(function _callee5$(_context5) {
+    return _regenerator2.default.wrap(function _callee8$(_context8) {
       while (1) {
-        switch (_context5.prev = _context5.next) {
+        switch (_context8.prev = _context8.next) {
           case 0:
-            _context5.prev = 0;
-            _context5.next = 3;
+            _context8.prev = 0;
+            _context8.next = 3;
             return _node3.default.findById(req.params.id);
 
           case 3:
-            node = _context5.sent;
+            node = _context8.sent;
             returnArray = [];
 
             if (!(node.sourceConnections && node.sourceConnections.length > 0)) {
-              _context5.next = 18;
+              _context8.next = 18;
               break;
             }
 
@@ -7367,20 +8234,20 @@ var getNodeSources = exports.getNodeSources = function () {
 
           case 7:
             if (!(i < node.sourceConnections.length)) {
-              _context5.next = 18;
+              _context8.next = 18;
               break;
             }
 
-            _context5.next = 10;
+            _context8.next = 10;
             return _connection7.default.findById(node.sourceConnections[i]);
 
           case 10:
-            connection = _context5.sent;
-            _context5.next = 13;
+            connection = _context8.sent;
+            _context8.next = 13;
             return _node3.default.findById(connection.sourceNode);
 
           case 13:
-            sourceNode = _context5.sent;
+            sourceNode = _context8.sent;
 
             returnArray.push({
               connection: connection,
@@ -7389,35 +8256,35 @@ var getNodeSources = exports.getNodeSources = function () {
 
           case 15:
             i++;
-            _context5.next = 7;
+            _context8.next = 7;
             break;
 
           case 18:
 
             res.json(returnArray);
-            _context5.next = 27;
+            _context8.next = 27;
             break;
 
           case 21:
-            _context5.prev = 21;
-            _context5.t0 = _context5["catch"](0);
+            _context8.prev = 21;
+            _context8.t0 = _context8["catch"](0);
 
-            console.log(_context5.t0);
+            console.log(_context8.t0);
             errors = {};
 
-            errors.general = _context5.t0;
+            errors.general = _context8.t0;
             res.status(500).json(errors);
 
           case 27:
           case "end":
-            return _context5.stop();
+            return _context8.stop();
         }
       }
-    }, _callee5, this, [[0, 21]]);
+    }, _callee8, this, [[0, 21]]);
   }));
 
-  return function getNodeSources(_x9, _x10) {
-    return _ref5.apply(this, arguments);
+  return function getNodeSources(_x14, _x15) {
+    return _ref8.apply(this, arguments);
   };
 }();
 
@@ -7430,22 +8297,22 @@ var getNodeSources = exports.getNodeSources = function () {
 
 
 var getNodeSubtopics = exports.getNodeSubtopics = function () {
-  var _ref6 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee6(req, res) {
+  var _ref9 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee9(req, res) {
     var node, returnArray, i, connection, subtopicNode, errors;
-    return _regenerator2.default.wrap(function _callee6$(_context6) {
+    return _regenerator2.default.wrap(function _callee9$(_context9) {
       while (1) {
-        switch (_context6.prev = _context6.next) {
+        switch (_context9.prev = _context9.next) {
           case 0:
-            _context6.prev = 0;
-            _context6.next = 3;
+            _context9.prev = 0;
+            _context9.next = 3;
             return _node3.default.findById(req.params.id);
 
           case 3:
-            node = _context6.sent;
+            node = _context9.sent;
             returnArray = [];
 
             if (!(node.subtopicConnections && node.subtopicConnections.length > 0)) {
-              _context6.next = 18;
+              _context9.next = 18;
               break;
             }
 
@@ -7453,20 +8320,20 @@ var getNodeSubtopics = exports.getNodeSubtopics = function () {
 
           case 7:
             if (!(i < node.subtopicConnections.length)) {
-              _context6.next = 18;
+              _context9.next = 18;
               break;
             }
 
-            _context6.next = 10;
+            _context9.next = 10;
             return _connection7.default.findById(node.subtopicConnections[i]);
 
           case 10:
-            connection = _context6.sent;
-            _context6.next = 13;
+            connection = _context9.sent;
+            _context9.next = 13;
             return _node3.default.findById(connection.subtopicNode);
 
           case 13:
-            subtopicNode = _context6.sent;
+            subtopicNode = _context9.sent;
 
             returnArray.push({
               connection: connection,
@@ -7475,35 +8342,35 @@ var getNodeSubtopics = exports.getNodeSubtopics = function () {
 
           case 15:
             i++;
-            _context6.next = 7;
+            _context9.next = 7;
             break;
 
           case 18:
 
             res.json(returnArray);
-            _context6.next = 27;
+            _context9.next = 27;
             break;
 
           case 21:
-            _context6.prev = 21;
-            _context6.t0 = _context6["catch"](0);
+            _context9.prev = 21;
+            _context9.t0 = _context9["catch"](0);
 
-            console.log(_context6.t0);
+            console.log(_context9.t0);
             errors = {};
 
-            errors.general = _context6.t0;
+            errors.general = _context9.t0;
             res.status(500).json(errors);
 
           case 27:
           case "end":
-            return _context6.stop();
+            return _context9.stop();
         }
       }
-    }, _callee6, this, [[0, 21]]);
+    }, _callee9, this, [[0, 21]]);
   }));
 
-  return function getNodeSubtopics(_x11, _x12) {
-    return _ref6.apply(this, arguments);
+  return function getNodeSubtopics(_x16, _x17) {
+    return _ref9.apply(this, arguments);
   };
 }();
 
@@ -7516,19 +8383,19 @@ var getNodeSubtopics = exports.getNodeSubtopics = function () {
 
 
 var getUniverseRootNodes = exports.getUniverseRootNodes = function () {
-  var _ref7 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee7(req, res) {
+  var _ref10 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee10(req, res) {
     var universe, nodes, errors;
-    return _regenerator2.default.wrap(function _callee7$(_context7) {
+    return _regenerator2.default.wrap(function _callee10$(_context10) {
       while (1) {
-        switch (_context7.prev = _context7.next) {
+        switch (_context10.prev = _context10.next) {
           case 0:
-            _context7.prev = 0;
-            _context7.next = 3;
+            _context10.prev = 0;
+            _context10.next = 3;
             return _universe2.default.findById(req.params.id);
 
           case 3:
-            universe = _context7.sent;
-            _context7.next = 6;
+            universe = _context10.sent;
+            _context10.next = 6;
             return _node3.default.find({
               $and: [{
                 $or: [{ sourceConnections: { $eq: [] } }, { sourceConnections: { $eq: null } }]
@@ -7536,32 +8403,32 @@ var getUniverseRootNodes = exports.getUniverseRootNodes = function () {
             });
 
           case 6:
-            nodes = _context7.sent;
+            nodes = _context10.sent;
 
             res.json(nodes);
-            _context7.next = 16;
+            _context10.next = 16;
             break;
 
           case 10:
-            _context7.prev = 10;
-            _context7.t0 = _context7["catch"](0);
+            _context10.prev = 10;
+            _context10.t0 = _context10["catch"](0);
 
-            console.log(_context7.t0);
+            console.log(_context10.t0);
             errors = {};
 
-            errors.general = _context7.t0;
+            errors.general = _context10.t0;
             res.status(500).json(errors);
 
           case 16:
           case "end":
-            return _context7.stop();
+            return _context10.stop();
         }
       }
-    }, _callee7, this, [[0, 10]]);
+    }, _callee10, this, [[0, 10]]);
   }));
 
-  return function getUniverseRootNodes(_x13, _x14) {
-    return _ref7.apply(this, arguments);
+  return function getUniverseRootNodes(_x18, _x19) {
+    return _ref10.apply(this, arguments);
   };
 }();
 
@@ -7574,289 +8441,27 @@ var getUniverseRootNodes = exports.getUniverseRootNodes = function () {
 
 
 var getAllPublicNodesForSelect = exports.getAllPublicNodesForSelect = function () {
-  var _ref8 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee8(req, res) {
+  var _ref11 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee11(req, res) {
     var nodes, nodeArray, errors;
-    return _regenerator2.default.wrap(function _callee8$(_context8) {
-      while (1) {
-        switch (_context8.prev = _context8.next) {
-          case 0:
-            _context8.prev = 0;
-            _context8.next = 3;
-            return _node3.default.find({ public: true });
-
-          case 3:
-            nodes = _context8.sent;
-            nodeArray = [];
-
-            nodes.forEach(function (node) {
-              nodeArray.push({
-                label: node.title,
-                value: node._id
-              });
-            });
-            res.json(nodeArray);
-            _context8.next = 15;
-            break;
-
-          case 9:
-            _context8.prev = 9;
-            _context8.t0 = _context8["catch"](0);
-
-            console.log(_context8.t0);
-            errors = {};
-
-            errors.general = _context8.t0;
-            res.status(500).json(errors);
-
-          case 15:
-          case "end":
-            return _context8.stop();
-        }
-      }
-    }, _callee8, this, [[0, 9]]);
-  }));
-
-  return function getAllPublicNodesForSelect(_x15, _x16) {
-    return _ref8.apply(this, arguments);
-  };
-}();
-
-/**
- * Get all private Nodes for form
- * @param req
- * @param res
- * @returns void
- */
-
-
-var getAllPrivateNodesForSelect = exports.getAllPrivateNodesForSelect = function () {
-  var _ref9 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee9(req, res) {
-    var nodes, nodeArray, errors;
-    return _regenerator2.default.wrap(function _callee9$(_context9) {
-      while (1) {
-        switch (_context9.prev = _context9.next) {
-          case 0:
-            _context9.prev = 0;
-            _context9.next = 3;
-            return _node3.default.find({ originUniverse: req.params.id });
-
-          case 3:
-            nodes = _context9.sent;
-            nodeArray = [];
-
-            nodes.forEach(function (node) {
-              nodeArray.push({
-                label: node.title,
-                value: node._id
-              });
-            });
-            res.json(nodeArray);
-            _context9.next = 15;
-            break;
-
-          case 9:
-            _context9.prev = 9;
-            _context9.t0 = _context9["catch"](0);
-
-            console.log(_context9.t0);
-            errors = {};
-
-            errors.general = _context9.t0;
-            res.status(500).json(errors);
-
-          case 15:
-          case "end":
-            return _context9.stop();
-        }
-      }
-    }, _callee9, this, [[0, 9]]);
-  }));
-
-  return function getAllPrivateNodesForSelect(_x17, _x18) {
-    return _ref9.apply(this, arguments);
-  };
-}();
-
-/**
- * Remove legacy duplicate sources and subtopics from all nodes
- * @param req
- * @param res
- * @returns void
- */
-
-
-var removeDuplicateSourcesAndSubtopics = exports.removeDuplicateSourcesAndSubtopics = function () {
-  var _ref10 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee11(req, res) {
-    var _this = this;
-
-    var nodes, errors;
     return _regenerator2.default.wrap(function _callee11$(_context11) {
       while (1) {
         switch (_context11.prev = _context11.next) {
           case 0:
             _context11.prev = 0;
             _context11.next = 3;
-            return _node3.default.find();
+            return _node3.default.find({ public: true });
 
           case 3:
             nodes = _context11.sent;
+            nodeArray = [];
 
-            nodes.forEach(function () {
-              var _ref11 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee10(node) {
-                var i, connection, connections, j, _connection5, _connections;
-
-                return _regenerator2.default.wrap(function _callee10$(_context10) {
-                  while (1) {
-                    switch (_context10.prev = _context10.next) {
-                      case 0:
-                        if (!(node.sourceConnections.length > 0)) {
-                          _context10.next = 25;
-                          break;
-                        }
-
-                        i = 0;
-
-                      case 2:
-                        if (!(i < node.sourceConnections.length)) {
-                          _context10.next = 25;
-                          break;
-                        }
-
-                        _context10.next = 5;
-                        return _connection7.default.findById(node.sourceConnections[i]);
-
-                      case 5:
-                        connection = _context10.sent;
-                        _context10.next = 8;
-                        return _connection7.default.find({
-                          sourceNode: connection.sourceNode,
-                          subtopicNode: node._id
-                        });
-
-                      case 8:
-                        connections = _context10.sent;
-
-                        if (!(connections.length > 1)) {
-                          _context10.next = 22;
-                          break;
-                        }
-
-                        j = 1;
-
-                      case 11:
-                        if (!(j < connections.length)) {
-                          _context10.next = 22;
-                          break;
-                        }
-
-                        if (!connections[j]) {
-                          _context10.next = 19;
-                          break;
-                        }
-
-                        _context10.next = 15;
-                        return _node3.default.findByIdAndUpdate(connections[j].sourceNode, { $pull: { subtopicConnections: connections[j]._id } }, { new: true });
-
-                      case 15:
-                        _context10.next = 17;
-                        return _node3.default.findByIdAndUpdate(connections[j].subtopicNode, { $pull: { sourceConnections: connections[j]._id } }, { new: true });
-
-                      case 17:
-                        _context10.next = 19;
-                        return _connection7.default.findByIdAndRemove(connections[j]._id);
-
-                      case 19:
-                        j++;
-                        _context10.next = 11;
-                        break;
-
-                      case 22:
-                        i++;
-                        _context10.next = 2;
-                        break;
-
-                      case 25:
-                        if (!(node.subtopicConnections.length > 0)) {
-                          _context10.next = 50;
-                          break;
-                        }
-
-                        i = 0;
-
-                      case 27:
-                        if (!(i < node.subtopicConnections.length)) {
-                          _context10.next = 50;
-                          break;
-                        }
-
-                        _context10.next = 30;
-                        return _connection7.default.findById(node.subtopicConnections[i]);
-
-                      case 30:
-                        _connection5 = _context10.sent;
-                        _context10.next = 33;
-                        return _connection7.default.find({
-                          subtopicNode: _connection5.subtopicNode,
-                          sourceNode: node._id
-                        });
-
-                      case 33:
-                        _connections = _context10.sent;
-
-                        if (!(_connections.length > 1)) {
-                          _context10.next = 47;
-                          break;
-                        }
-
-                        j = 1;
-
-                      case 36:
-                        if (!(j < _connections.length)) {
-                          _context10.next = 47;
-                          break;
-                        }
-
-                        if (!_connections[j]) {
-                          _context10.next = 44;
-                          break;
-                        }
-
-                        _context10.next = 40;
-                        return _node3.default.findByIdAndUpdate(_connections[j].sourceNode, { $pull: { subtopicConnections: _connections[j]._id } }, { new: true });
-
-                      case 40:
-                        _context10.next = 42;
-                        return _node3.default.findByIdAndUpdate(_connections[j].subtopicNode, { $pull: { sourceConnections: _connections[j]._id } }, { new: true });
-
-                      case 42:
-                        _context10.next = 44;
-                        return _connection7.default.findByIdAndRemove(_connections[j]._id);
-
-                      case 44:
-                        j++;
-                        _context10.next = 36;
-                        break;
-
-                      case 47:
-                        i++;
-                        _context10.next = 27;
-                        break;
-
-                      case 50:
-                      case "end":
-                        return _context10.stop();
-                    }
-                  }
-                }, _callee10, _this);
-              }));
-
-              return function (_x21) {
-                return _ref11.apply(this, arguments);
-              };
-            }());
-
-            console.log("Big success");
-            res.end();
+            nodes.forEach(function (node) {
+              nodeArray.push({
+                label: node.title,
+                value: node._id
+              });
+            });
+            res.json(nodeArray);
             _context11.next = 15;
             break;
 
@@ -7878,8 +8483,270 @@ var removeDuplicateSourcesAndSubtopics = exports.removeDuplicateSourcesAndSubtop
     }, _callee11, this, [[0, 9]]);
   }));
 
-  return function removeDuplicateSourcesAndSubtopics(_x19, _x20) {
-    return _ref10.apply(this, arguments);
+  return function getAllPublicNodesForSelect(_x20, _x21) {
+    return _ref11.apply(this, arguments);
+  };
+}();
+
+/**
+ * Get all private Nodes for form
+ * @param req
+ * @param res
+ * @returns void
+ */
+
+
+var getAllPrivateNodesForSelect = exports.getAllPrivateNodesForSelect = function () {
+  var _ref12 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee12(req, res) {
+    var nodes, nodeArray, errors;
+    return _regenerator2.default.wrap(function _callee12$(_context12) {
+      while (1) {
+        switch (_context12.prev = _context12.next) {
+          case 0:
+            _context12.prev = 0;
+            _context12.next = 3;
+            return _node3.default.find({ originUniverse: req.params.id });
+
+          case 3:
+            nodes = _context12.sent;
+            nodeArray = [];
+
+            nodes.forEach(function (node) {
+              nodeArray.push({
+                label: node.title,
+                value: node._id
+              });
+            });
+            res.json(nodeArray);
+            _context12.next = 15;
+            break;
+
+          case 9:
+            _context12.prev = 9;
+            _context12.t0 = _context12["catch"](0);
+
+            console.log(_context12.t0);
+            errors = {};
+
+            errors.general = _context12.t0;
+            res.status(500).json(errors);
+
+          case 15:
+          case "end":
+            return _context12.stop();
+        }
+      }
+    }, _callee12, this, [[0, 9]]);
+  }));
+
+  return function getAllPrivateNodesForSelect(_x22, _x23) {
+    return _ref12.apply(this, arguments);
+  };
+}();
+
+/**
+ * Remove legacy duplicate sources and subtopics from all nodes
+ * @param req
+ * @param res
+ * @returns void
+ */
+
+
+var removeDuplicateSourcesAndSubtopics = exports.removeDuplicateSourcesAndSubtopics = function () {
+  var _ref13 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee14(req, res) {
+    var _this2 = this;
+
+    var nodes, errors;
+    return _regenerator2.default.wrap(function _callee14$(_context14) {
+      while (1) {
+        switch (_context14.prev = _context14.next) {
+          case 0:
+            _context14.prev = 0;
+            _context14.next = 3;
+            return _node3.default.find();
+
+          case 3:
+            nodes = _context14.sent;
+
+            nodes.forEach(function () {
+              var _ref14 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee13(node) {
+                var i, connection, connections, j, _connection5, _connections;
+
+                return _regenerator2.default.wrap(function _callee13$(_context13) {
+                  while (1) {
+                    switch (_context13.prev = _context13.next) {
+                      case 0:
+                        if (!(node.sourceConnections.length > 0)) {
+                          _context13.next = 25;
+                          break;
+                        }
+
+                        i = 0;
+
+                      case 2:
+                        if (!(i < node.sourceConnections.length)) {
+                          _context13.next = 25;
+                          break;
+                        }
+
+                        _context13.next = 5;
+                        return _connection7.default.findById(node.sourceConnections[i]);
+
+                      case 5:
+                        connection = _context13.sent;
+                        _context13.next = 8;
+                        return _connection7.default.find({
+                          sourceNode: connection.sourceNode,
+                          subtopicNode: node._id
+                        });
+
+                      case 8:
+                        connections = _context13.sent;
+
+                        if (!(connections.length > 1)) {
+                          _context13.next = 22;
+                          break;
+                        }
+
+                        j = 1;
+
+                      case 11:
+                        if (!(j < connections.length)) {
+                          _context13.next = 22;
+                          break;
+                        }
+
+                        if (!connections[j]) {
+                          _context13.next = 19;
+                          break;
+                        }
+
+                        _context13.next = 15;
+                        return _node3.default.findByIdAndUpdate(connections[j].sourceNode, { $pull: { subtopicConnections: connections[j]._id } }, { new: true });
+
+                      case 15:
+                        _context13.next = 17;
+                        return _node3.default.findByIdAndUpdate(connections[j].subtopicNode, { $pull: { sourceConnections: connections[j]._id } }, { new: true });
+
+                      case 17:
+                        _context13.next = 19;
+                        return _connection7.default.findByIdAndRemove(connections[j]._id);
+
+                      case 19:
+                        j++;
+                        _context13.next = 11;
+                        break;
+
+                      case 22:
+                        i++;
+                        _context13.next = 2;
+                        break;
+
+                      case 25:
+                        if (!(node.subtopicConnections.length > 0)) {
+                          _context13.next = 50;
+                          break;
+                        }
+
+                        i = 0;
+
+                      case 27:
+                        if (!(i < node.subtopicConnections.length)) {
+                          _context13.next = 50;
+                          break;
+                        }
+
+                        _context13.next = 30;
+                        return _connection7.default.findById(node.subtopicConnections[i]);
+
+                      case 30:
+                        _connection5 = _context13.sent;
+                        _context13.next = 33;
+                        return _connection7.default.find({
+                          subtopicNode: _connection5.subtopicNode,
+                          sourceNode: node._id
+                        });
+
+                      case 33:
+                        _connections = _context13.sent;
+
+                        if (!(_connections.length > 1)) {
+                          _context13.next = 47;
+                          break;
+                        }
+
+                        j = 1;
+
+                      case 36:
+                        if (!(j < _connections.length)) {
+                          _context13.next = 47;
+                          break;
+                        }
+
+                        if (!_connections[j]) {
+                          _context13.next = 44;
+                          break;
+                        }
+
+                        _context13.next = 40;
+                        return _node3.default.findByIdAndUpdate(_connections[j].sourceNode, { $pull: { subtopicConnections: _connections[j]._id } }, { new: true });
+
+                      case 40:
+                        _context13.next = 42;
+                        return _node3.default.findByIdAndUpdate(_connections[j].subtopicNode, { $pull: { sourceConnections: _connections[j]._id } }, { new: true });
+
+                      case 42:
+                        _context13.next = 44;
+                        return _connection7.default.findByIdAndRemove(_connections[j]._id);
+
+                      case 44:
+                        j++;
+                        _context13.next = 36;
+                        break;
+
+                      case 47:
+                        i++;
+                        _context13.next = 27;
+                        break;
+
+                      case 50:
+                      case "end":
+                        return _context13.stop();
+                    }
+                  }
+                }, _callee13, _this2);
+              }));
+
+              return function (_x26) {
+                return _ref14.apply(this, arguments);
+              };
+            }());
+
+            console.log("Big success");
+            res.end();
+            _context14.next = 15;
+            break;
+
+          case 9:
+            _context14.prev = 9;
+            _context14.t0 = _context14["catch"](0);
+
+            console.log(_context14.t0);
+            errors = {};
+
+            errors.general = _context14.t0;
+            res.status(500).json(errors);
+
+          case 15:
+          case "end":
+            return _context14.stop();
+        }
+      }
+    }, _callee14, this, [[0, 9]]);
+  }));
+
+  return function removeDuplicateSourcesAndSubtopics(_x24, _x25) {
+    return _ref13.apply(this, arguments);
   };
 }();
 
@@ -7892,26 +8759,26 @@ var removeDuplicateSourcesAndSubtopics = exports.removeDuplicateSourcesAndSubtop
 
 
 var legacyRemoveDuplicateSourcesAndSubtopics = exports.legacyRemoveDuplicateSourcesAndSubtopics = function () {
-  var _ref12 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee13(req, res) {
-    var _this2 = this;
+  var _ref15 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee16(req, res) {
+    var _this3 = this;
 
     var nodes, errors;
-    return _regenerator2.default.wrap(function _callee13$(_context13) {
+    return _regenerator2.default.wrap(function _callee16$(_context16) {
       while (1) {
-        switch (_context13.prev = _context13.next) {
+        switch (_context16.prev = _context16.next) {
           case 0:
-            _context13.prev = 0;
-            _context13.next = 3;
+            _context16.prev = 0;
+            _context16.next = 3;
             return _node3.default.find();
 
           case 3:
-            nodes = _context13.sent;
+            nodes = _context16.sent;
 
             nodes.forEach(function () {
-              var _ref13 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee12(node) {
-                return _regenerator2.default.wrap(function _callee12$(_context12) {
+              var _ref16 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee15(node) {
+                return _regenerator2.default.wrap(function _callee15$(_context15) {
                   while (1) {
-                    switch (_context12.prev = _context12.next) {
+                    switch (_context15.prev = _context15.next) {
                       case 0:
                         node.sources = node.sources.filter(function (elem, index, self) {
                           return index == self.indexOf(elem);
@@ -7919,47 +8786,47 @@ var legacyRemoveDuplicateSourcesAndSubtopics = exports.legacyRemoveDuplicateSour
                         node.subtopics = node.subtopics.filter(function (elem, index, self) {
                           return index == self.indexOf(elem);
                         });
-                        _context12.next = 4;
+                        _context15.next = 4;
                         return node.save();
 
                       case 4:
                       case "end":
-                        return _context12.stop();
+                        return _context15.stop();
                     }
                   }
-                }, _callee12, _this2);
+                }, _callee15, _this3);
               }));
 
-              return function (_x24) {
-                return _ref13.apply(this, arguments);
+              return function (_x29) {
+                return _ref16.apply(this, arguments);
               };
             }());
 
             console.log("Big success");
             res.end();
-            _context13.next = 15;
+            _context16.next = 15;
             break;
 
           case 9:
-            _context13.prev = 9;
-            _context13.t0 = _context13["catch"](0);
+            _context16.prev = 9;
+            _context16.t0 = _context16["catch"](0);
 
-            console.log(_context13.t0);
+            console.log(_context16.t0);
             errors = {};
 
-            errors.general = _context13.t0;
+            errors.general = _context16.t0;
             res.status(500).json(errors);
 
           case 15:
           case "end":
-            return _context13.stop();
+            return _context16.stop();
         }
       }
-    }, _callee13, this, [[0, 9]]);
+    }, _callee16, this, [[0, 9]]);
   }));
 
-  return function legacyRemoveDuplicateSourcesAndSubtopics(_x22, _x23) {
-    return _ref12.apply(this, arguments);
+  return function legacyRemoveDuplicateSourcesAndSubtopics(_x27, _x28) {
+    return _ref15.apply(this, arguments);
   };
 }();
 
@@ -7972,40 +8839,40 @@ var legacyRemoveDuplicateSourcesAndSubtopics = exports.legacyRemoveDuplicateSour
 
 
 var updateNodeConnections = exports.updateNodeConnections = function () {
-  var _ref14 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee17(req, res) {
-    var _this3 = this;
+  var _ref17 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee20(req, res) {
+    var _this4 = this;
 
     var nodes, author, errors;
-    return _regenerator2.default.wrap(function _callee17$(_context17) {
+    return _regenerator2.default.wrap(function _callee20$(_context20) {
       while (1) {
-        switch (_context17.prev = _context17.next) {
+        switch (_context20.prev = _context20.next) {
           case 0:
-            _context17.prev = 0;
-            _context17.next = 3;
+            _context20.prev = 0;
+            _context20.next = 3;
             return _node3.default.find();
 
           case 3:
-            nodes = _context17.sent;
-            _context17.next = 6;
+            nodes = _context20.sent;
+            _context20.next = 6;
             return _user2.default.find({ admin: true });
 
           case 6:
-            author = _context17.sent;
+            author = _context20.sent;
 
             author = author[0];
             nodes.forEach(function () {
-              var _ref15 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee16(node) {
-                return _regenerator2.default.wrap(function _callee16$(_context16) {
+              var _ref18 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee19(node) {
+                return _regenerator2.default.wrap(function _callee19$(_context19) {
                   while (1) {
-                    switch (_context16.prev = _context16.next) {
+                    switch (_context19.prev = _context19.next) {
                       case 0:
                         if (node.sources.length > 0) {
                           node.sources.forEach(function () {
-                            var _ref16 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee14(source) {
+                            var _ref19 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee17(source) {
                               var connection;
-                              return _regenerator2.default.wrap(function _callee14$(_context14) {
+                              return _regenerator2.default.wrap(function _callee17$(_context17) {
                                 while (1) {
-                                  switch (_context14.prev = _context14.next) {
+                                  switch (_context17.prev = _context17.next) {
                                     case 0:
                                       connection = new _connection7.default({
                                         sourceNode: source,
@@ -8014,43 +8881,43 @@ var updateNodeConnections = exports.updateNodeConnections = function () {
                                       });
                                       // Update related node
 
-                                      _context14.next = 3;
+                                      _context17.next = 3;
                                       return _node3.default.findByIdAndUpdate(source, {
                                         $pull: { subtopics: node._id },
                                         $push: { subtopicConnections: connection._id }
                                       }, { new: true });
 
                                     case 3:
-                                      _context14.next = 5;
+                                      _context17.next = 5;
                                       return _node3.default.findByIdAndUpdate(node._id, {
                                         $pull: { sources: source },
                                         $push: { sourceConnections: connection._id }
                                       }, { new: true });
 
                                     case 5:
-                                      _context14.next = 7;
+                                      _context17.next = 7;
                                       return connection.save();
 
                                     case 7:
                                     case "end":
-                                      return _context14.stop();
+                                      return _context17.stop();
                                   }
                                 }
-                              }, _callee14, _this3);
+                              }, _callee17, _this4);
                             }));
 
-                            return function (_x28) {
-                              return _ref16.apply(this, arguments);
+                            return function (_x33) {
+                              return _ref19.apply(this, arguments);
                             };
                           }());
                         }
                         if (node.subtopics.length > 0) {
                           node.subtopics.forEach(function () {
-                            var _ref17 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee15(subtopic) {
+                            var _ref20 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee18(subtopic) {
                               var connection;
-                              return _regenerator2.default.wrap(function _callee15$(_context15) {
+                              return _regenerator2.default.wrap(function _callee18$(_context18) {
                                 while (1) {
-                                  switch (_context15.prev = _context15.next) {
+                                  switch (_context18.prev = _context18.next) {
                                     case 0:
                                       connection = new _connection7.default({
                                         sourceNode: node._id,
@@ -8059,83 +8926,83 @@ var updateNodeConnections = exports.updateNodeConnections = function () {
                                       });
                                       // Update related node
 
-                                      _context15.next = 3;
+                                      _context18.next = 3;
                                       return _node3.default.findByIdAndUpdate(subtopic, {
                                         $pull: { sources: node._id },
                                         $push: { sourceConnections: connection._id }
                                       }, { new: true });
 
                                     case 3:
-                                      _context15.next = 5;
+                                      _context18.next = 5;
                                       return _node3.default.findByIdAndUpdate(node._id, {
                                         $pull: { subtopics: subtopic },
                                         $push: { subtopicConnections: connection._id }
                                       }, { new: true });
 
                                     case 5:
-                                      _context15.next = 7;
+                                      _context18.next = 7;
                                       return connection.save();
 
                                     case 7:
                                     case "end":
-                                      return _context15.stop();
+                                      return _context18.stop();
                                   }
                                 }
-                              }, _callee15, _this3);
+                              }, _callee18, _this4);
                             }));
 
-                            return function (_x29) {
-                              return _ref17.apply(this, arguments);
+                            return function (_x34) {
+                              return _ref20.apply(this, arguments);
                             };
                           }());
                         }
 
                       case 2:
                       case "end":
-                        return _context16.stop();
+                        return _context19.stop();
                     }
                   }
-                }, _callee16, _this3);
+                }, _callee19, _this4);
               }));
 
-              return function (_x27) {
-                return _ref15.apply(this, arguments);
+              return function (_x32) {
+                return _ref18.apply(this, arguments);
               };
             }());
 
             console.log("Large success");
             res.end();
-            _context17.next = 19;
+            _context20.next = 19;
             break;
 
           case 13:
-            _context17.prev = 13;
-            _context17.t0 = _context17["catch"](0);
+            _context20.prev = 13;
+            _context20.t0 = _context20["catch"](0);
 
-            console.log(_context17.t0);
+            console.log(_context20.t0);
             errors = {};
 
-            errors.general = _context17.t0;
+            errors.general = _context20.t0;
             res.status(500).json(errors);
 
           case 19:
           case "end":
-            return _context17.stop();
+            return _context20.stop();
         }
       }
-    }, _callee17, this, [[0, 13]]);
+    }, _callee20, this, [[0, 13]]);
   }));
 
-  return function updateNodeConnections(_x25, _x26) {
-    return _ref14.apply(this, arguments);
+  return function updateNodeConnections(_x30, _x31) {
+    return _ref17.apply(this, arguments);
   };
 }();
 
-var _node2 = __webpack_require__(26);
+var _node2 = __webpack_require__(27);
 
 var _node3 = _interopRequireDefault(_node2);
 
-var _connection6 = __webpack_require__(38);
+var _connection6 = __webpack_require__(39);
 
 var _connection7 = _interopRequireDefault(_connection6);
 
@@ -8147,33 +9014,81 @@ var _universe = __webpack_require__(36);
 
 var _universe2 = _interopRequireDefault(_universe);
 
-var _mongodb = __webpack_require__(131);
+var _multer = __webpack_require__(135);
 
-var _validateNodeInput2 = __webpack_require__(132);
+var _multer2 = _interopRequireDefault(_multer);
+
+var _multerGridfsStorage = __webpack_require__(136);
+
+var _multerGridfsStorage2 = _interopRequireDefault(_multerGridfsStorage);
+
+var _mongodb = __webpack_require__(137);
+
+var _mongodb2 = _interopRequireDefault(_mongodb);
+
+var _validateNodeInput2 = __webpack_require__(138);
 
 var _validateNodeInput3 = _interopRequireDefault(_validateNodeInput2);
 
-var _addSourceConnections = __webpack_require__(133);
+var _keys = __webpack_require__(38);
 
-var _addSubtopicConnections = __webpack_require__(134);
+var _keys2 = _interopRequireDefault(_keys);
+
+var _addSourceConnections = __webpack_require__(139);
+
+var _addSubtopicConnections = __webpack_require__(140);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var storage = new _multerGridfsStorage2.default({
+  url: _keys2.default.mongoURI,
+  file: function file(req, _file) {
+    return {
+      bucketName: "nodeFiles",
+      filename: "nodefile-" + Date.now()
+    };
+  }
+});
+var upload = null;
+storage.on("connection", function (db) {
+  upload = (0, _multer2.default)({
+    storage: storage,
+    fileFilter: function fileFilter(req, file, cb) {
+      if (file.mimetype !== "image/png" && file.mimetype !== "image/jpeg" && file.mimetype !== "image/gif") {
+        return cb(new Error("Only PNG, GIF, and JPEG file types allowed"));
+      }
+      cb(null, true);
+    }
+  }).single("file");
+});
+
 /***/ }),
-/* 131 */
+/* 135 */
+/***/ (function(module, exports) {
+
+module.exports = require("multer");
+
+/***/ }),
+/* 136 */
+/***/ (function(module, exports) {
+
+module.exports = require("multer-gridfs-storage");
+
+/***/ }),
+/* 137 */
 /***/ (function(module, exports) {
 
 module.exports = require("mongodb");
 
 /***/ }),
-/* 132 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var Validator = __webpack_require__(37);
-var _ = __webpack_require__(20);
+var _ = __webpack_require__(17);
 
 module.exports = function validateNodeInput(data) {
   var errors = {};
@@ -8198,7 +9113,7 @@ module.exports = function validateNodeInput(data) {
 };
 
 /***/ }),
-/* 133 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8218,11 +9133,11 @@ var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
 exports.addSourceConnections = addSourceConnections;
 
-var _node = __webpack_require__(26);
+var _node = __webpack_require__(27);
 
 var _node2 = _interopRequireDefault(_node);
 
-var _connection2 = __webpack_require__(38);
+var _connection2 = __webpack_require__(39);
 
 var _connection3 = _interopRequireDefault(_connection2);
 
@@ -8230,7 +9145,7 @@ var _mongoose = __webpack_require__(11);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _assert = __webpack_require__(60);
+var _assert = __webpack_require__(61);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8396,7 +9311,7 @@ function addSourceConnections(node, data) {
 }
 
 /***/ }),
-/* 134 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8416,11 +9331,11 @@ var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
 exports.addSubtopicConnections = addSubtopicConnections;
 
-var _node = __webpack_require__(26);
+var _node = __webpack_require__(27);
 
 var _node2 = _interopRequireDefault(_node);
 
-var _connection2 = __webpack_require__(38);
+var _connection2 = __webpack_require__(39);
 
 var _connection3 = _interopRequireDefault(_connection2);
 
@@ -8428,7 +9343,7 @@ var _mongoose = __webpack_require__(11);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _assert = __webpack_require__(60);
+var _assert = __webpack_require__(61);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8599,7 +9514,7 @@ function addSubtopicConnections(node, data) {
 }
 
 /***/ }),
-/* 135 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8609,9 +9524,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _express = __webpack_require__(18);
+var _express = __webpack_require__(19);
 
-var _universe = __webpack_require__(136);
+var _universe = __webpack_require__(142);
 
 var UniverseController = _interopRequireWildcard(_universe);
 
@@ -8640,7 +9555,7 @@ router.route("/universe/create/public").get(UniverseController.createPublicUnive
 exports.default = router;
 
 /***/ }),
-/* 136 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9060,7 +9975,7 @@ var _universe = __webpack_require__(36);
 
 var _universe2 = _interopRequireDefault(_universe);
 
-var _node = __webpack_require__(26);
+var _node = __webpack_require__(27);
 
 var _node2 = _interopRequireDefault(_node);
 
@@ -9071,7 +9986,7 @@ var _user2 = _interopRequireDefault(_user);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 137 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9102,23 +10017,23 @@ exports.default = function () {
   });
 };
 
-var _post = __webpack_require__(57);
+var _post = __webpack_require__(59);
 
 var _post2 = _interopRequireDefault(_post);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 138 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(__dirname) {
 
-var webpack = __webpack_require__(61);
-var cssnext = __webpack_require__(139);
-var postcssFocus = __webpack_require__(140);
-var postcssReporter = __webpack_require__(141);
+var webpack = __webpack_require__(62);
+var cssnext = __webpack_require__(145);
+var postcssFocus = __webpack_require__(146);
+var postcssReporter = __webpack_require__(147);
 
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
@@ -9198,31 +10113,31 @@ module.exports = {
 /* WEBPACK VAR INJECTION */}.call(exports, ""))
 
 /***/ }),
-/* 139 */
+/* 145 */
 /***/ (function(module, exports) {
 
 module.exports = require("postcss-cssnext");
 
 /***/ }),
-/* 140 */
+/* 146 */
 /***/ (function(module, exports) {
 
 module.exports = require("postcss-focus");
 
 /***/ }),
-/* 141 */
+/* 147 */
 /***/ (function(module, exports) {
 
 module.exports = require("postcss-reporter");
 
 /***/ }),
-/* 142 */
+/* 148 */
 /***/ (function(module, exports) {
 
 module.exports = require("webpack-dev-middleware");
 
 /***/ }),
-/* 143 */
+/* 149 */
 /***/ (function(module, exports) {
 
 module.exports = require("webpack-hot-middleware");
