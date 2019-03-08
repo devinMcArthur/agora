@@ -339,7 +339,7 @@ export async function retrieveNodeFiles(req, res) {
           let finalFile = `data:${docs[0].contentType};base64,${fileData.join(
             ""
           )}`;
-          returnArray.push(finalFile);
+          returnArray.push({ title: filename, content: finalFile });
         }
       }
       res.json(returnArray);

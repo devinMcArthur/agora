@@ -10,6 +10,7 @@ export const GET_ALL_PRIVATE_NODES = "GET_ALL_PRIVATE_NODES";
 export const GET_SOURCES = "GET_SOURCES";
 export const GET_SUBTOPICS = "GET_SUBTOPICS";
 export const NODE_LOADING = "NODE_LOADING";
+export const FILES_LOADING = "FILES_LOADING";
 export const SET_NODE = "SET_NODE";
 export const GET_FILES = "GET_FILES";
 export const CLEAR_NODES = "CLEAR_NODES";
@@ -80,6 +81,7 @@ export const uploadNodeFile = (file, id) => dispatch => {
 
 // Upload image to a node
 export const retrieveNodeFiles = id => dispatch => {
+  dispatch(setFilesLoading());
   return callApi(`node/${id}/retrieve/files`, "get")
     .then(res => dispatch({ type: GET_FILES, payload: res }))
     .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
@@ -178,6 +180,12 @@ export const clearFiles = () => {
 export const setNodeLoading = () => {
   return {
     type: NODE_LOADING
+  };
+};
+
+export const setFilesLoading = () => {
+  return {
+    type: FILES_LOADING
   };
 };
 

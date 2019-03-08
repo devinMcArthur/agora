@@ -127,7 +127,7 @@ module.exports = require("react-router");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.nodeFullClear = exports.setNodeLoading = exports.clearFiles = exports.clearSubtopics = exports.clearSources = exports.clearNode = exports.clearNodes = exports.setNode = exports.updateNodeConnections = exports.clearDuplicateSourceAndSubtopics = exports.legacyClearDuplicateSourceAndSubtopics = exports.getSubtopics = exports.getSources = exports.getAllPrivateNodesForSelect = exports.getAllPublicNodesForSelect = exports.retrieveNodeFiles = exports.uploadNodeFile = exports.deleteNode = exports.getNodeByID = exports.getUniverseRootNodes = exports.editNode = exports.createNode = exports.NODE_FULL_CLEAR = exports.CLEAR_FILES = exports.CLEAR_SUBTOPICS = exports.CLEAR_SOURCES = exports.CLEAR_NODE = exports.CLEAR_NODES = exports.GET_FILES = exports.SET_NODE = exports.NODE_LOADING = exports.GET_SUBTOPICS = exports.GET_SOURCES = exports.GET_ALL_PRIVATE_NODES = exports.GET_ALL_PUBLIC_NODES = exports.GET_NODES = exports.GET_NODE = undefined;
+exports.nodeFullClear = exports.setFilesLoading = exports.setNodeLoading = exports.clearFiles = exports.clearSubtopics = exports.clearSources = exports.clearNode = exports.clearNodes = exports.setNode = exports.updateNodeConnections = exports.clearDuplicateSourceAndSubtopics = exports.legacyClearDuplicateSourceAndSubtopics = exports.getSubtopics = exports.getSources = exports.getAllPrivateNodesForSelect = exports.getAllPublicNodesForSelect = exports.retrieveNodeFiles = exports.uploadNodeFile = exports.deleteNode = exports.getNodeByID = exports.getUniverseRootNodes = exports.editNode = exports.createNode = exports.NODE_FULL_CLEAR = exports.CLEAR_FILES = exports.CLEAR_SUBTOPICS = exports.CLEAR_SOURCES = exports.CLEAR_NODE = exports.CLEAR_NODES = exports.GET_FILES = exports.SET_NODE = exports.FILES_LOADING = exports.NODE_LOADING = exports.GET_SUBTOPICS = exports.GET_SOURCES = exports.GET_ALL_PRIVATE_NODES = exports.GET_ALL_PUBLIC_NODES = exports.GET_NODES = exports.GET_NODE = undefined;
 
 var _apiCaller = __webpack_require__(20);
 
@@ -148,6 +148,7 @@ var GET_ALL_PRIVATE_NODES = exports.GET_ALL_PRIVATE_NODES = "GET_ALL_PRIVATE_NOD
 var GET_SOURCES = exports.GET_SOURCES = "GET_SOURCES";
 var GET_SUBTOPICS = exports.GET_SUBTOPICS = "GET_SUBTOPICS";
 var NODE_LOADING = exports.NODE_LOADING = "NODE_LOADING";
+var FILES_LOADING = exports.FILES_LOADING = "FILES_LOADING";
 var SET_NODE = exports.SET_NODE = "SET_NODE";
 var GET_FILES = exports.GET_FILES = "GET_FILES";
 var CLEAR_NODES = exports.CLEAR_NODES = "CLEAR_NODES";
@@ -237,6 +238,7 @@ var uploadNodeFile = exports.uploadNodeFile = function uploadNodeFile(file, id) 
 // Upload image to a node
 var retrieveNodeFiles = exports.retrieveNodeFiles = function retrieveNodeFiles(id) {
   return function (dispatch) {
+    dispatch(setFilesLoading());
     return (0, _apiCaller2.default)("node/" + id + "/retrieve/files", "get").then(function (res) {
       return dispatch({ type: GET_FILES, payload: res });
     }).catch(function (err) {
@@ -360,6 +362,12 @@ var clearFiles = exports.clearFiles = function clearFiles() {
 var setNodeLoading = exports.setNodeLoading = function setNodeLoading() {
   return {
     type: NODE_LOADING
+  };
+};
+
+var setFilesLoading = exports.setFilesLoading = function setFilesLoading() {
+  return {
+    type: FILES_LOADING
   };
 };
 
@@ -2800,15 +2808,17 @@ var _UniverseActions = __webpack_require__(13);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _ref = (0, _jsx3.default)("p", {}, void 0, "This file is invalid");
+var _ref = (0, _jsx3.default)("br", {});
 
-var _ref2 = (0, _jsx3.default)(_Spinner2.default, {});
+var _ref2 = (0, _jsx3.default)("p", {}, void 0, "This file is invalid");
 
-var _ref3 = (0, _jsx3.default)("br", {});
+var _ref3 = (0, _jsx3.default)(_Spinner2.default, {});
 
-var _ref4 = (0, _jsx3.default)("span", {}, void 0, "This Node has no Home :(");
+var _ref4 = (0, _jsx3.default)(_Spinner2.default, {});
 
-var _ref5 = (0, _jsx3.default)(_Spinner2.default, {});
+var _ref5 = (0, _jsx3.default)("span", {}, void 0, "This Node has no Home :(");
+
+var _ref6 = (0, _jsx3.default)(_Spinner2.default, {});
 
 var Node = function (_Component) {
   (0, _inherits3.default)(Node, _Component);
@@ -2835,6 +2845,7 @@ var Node = function (_Component) {
     _this.toggleEditForm = _this.toggleEditForm.bind(_this);
     _this.toggleNodeForm = _this.toggleNodeForm.bind(_this);
     _this.toggleSubtopics = _this.toggleSubtopics.bind(_this);
+    _this.handleLineOutput = _this.handleLineOutput.bind(_this);
     return _this;
   }
 
@@ -2888,6 +2899,27 @@ var Node = function (_Component) {
   }, {
     key: "componentDidUpdate",
     value: function componentDidUpdate(prevProps) {
+      var _this2 = this;
+
+      console.log("update", this);
+
+      // Handle Node Navigation
+      if (this.state.node !== null && this.props.params.nodeID !== this.state.node._id.toString()) {
+        this.setState({
+          node: null,
+          editFormToggle: false,
+          toggleNodeForm: false,
+          subtopicToggle: false,
+          subtopics: null,
+          sources: null,
+          files: null,
+          universe: null
+        }, function () {
+          _this2.props.nodeFullClear();
+          _this2.props.getNodeByID(_this2.props.params.nodeID);
+        });
+      }
+
       // Handle loaded Universe
       if (this.props.universe.universe !== null && this.state.universe === null) {
         this.setState({ universe: this.props.universe.universe });
@@ -2952,9 +2984,103 @@ var Node = function (_Component) {
       this.setState({ toggleNodeForm: !this.state.toggleNodeForm });
     }
   }, {
+    key: "handleLineOutput",
+    value: function handleLineOutput() {
+      var _this3 = this;
+
+      // render new lines
+      var count = 0,
+          lineArray = [],
+          node = this.state.node;
+
+
+      var imageStyle = {
+        maxHeight: "5em",
+        display: "block",
+        marginLeft: "auto",
+        marginRight: "auto"
+      };
+
+      // Split content into paragraphs
+      node.content.string.split("\n").forEach(function (line) {
+        if (line !== "") {
+          // Find Input Tags "<>"
+          var regex = /<.*?>/g;
+          var match = line.match(regex);
+          if (match) {
+            var i;
+
+            (function () {
+              var rawLine = line;
+              line = [];
+              for (i = 0; i < match.length; i++) {
+                line.push((0, _jsx3.default)("p", {}, void 0, rawLine.substring(0, rawLine.search(match[i]))));
+                if (match[i].includes("Image")) {
+                  if (_this3.state.files) {
+                    match[i].split(" ").forEach(function (section) {
+                      if (section.includes("img=")) {
+                        var quoteRegex = /"(?:[^"\\]|\\.)*"/;
+                        var fileName = section.match(quoteRegex)[0].replace(/"/g, "");
+                        for (var i = 0; i < _this3.state.files.length; i++) {
+                          if (_this3.state.files[i].title === fileName) {
+                            line.push((0, _jsx3.default)("img", {
+                              style: imageStyle,
+                              src: _this3.state.files[i].content,
+                              alt: _this3.state.files[i].title
+                            }));
+                            line.push((0, _jsx3.default)("p", {}, void 0, rawLine.substring(rawLine.search(section) + section.length, rawLine.length)));
+                          }
+                        }
+                      }
+                    });
+                  }
+                } else if (match[i].includes("Node")) {
+                  (function () {
+                    var nodeArray = [];
+                    if (_this3.state.subtopics && _this3.state.sources) {
+                      nodeArray = _this3.state.subtopics.concat(_this3.state.sources);
+                    } else if (_this3.state.subtopics) {
+                      nodeArray = _this3.state.subtopics;
+                    } else if (_this3.state.sources) {
+                      nodeArray = _this3.state.sources;
+                    }
+                    var string = match[i];
+                    match[i].split(" ").forEach(function (section) {
+                      if (section.includes("id=")) {
+                        var quoteRegex = /"(?:[^"\\]|\\.)*"/;
+                        var nodeID = section.match(quoteRegex)[0].replace(/"/g, "");
+                        var text = string.substring(string.search(nodeID) + nodeID.length + 1, string.length).match(quoteRegex).toString().replace(/"/g, "");
+                        for (var i = 0; i < nodeArray.length; i++) {
+                          var _node = nodeArray[i][Object.keys(nodeArray[i])[1]];
+                          if (_node._id.toString() === nodeID) {
+                            line.push((0, _jsx3.default)(_reactRouter.Link, {
+                              to: "/node/" + nodeID
+                            }, void 0, text, " (", _node.title, ")"));
+                            line.push((0, _jsx3.default)("p", {}, void 0, rawLine.substring(rawLine.search(string) + string.length, rawLine.length)));
+                          }
+                        }
+                      }
+                    });
+                  })();
+                }
+              }
+            })();
+          }
+
+          lineArray.push((0, _jsx3.default)("p", {
+            style: { color: "white" }
+          }, "line-" + count, line));
+        } else {
+          lineArray.push(_ref);
+        }
+        count++;
+      });
+      return lineArray;
+    }
+  }, {
     key: "render",
     value: function render() {
-      var _this2 = this;
+      var _this4 = this;
 
       var _state = this.state,
           editFormToggle = _state.editFormToggle,
@@ -2969,23 +3095,30 @@ var Node = function (_Component) {
             nodeForm = void 0,
             subtopicToggleButtonText = void 0;
         var node = this.state.node;
+
         var fileArray = [];
         if (this.state.files && this.state.files.length > 0) {
           for (var i = 0; i < this.state.files.length; i++) {
-            if (this.state.files[i].includes("image")) {
+            if (this.state.files[i].content.includes("image")) {
               fileArray.push((0, _jsx3.default)("img", {
+                alt: this.state.files[i].title,
                 style: { maxWidth: "80%" },
-                src: this.state.files[i]
+                src: this.state.files[i].content
               }));
             } else {
-              fileArray.push(_ref);
+              fileArray.push(_ref2);
             }
           }
+        } else if (this.props.node.filesLoading) {
+          fileArray = _ref3;
         }
 
         if (editFormToggle) {
           editForm = (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(_EditNodeForm2.default, {
             singleNode: node,
+            files: this.state.files,
+            subtopics: this.state.subtopics,
+            sources: this.state.sources,
             "private": !this.props.universe.universe.public
           }));
         } else {
@@ -3010,7 +3143,7 @@ var Node = function (_Component) {
             source = source.source;
             sourceJSX.push((0, _jsx3.default)("span", {}, source._id, (0, _jsx3.default)(_Button2.default, {
               onClick: function onClick() {
-                _this2.props.onNavigation(source._id);
+                _this4.props.onNavigation(source._id);
               }
             }, void 0, "#", source.title), " "));
           });
@@ -3018,7 +3151,7 @@ var Node = function (_Component) {
           if (this.props.universe.universe !== null) {
             sourceJSX.push((0, _jsx3.default)("span", {}, "root-link", (0, _jsx3.default)(_Button2.default, {
               onClick: function onClick() {
-                _this2.props.onNavigation("root-" + _this2.props.universe.universe._id);
+                _this4.props.onNavigation("root-" + _this4.props.universe.universe._id);
               }
             }, void 0, "#root")));
           } else {
@@ -3040,13 +3173,13 @@ var Node = function (_Component) {
             }, subtopic._id, (0, _jsx3.default)("h3", {
               style: { cursor: "pointer" },
               onClick: function onClick() {
-                _this2.props.onNavigation(subtopic._id);
+                _this4.props.onNavigation(subtopic._id);
               }
             }, void 0, subtopic.title), subtopic.content.string === "" ? "No Content" : (0, _jsx3.default)("p", {}, void 0, subtopic.content.string)));
           });
         } else if (this.props.node.loading && this.state.node.subtopicConnections.length > 0) {
           subtopicToggleButtonText = "Subtopics Loading . . .";
-          subtopicJSX = _ref2;
+          subtopicJSX = _ref4;
         } else {
           subtopicToggleButtonText = "Show Subtopics";
           subtopicJSX = "";
@@ -3065,22 +3198,10 @@ var Node = function (_Component) {
           }, void 0, subtopicToggleButtonText));
         }
 
-        var lineArray = void 0,
-            nodeContent = void 0;
+        var nodeContent = void 0;
         if (node.content.string) {
-          // render new lines
-          var count = 0;
-          lineArray = [];
-          node.content.string.split("\n").forEach(function (line) {
-            if (line !== "") {
-              lineArray.push((0, _jsx3.default)("p", {
-                style: { color: "white" }
-              }, "line-" + count, line));
-            } else {
-              lineArray.push(_ref3);
-            }
-            count++;
-          });
+          var lineArray = this.handleLineOutput();
+
           nodeContent = (0, _jsx3.default)(_Paper2.default, {
             style: {
               padding: "0.5em",
@@ -3099,7 +3220,7 @@ var Node = function (_Component) {
             variant: "outlined",
             color: "secondary",
             onClick: function onClick() {
-              if (window.confirm("Are you sure you want to delete this Node?")) _this2.props.deleteNode(node._id);
+              if (window.confirm("Are you sure you want to delete this Node?")) _this4.props.deleteNode(node._id);
             }
           }, void 0, "Delete Node"));
         }
@@ -3121,7 +3242,7 @@ var Node = function (_Component) {
           style: { cursor: "pointer" },
           className: "link-text",
           onClick: function onClick() {
-            _this2.props.onNavigation(node._id);
+            _this4.props.onNavigation(node._id);
           }
         }, void 0, node.title)), (0, _jsx3.default)(_Grid2.default, {
           item: true
@@ -3130,10 +3251,10 @@ var Node = function (_Component) {
         }))), universe ? (0, _jsx3.default)(_Button2.default, {
           variant: "contained",
           onClick: function onClick() {
-            _reactRouter.browserHistory.push("/universe/" + _this2.props.universe.universe._id);
+            _reactRouter.browserHistory.push("/universe/" + _this4.props.universe.universe._id);
           },
           style: { margin: "0.5em 0" }
-        }, void 0, "Universe: ", this.props.universe.universe.title) : _ref4, (0, _jsx3.default)("div", {
+        }, void 0, "Universe: ", this.props.universe.universe.title) : _ref5, (0, _jsx3.default)("div", {
           className: "row"
         }, void 0, (0, _jsx3.default)("div", {
           className: "col"
@@ -3148,7 +3269,7 @@ var Node = function (_Component) {
           onClick: this.toggleNodeForm
         }, void 0, "Add Node"), deleteButton) : "")), nodeForm, editForm, sourceJSX, nodeContent, (0, _jsx3.default)("div", {}, void 0, subtopicJSX), subtopicToggleJSX, fileArray));
       } else {
-        content = _ref5;
+        content = _ref6;
       }
 
       return (0, _jsx3.default)("div", {}, void 0, content);
@@ -4495,7 +4616,8 @@ var initialState = {
   subtopics: null,
   sources: null,
   files: null,
-  loading: false
+  loading: false,
+  filesLoading: false
 };
 
 var NodeReducer = function NodeReducer() {
@@ -4537,12 +4659,17 @@ var NodeReducer = function NodeReducer() {
       return (0, _extends3.default)({}, state, {
         loading: true
       });
+    case _NodeActions.FILES_LOADING:
+      return (0, _extends3.default)({}, state, {
+        filesLoading: true
+      });
     case _NodeActions.SET_NODE:
       return (0, _extends3.default)({}, state, {
         node: action.payload
       });
     case _NodeActions.GET_FILES:
       return (0, _extends3.default)({}, state, {
+        loading: false,
         files: action.payload
       });
     case _NodeActions.CLEAR_NODES:
@@ -5927,13 +6054,11 @@ var _UniverseActions = __webpack_require__(13);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _ref = (0, _jsx3.default)("p", {}, void 0, "This file is invalid");
+var _ref = (0, _jsx3.default)(_Spinner2.default, {});
 
-var _ref2 = (0, _jsx3.default)(_Spinner2.default, {});
+var _ref2 = (0, _jsx3.default)("br", {});
 
-var _ref3 = (0, _jsx3.default)("br", {});
-
-var _ref4 = (0, _jsx3.default)(_Spinner2.default, {});
+var _ref3 = (0, _jsx3.default)(_Spinner2.default, {});
 
 var NodePreview = function (_Component) {
   (0, _inherits3.default)(NodePreview, _Component);
@@ -5952,8 +6077,7 @@ var NodePreview = function (_Component) {
       toggleNodeForm: false,
       subtopicToggle: subtopicToggle,
       subtopics: null,
-      sources: null,
-      files: null
+      sources: null
     };
 
     _this.toggleEditForm = _this.toggleEditForm.bind(_this);
@@ -5969,9 +6093,6 @@ var NodePreview = function (_Component) {
       var node = this.state.node;
 
       if (node) {
-        if (node.files && node.files.length > 0) {
-          this.props.retrieveNodeFiles(node._id);
-        }
         if (node.subtopicConnections && node.subtopicConnections.length > 0) {
           this.props.getSubtopics(node._id);
         }
@@ -6008,11 +6129,6 @@ var NodePreview = function (_Component) {
   }, {
     key: "componentDidUpdate",
     value: function componentDidUpdate(prevProps) {
-      // Put loaded Files into State
-      if (this.state.node && this.state.node.files.length > 0 && this.props.node.files !== null && this.state.files === null) {
-        this.setState({ files: this.props.node.files });
-        this.props.clearFiles();
-      }
       // Grab appropriate subtopics for this node
       if (this.props.node.subtopics !== null && (this.state.subtopics === null || !_lodash2.default.isEqual(this.state.subtopics, this.props.node.subtopics)) && this.state.node !== null && this.state.node._id.toString() === this.props.node.subtopics[0].connection.sourceNode.toString()) {
         this.setState({ subtopics: this.props.node.subtopics });
@@ -6034,9 +6150,6 @@ var NodePreview = function (_Component) {
         }
         if (this.props.node.node.sourceConnections && this.props.node.node.sourceConnections.length > 0) {
           this.props.getSources(this.props.node.node._id);
-        }
-        if (this.props.node.node.files && this.props.node.node.files.length > 0) {
-          this.props.retrieveNodeFiles(this.props.node.node._id);
         }
       }
       // Update subtopicToggle
@@ -6084,19 +6197,6 @@ var NodePreview = function (_Component) {
             nodeForm = void 0,
             subtopicToggleButtonText = void 0;
         var node = this.state.node;
-        var fileArray = [];
-        if (this.state.files && this.state.files.length > 0) {
-          for (var i = 0; i < this.state.files.length; i++) {
-            if (this.state.files[i].includes("image")) {
-              fileArray.push((0, _jsx3.default)("img", {
-                style: { maxWidth: "80%" },
-                src: this.state.files[i]
-              }));
-            } else {
-              fileArray.push(_ref);
-            }
-          }
-        }
 
         if (editFormToggle) {
           editForm = (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(EditNodeForm, {
@@ -6161,7 +6261,7 @@ var NodePreview = function (_Component) {
           });
         } else if (this.props.node.loading && this.state.node.subtopicConnections.length > 0) {
           subtopicToggleButtonText = "Subtopics Loading . . .";
-          subtopicJSX = _ref2;
+          subtopicJSX = _ref;
         } else {
           subtopicToggleButtonText = "Show Subtopics";
           subtopicJSX = "";
@@ -6192,7 +6292,7 @@ var NodePreview = function (_Component) {
                 style: { color: "white" }
               }, "line-" + count, line));
             } else {
-              lineArray.push(_ref3);
+              lineArray.push(_ref2);
             }
             count++;
           });
@@ -6231,9 +6331,9 @@ var NodePreview = function (_Component) {
           item: true
         }, void 0, (0, _jsx3.default)(_ShareButton2.default, {
           link: location.origin + "/node/" + node._id
-        }))), nodeForm, editForm, sourceJSX, nodeContent, (0, _jsx3.default)("div", {}, void 0, subtopicJSX), subtopicToggleJSX, fileArray));
+        }))), nodeForm, editForm, sourceJSX, nodeContent, (0, _jsx3.default)("div", {}, void 0, subtopicJSX), subtopicToggleJSX));
       } else {
-        content = _ref4;
+        content = _ref3;
       }
 
       return (0, _jsx3.default)("div", {}, void 0, content);
@@ -6276,9 +6376,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, {
   clearSubtopics: _NodeActions.clearSubtopics,
   clearNodes: _NodeActions.clearNodes,
   clearNode: _NodeActions.clearNode,
-  deleteNode: _NodeActions.deleteNode,
-  retrieveNodeFiles: _NodeActions.retrieveNodeFiles,
-  clearFiles: _NodeActions.clearFiles
+  deleteNode: _NodeActions.deleteNode
 })(NodePreview);
 
 /***/ }),
@@ -6366,23 +6464,25 @@ var _Button2 = _interopRequireDefault(_Button);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _ref = (0, _jsx3.default)("h4", {}, void 0, "Edit this Node");
+var _ref = (0, _jsx3.default)("p", {}, void 0, "No Images have been added");
 
-var _ref2 = (0, _jsx3.default)("br", {});
+var _ref2 = (0, _jsx3.default)("h4", {}, void 0, "Edit this Node");
 
-var _ref3 = (0, _jsx3.default)(_Button2.default, {
+var _ref3 = (0, _jsx3.default)("br", {});
+
+var _ref4 = (0, _jsx3.default)(_Button2.default, {
   type: "submit",
   color: "primary"
 }, void 0, "Submit");
 
-var _ref4 = (0, _jsx3.default)("br", {});
+var _ref5 = (0, _jsx3.default)("br", {});
 
-var _ref5 = (0, _jsx3.default)(_Button2.default, {
+var _ref6 = (0, _jsx3.default)(_Button2.default, {
   type: "submit",
   color: "primary"
 }, void 0, "Submit");
 
-var _ref6 = (0, _jsx3.default)(_Spinner2.default, {});
+var _ref7 = (0, _jsx3.default)(_Spinner2.default, {});
 
 var EditNodeForm = function (_Component) {
   (0, _inherits3.default)(EditNodeForm, _Component);
@@ -6392,18 +6492,37 @@ var EditNodeForm = function (_Component) {
 
     var _this = (0, _possibleConstructorReturn3.default)(this, (EditNodeForm.__proto__ || Object.getPrototypeOf(EditNodeForm)).call(this, props));
 
+    var sourceObjects = null,
+        subtopicObjects = null;
+    if (_this.props.sources) sourceObjects = _this.props.sources;
+    if (_this.props.subtopics) subtopicObjects = _this.props.subtopics;
+
     _this.state = {
       node: _this.props.singleNode,
       title: _this.props.singleNode.title,
       content: _this.props.singleNode.content.string,
       sources: null,
       subtopics: null,
-      sourceObjects: null,
-      subtopicObjects: null,
+      sourceObjects: sourceObjects,
+      subtopicObjects: subtopicObjects,
       sourceOptions: [],
       subtopicOptions: [],
       file: null,
       imageTitle: "",
+      inputMenuToggle: false,
+      inputType: null,
+      variableMenuToggle: false,
+      variableSelected: null,
+      cursorLocation: null,
+      cursorWithinInput: false,
+      inputMenuArray: [{
+        title: "Image",
+        variables: ["name"]
+      }, {
+        title: "Node",
+        variables: ["id", "text"]
+      }],
+      inputLocations: null,
       errors: {}
     };
 
@@ -6415,32 +6534,37 @@ var EditNodeForm = function (_Component) {
     _this.createDefaultSourceConnections = _this.createDefaultSourceConnections.bind(_this);
     _this.fileChosen = _this.fileChosen.bind(_this);
     _this.uploadImage = _this.uploadImage.bind(_this);
+    _this.contentUpdate = _this.contentUpdate.bind(_this);
+    _this.contentKeyDown = _this.contentKeyDown.bind(_this);
+    _this.contentClick = _this.contentClick.bind(_this);
+    _this.inputTypeSelection = _this.inputTypeSelection.bind(_this);
+    _this.handleContentNavigation = _this.handleContentNavigation.bind(_this);
+    _this.findInputLocations = _this.findInputLocations.bind(_this);
+    _this.checkCursorLocation = _this.checkCursorLocation.bind(_this);
+    _this.imageSelection = _this.imageSelection.bind(_this);
+    _this.nodeSelection = _this.nodeSelection.bind(_this);
     return _this;
   }
 
   (0, _createClass3.default)(EditNodeForm, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      // See if you already have all Public nodes
       if (this.props.node.formNodes === null && !this.props.node.loading) {
         if (this.props.private) {
+          // Get all Nodes for this private universe
           this.props.getAllPrivateNodesForSelect(this.props.universe.universe._id);
         } else {
           this.props.getAllPublicNodesForSelect();
         }
-        if (this.state.node.sourceConnections.length > 0) {
-          this.props.getSources(this.state.node._id);
-        }
-        if (this.state.node.subtopicConnections.length > 0) {
-          this.props.getSubtopics(this.state.node._id);
-        }
-      } else if (this.props.node.formNodes !== null) {
-        if (this.state.node.sourceConnections.length > 0) {
-          this.props.getSources(this.state.node._id);
-        }
-        if (this.state.node.subtopicConnections.length > 0) {
-          this.props.getSubtopics(this.state.node._id);
-        }
       }
+      if (this.state.node.sourceConnections.length > 0 && this.state.sourceObjects === null) {
+        this.props.getSources(this.state.node._id);
+      }
+      if (this.state.node.subtopicConnections.length > 0 && this.state.subtopicObjects === null) {
+        this.props.getSubtopics(this.state.node._id);
+      }
+      this.findInputLocations();
     }
   }, {
     key: "componentDidUpdate",
@@ -6456,8 +6580,11 @@ var EditNodeForm = function (_Component) {
         this.setState({ subtopics: subtopics, subtopicObjects: this.props.node.subtopics }, function () {
           _this2.createDefaultSubtopicConnections();
         });
-        this.props.clearSubtopics();
+        // this.props.clearSubtopics();
+      } else if (this.state.subtopicObjects !== null && this.state.subtopicObjects.length > 0 && this.props.node.formNodes !== null && this.state.subtopicOptions.length === 0) {
+        this.createDefaultSubtopicConnections();
       }
+
       if (this.props.node.sources !== null && this.state.sources === null && this.props.node.formNodes !== null) {
         var sources = [];
         this.props.node.sources.forEach(function (sourceObject) {
@@ -6467,6 +6594,8 @@ var EditNodeForm = function (_Component) {
           _this2.createDefaultSourceConnections();
         });
         this.props.clearSources();
+      } else if (this.state.sourceObjects !== null && this.state.sourceObjects.length > 0 && this.props.node.formNodes !== null && this.state.sourceOptions.length === 0) {
+        this.createDefaultSourceConnections();
       }
     }
   }, {
@@ -6476,6 +6605,7 @@ var EditNodeForm = function (_Component) {
 
       var subtopicOptions = this.state.subtopicOptions;
 
+      console.log("hi", this.props.node.formNodes);
       for (var i in this.props.node.formNodes) {
         // Find existing subtopic connections
         if (this.state.subtopicObjects) {
@@ -6525,6 +6655,169 @@ var EditNodeForm = function (_Component) {
     key: "onChange",
     value: function onChange(e) {
       this.setState((0, _defineProperty3.default)({}, e.target.name, e.target.value));
+    }
+  }, {
+    key: "contentUpdate",
+    value: function contentUpdate(e) {
+      var _this5 = this;
+
+      this.setState({
+        content: e.target.value,
+        cursorLocation: e.target.selectionStart - 1
+      }, function () {
+        _this5.handleContentNavigation();
+        _this5.findInputLocations();
+      });
+    }
+  }, {
+    key: "contentKeyDown",
+    value: function contentKeyDown(e) {
+      var _this6 = this;
+
+      // Appropriate cursor position to have the character left of the cursor
+      this.setState({ cursorLocation: e.target.selectionStart }, function () {
+        return _this6.handleContentNavigation();
+      });
+    }
+  }, {
+    key: "contentClick",
+    value: function contentClick(e) {
+      var _this7 = this;
+
+      // Appropriate cursor position to have the character left of the cursor
+      this.setState({ cursorLocation: e.target.selectionStart - 1 }, function () {
+        return _this7.handleContentNavigation();
+      });
+    }
+  }, {
+    key: "handleContentNavigation",
+    value: function handleContentNavigation() {
+      var _state = this.state,
+          cursorLocation = _state.cursorLocation,
+          content = _state.content;
+
+      // See if character to the left of cursor is "<"
+
+      if (content[cursorLocation] === "<") {
+        this.setState({
+          inputMenuToggle: true,
+          cursorLocation: cursorLocation
+        });
+      } else {
+        this.setState({
+          inputMenuToggle: false,
+          cursorLocation: cursorLocation
+        });
+      }
+
+      // See if cursor is between "<" and ">"
+      if (this.state.inputLocations === null) {
+        this.findInputLocations();
+        this.checkCursorLocation();
+      } else {
+        this.checkCursorLocation();
+      }
+    }
+  }, {
+    key: "inputTypeSelection",
+    value: function inputTypeSelection(type) {
+      var _this8 = this;
+
+      var value = this.state.content,
+          content = "";
+      if (type === "Image") {
+        content = value.substring(0, this.state.cursorLocation + 1) + "Image img=\"\">" + value.substring(this.state.cursorLocation + 13, value.length);
+      } else if (type === "Node") {
+        content = value.substring(0, this.state.cursorLocation + 1) + "Node id=\"\" text=\"\">" + value.substring(this.state.cursorLocation + 19, value.length);
+      }
+      this.setState({ content: content }, function () {
+        _this8.findInputLocations();
+      });
+    }
+  }, {
+    key: "imageSelection",
+    value: function imageSelection(fileName) {
+      var _this9 = this;
+
+      var value = this.state.content;
+      this.setState({
+        content: "" + value.substring(0, this.state.cursorLocation + 1) + fileName + value.substring(this.state.cursorLocation + 1, value.length)
+      }, function () {
+        _this9.findInputLocations();
+      });
+    }
+  }, {
+    key: "nodeSelection",
+    value: function nodeSelection(id) {
+      var _this10 = this;
+
+      var value = this.state.content;
+      this.setState({
+        content: "" + value.substring(0, this.state.cursorLocation + 1) + id + value.substring(this.state.cursorLocation + 1, value.length)
+      }, function () {
+        _this10.findInputLocations();
+      });
+    }
+  }, {
+    key: "checkCursorLocation",
+    value: function checkCursorLocation() {
+      var _state2 = this.state,
+          cursorLocation = _state2.cursorLocation,
+          inputLocations = _state2.inputLocations,
+          content = _state2.content;
+
+      if (inputLocations) {
+        var toggleFlag = false,
+            inputType = void 0;
+        inputLocations.forEach(function (location) {
+          // See if cursor is within "<" and ">"
+          if (cursorLocation >= location.startIndex && cursorLocation < location.endIndex - 1) {
+            if (content[cursorLocation] === '"' && content[cursorLocation + 1] === '"') {
+              if (location.content.split(" ")[0].includes("Image")) {
+                inputType = "image";
+                toggleFlag = true;
+              } else if (location.content.split(" ")[0].includes("Node")) {
+                if (location.content.includes("id")) {
+                  if (cursorLocation === location.startIndex + location.content.search("id") + 3) {
+                    inputType = "node";
+                    toggleFlag = true;
+                  }
+                }
+              }
+            }
+          }
+        });
+        this.setState({
+          variableMenuToggle: toggleFlag,
+          inputType: inputType
+        });
+      }
+    }
+  }, {
+    key: "findInputLocations",
+    value: function findInputLocations() {
+      var content = this.state.content,
+          regex = /<.*?>/g;
+
+      var newLocations = [],
+          start = 0,
+          end = content.length,
+          matches = void 0;
+      matches = content.match(regex);
+      var searchedIndex = 0,
+          result = void 0;
+      if (matches) {
+        matches.forEach(function (match) {
+          result = content.substring(start + searchedIndex, end).search(match);
+          newLocations.push({
+            startIndex: result + searchedIndex,
+            endIndex: result + searchedIndex + match.length,
+            content: content.substring(result + searchedIndex, result + searchedIndex + match.length)
+          });
+          searchedIndex = result + 1;
+        });
+      }
+      this.setState({ inputLocations: newLocations });
     }
   }, {
     key: "onSourceSelect",
@@ -6583,19 +6876,84 @@ var EditNodeForm = function (_Component) {
   }, {
     key: "render",
     value: function render() {
+      var _this11 = this;
+
       console.log(this.state);
-      console.log(this.state.node.subtopicConnections.length);
-      console.log(this.state.node.subtopicConnections && this.state.node.subtopicConnections.length > 0 && this.state.subtopicOptions.length > 0 || this.state.node.subtopicConnections.length === 0);
+      console.log(this.props.files);
       var content = void 0,
-          errors = this.state.errors;
+          _state3 = this.state,
+          errors = _state3.errors,
+          inputMenuToggle = _state3.inputMenuToggle,
+          inputMenuArray = _state3.inputMenuArray,
+          variableMenuToggle = _state3.variableMenuToggle,
+          variableSelected = _state3.variableSelected,
+          inputType = _state3.inputType;
 
       if (this.state.node !== null && this.props.node.formNodes !== null && (this.state.node.sourceConnections && this.state.node.sourceConnections.length > 0 && this.state.sourceOptions.length > 0 || this.state.node.sourceConnections.length === 0) && (this.state.node.subtopicConnections && this.state.node.subtopicConnections.length > 0 && this.state.subtopicOptions.length > 0 || this.state.node.subtopicConnections.length === 0)) {
-        var _state = this.state,
-            subtopicOptions = _state.subtopicOptions,
-            sourceOptions = _state.sourceOptions;
+        var _state4 = this.state,
+            subtopicOptions = _state4.subtopicOptions,
+            sourceOptions = _state4.sourceOptions;
 
 
-        content = (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(_Paper2.default, {}, void 0, _ref, (0, _jsx3.default)("form", {
+        var inputMenuJSX = [];
+        if (inputMenuToggle) {
+          inputMenuArray.forEach(function (inputType) {
+            inputMenuJSX.push((0, _jsx3.default)(_Paper2.default, {
+              onClick: function onClick() {
+                _this11.inputTypeSelection(inputType.title);
+              }
+            }, void 0, (0, _jsx3.default)("h4", {}, void 0, inputType.title)));
+          });
+        }
+
+        var variableMenuJSX = [];
+        if (variableMenuToggle) {
+          if (this.state.inputType === "image") {
+            if (this.props.files) {
+              var _loop = function _loop(_i) {
+                variableMenuJSX.push((0, _jsx3.default)(_Paper2.default, {
+                  onClick: function onClick() {
+                    _this11.imageSelection(_this11.props.files[_i].title);
+                  }
+                }, void 0, (0, _jsx3.default)("img", {
+                  src: _this11.props.files[_i].content,
+                  alt: _this11.props.files[_i].title,
+                  style: { maxHeight: "2em" }
+                })));
+              };
+
+              for (var _i = 0; _i < this.props.files.length; _i++) {
+                _loop(_i);
+              }
+            } else {
+              variableMenuJSX.push(_ref);
+            }
+          } else if (this.state.inputType === "node") {
+            var nodeArray = [];
+            if (this.state.sourceObjects && this.state.subtopicObjects) {
+              nodeArray = this.state.sourceObjects.concat(this.state.subtopicObjects);
+            } else if (this.state.sourceObjects) {
+              nodeArray = this.state.sourceObjects;
+            } else if (this.state.subtopicObjects) {
+              nodeArray = this.state.subtopicObjects;
+            }
+
+            var _loop2 = function _loop2() {
+              var node = nodeArray[i][Object.keys(nodeArray[i])[1]];
+              variableMenuJSX.push((0, _jsx3.default)(_Paper2.default, {
+                onClick: function onClick() {
+                  _this11.nodeSelection(node._id);
+                }
+              }, void 0, (0, _jsx3.default)("p", {}, void 0, node.title)));
+            };
+
+            for (var i = 0; i < nodeArray.length; i++) {
+              _loop2();
+            }
+          }
+        }
+
+        content = (0, _jsx3.default)("div", {}, void 0, (0, _jsx3.default)(_Paper2.default, {}, void 0, _ref2, (0, _jsx3.default)("form", {
           onSubmit: this.onSubmit
         }, void 0, (0, _jsx3.default)(_TextField2.default, {
           id: "title",
@@ -6605,17 +6963,20 @@ var EditNodeForm = function (_Component) {
           value: this.state.title,
           margin: "normal",
           variant: "outlined"
-        }), _ref2, (0, _jsx3.default)(_TextField2.default, {
+        }), _ref3, _react2.default.createElement(_TextField2.default, {
           id: "content",
           label: "Description of Idea",
           name: "content",
-          onChange: this.onChange,
+          onChange: this.contentUpdate,
+          onKeyDown: this.contentKeyDown,
+          onClick: this.contentClick,
+          ref: "content",
           value: this.state.content,
           margin: "normal",
           variant: "outlined",
           fullWidth: true,
           multiline: true
-        }), (0, _jsx3.default)(_SelectMultiple2.default, {
+        }), inputMenuJSX, variableMenuJSX, (0, _jsx3.default)(_SelectMultiple2.default, {
           placeholder: "Select sources for this subject",
           onChange: this.onSourceSelect,
           options: this.props.node.formNodes,
@@ -6625,15 +6986,15 @@ var EditNodeForm = function (_Component) {
           onChange: this.onSubtopicSelect,
           options: this.props.node.formNodes,
           defaultValue: subtopicOptions
-        }), _ref3), _ref4, (0, _jsx3.default)("form", {
+        }), _ref4), _ref5, (0, _jsx3.default)("form", {
           onSubmit: this.uploadImage
         }, void 0, (0, _jsx3.default)("input", {
           type: "file",
           name: "file",
           onChange: this.fileChosen
-        }), errors.file ? errors.file : "", _ref5)));
+        }), errors.file ? errors.file : "", _ref6)));
       } else {
-        content = _ref6;
+        content = _ref7;
       }
 
       return (0, _jsx3.default)("div", {}, void 0, content);
@@ -8116,7 +8477,7 @@ var retrieveNodeFiles = exports.retrieveNodeFiles = function () {
             }
             finalFile = "data:" + docs[0].contentType + ";base64," + fileData.join("");
 
-            returnArray.push(finalFile);
+            returnArray.push({ title: filename, content: finalFile });
 
           case 39:
             i++;

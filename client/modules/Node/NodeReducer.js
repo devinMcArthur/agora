@@ -6,6 +6,7 @@ import {
   GET_SOURCES,
   GET_SUBTOPICS,
   NODE_LOADING,
+  FILES_LOADING,
   SET_NODE,
   GET_FILES,
   CLEAR_NODES,
@@ -24,7 +25,8 @@ const initialState = {
   subtopics: null,
   sources: null,
   files: null,
-  loading: false
+  loading: false,
+  filesLoading: false
 };
 
 const NodeReducer = (state = initialState, action) => {
@@ -70,6 +72,11 @@ const NodeReducer = (state = initialState, action) => {
         ...state,
         loading: true
       };
+    case FILES_LOADING:
+      return {
+        ...state,
+        filesLoading: true
+      };
     case SET_NODE:
       return {
         ...state,
@@ -78,6 +85,7 @@ const NodeReducer = (state = initialState, action) => {
     case GET_FILES:
       return {
         ...state,
+        loading: false,
         files: action.payload
       };
     case CLEAR_NODES:

@@ -25,18 +25,40 @@ class EditNodeForm extends Component {
   constructor(props) {
     super(props);
 
+    let sourceObjects = null,
+      subtopicObjects = null;
+    if (this.props.sources) sourceObjects = this.props.sources;
+    if (this.props.subtopics) subtopicObjects = this.props.subtopics;
+
     this.state = {
       node: this.props.singleNode,
       title: this.props.singleNode.title,
       content: this.props.singleNode.content.string,
       sources: null,
       subtopics: null,
-      sourceObjects: null,
-      subtopicObjects: null,
+      sourceObjects,
+      subtopicObjects,
       sourceOptions: [],
       subtopicOptions: [],
       file: null,
       imageTitle: "",
+      inputMenuToggle: false,
+      inputType: null,
+      variableMenuToggle: false,
+      variableSelected: null,
+      cursorLocation: null,
+      cursorWithinInput: false,
+      inputMenuArray: [
+        {
+          title: "Image",
+          variables: ["name"]
+        },
+        {
+          title: "Node",
+          variables: ["id", "text"]
+        }
+      ],
+      inputLocations: null,
       errors: {}
     };
 
@@ -52,31 +74,42 @@ class EditNodeForm extends Component {
     );
     this.fileChosen = this.fileChosen.bind(this);
     this.uploadImage = this.uploadImage.bind(this);
+    this.contentUpdate = this.contentUpdate.bind(this);
+    this.contentKeyDown = this.contentKeyDown.bind(this);
+    this.contentClick = this.contentClick.bind(this);
+    this.inputTypeSelection = this.inputTypeSelection.bind(this);
+    this.handleContentNavigation = this.handleContentNavigation.bind(this);
+    this.findInputLocations = this.findInputLocations.bind(this);
+    this.checkCursorLocation = this.checkCursorLocation.bind(this);
+    this.imageSelection = this.imageSelection.bind(this);
+    this.nodeSelection = this.nodeSelection.bind(this);
   }
 
   componentDidMount() {
+    // See if you already have all Public nodes
     if (this.props.node.formNodes === null && !this.props.node.loading) {
       if (this.props.private) {
+        // Get all Nodes for this private universe
         this.props.getAllPrivateNodesForSelect(
           this.props.universe.universe._id
         );
       } else {
         this.props.getAllPublicNodesForSelect();
       }
-      if (this.state.node.sourceConnections.length > 0) {
-        this.props.getSources(this.state.node._id);
-      }
-      if (this.state.node.subtopicConnections.length > 0) {
-        this.props.getSubtopics(this.state.node._id);
-      }
-    } else if (this.props.node.formNodes !== null) {
-      if (this.state.node.sourceConnections.length > 0) {
-        this.props.getSources(this.state.node._id);
-      }
-      if (this.state.node.subtopicConnections.length > 0) {
-        this.props.getSubtopics(this.state.node._id);
-      }
     }
+    if (
+      this.state.node.sourceConnections.length > 0 &&
+      this.state.sourceObjects === null
+    ) {
+      this.props.getSources(this.state.node._id);
+    }
+    if (
+      this.state.node.subtopicConnections.length > 0 &&
+      this.state.subtopicObjects === null
+    ) {
+      this.props.getSubtopics(this.state.node._id);
+    }
+    this.findInputLocations();
   }
 
   componentDidUpdate() {
@@ -96,8 +129,16 @@ class EditNodeForm extends Component {
           this.createDefaultSubtopicConnections();
         }
       );
-      this.props.clearSubtopics();
+      // this.props.clearSubtopics();
+    } else if (
+      this.state.subtopicObjects !== null &&
+      this.state.subtopicObjects.length > 0 &&
+      this.props.node.formNodes !== null &&
+      this.state.subtopicOptions.length === 0
+    ) {
+      this.createDefaultSubtopicConnections();
     }
+
     if (
       this.props.node.sources !== null &&
       this.state.sources === null &&
@@ -111,11 +152,19 @@ class EditNodeForm extends Component {
         this.createDefaultSourceConnections();
       });
       this.props.clearSources();
+    } else if (
+      this.state.sourceObjects !== null &&
+      this.state.sourceObjects.length > 0 &&
+      this.props.node.formNodes !== null &&
+      this.state.sourceOptions.length === 0
+    ) {
+      this.createDefaultSourceConnections();
     }
   }
 
   createDefaultSubtopicConnections() {
     let { subtopicOptions } = this.state;
+    console.log("hi", this.props.node.formNodes);
     for (var i in this.props.node.formNodes) {
       // Find existing subtopic connections
       if (this.state.subtopicObjects) {
@@ -165,6 +214,182 @@ class EditNodeForm extends Component {
 
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
+  }
+
+  contentUpdate(e) {
+    this.setState(
+      {
+        content: e.target.value,
+        cursorLocation: e.target.selectionStart - 1
+      },
+      () => {
+        this.handleContentNavigation();
+        this.findInputLocations();
+      }
+    );
+  }
+
+  contentKeyDown(e) {
+    // Appropriate cursor position to have the character left of the cursor
+    this.setState({ cursorLocation: e.target.selectionStart }, () =>
+      this.handleContentNavigation()
+    );
+  }
+
+  contentClick(e) {
+    // Appropriate cursor position to have the character left of the cursor
+    this.setState({ cursorLocation: e.target.selectionStart - 1 }, () =>
+      this.handleContentNavigation()
+    );
+  }
+
+  handleContentNavigation() {
+    let { cursorLocation, content } = this.state;
+
+    // See if character to the left of cursor is "<"
+    if (content[cursorLocation] === "<") {
+      this.setState({
+        inputMenuToggle: true,
+        cursorLocation: cursorLocation
+      });
+    } else {
+      this.setState({
+        inputMenuToggle: false,
+        cursorLocation: cursorLocation
+      });
+    }
+
+    // See if cursor is between "<" and ">"
+    if (this.state.inputLocations === null) {
+      this.findInputLocations();
+      this.checkCursorLocation();
+    } else {
+      this.checkCursorLocation();
+    }
+  }
+
+  inputTypeSelection(type) {
+    let value = this.state.content,
+      content = "";
+    if (type === "Image") {
+      content = `${value.substring(
+        0,
+        this.state.cursorLocation + 1
+      )}Image img="">${value.substring(
+        this.state.cursorLocation + 13,
+        value.length
+      )}`;
+    } else if (type === "Node") {
+      content = `${value.substring(
+        0,
+        this.state.cursorLocation + 1
+      )}Node id="" text="">${value.substring(
+        this.state.cursorLocation + 19,
+        value.length
+      )}`;
+    }
+    this.setState({ content }, () => {
+      this.findInputLocations();
+    });
+  }
+
+  imageSelection(fileName) {
+    let value = this.state.content;
+    this.setState(
+      {
+        content: `${value.substring(
+          0,
+          this.state.cursorLocation + 1
+        )}${fileName}${value.substring(
+          this.state.cursorLocation + 1,
+          value.length
+        )}`
+      },
+      () => {
+        this.findInputLocations();
+      }
+    );
+  }
+
+  nodeSelection(id) {
+    let value = this.state.content;
+    this.setState(
+      {
+        content: `${value.substring(
+          0,
+          this.state.cursorLocation + 1
+        )}${id}${value.substring(this.state.cursorLocation + 1, value.length)}`
+      },
+      () => {
+        this.findInputLocations();
+      }
+    );
+  }
+
+  checkCursorLocation() {
+    const { cursorLocation, inputLocations, content } = this.state;
+    if (inputLocations) {
+      let toggleFlag = false,
+        inputType;
+      inputLocations.forEach(location => {
+        // See if cursor is within "<" and ">"
+        if (
+          cursorLocation >= location.startIndex &&
+          cursorLocation < location.endIndex - 1
+        ) {
+          if (
+            content[cursorLocation] === '"' &&
+            content[cursorLocation + 1] === '"'
+          ) {
+            if (location.content.split(" ")[0].includes("Image")) {
+              inputType = "image";
+              toggleFlag = true;
+            } else if (location.content.split(" ")[0].includes("Node")) {
+              if (location.content.includes("id")) {
+                if (
+                  cursorLocation ===
+                  location.startIndex + location.content.search("id") + 3
+                ) {
+                  inputType = "node";
+                  toggleFlag = true;
+                }
+              }
+            }
+          }
+        }
+      });
+      this.setState({
+        variableMenuToggle: toggleFlag,
+        inputType
+      });
+    }
+  }
+
+  findInputLocations() {
+    const { content } = this.state,
+      regex = /<.*?>/g;
+    let newLocations = [],
+      start = 0,
+      end = content.length,
+      matches;
+    matches = content.match(regex);
+    let searchedIndex = 0,
+      result;
+    if (matches) {
+      matches.forEach(match => {
+        result = content.substring(start + searchedIndex, end).search(match);
+        newLocations.push({
+          startIndex: result + searchedIndex,
+          endIndex: result + searchedIndex + match.length,
+          content: content.substring(
+            result + searchedIndex,
+            result + searchedIndex + match.length
+          )
+        });
+        searchedIndex = result + 1;
+      });
+    }
+    this.setState({ inputLocations: newLocations });
   }
 
   onSourceSelect(selection) {
@@ -225,15 +450,16 @@ class EditNodeForm extends Component {
 
   render() {
     console.log(this.state);
-    console.log(this.state.node.subtopicConnections.length);
-    console.log(
-      (this.state.node.subtopicConnections &&
-        this.state.node.subtopicConnections.length > 0 &&
-        this.state.subtopicOptions.length > 0) ||
-        this.state.node.subtopicConnections.length === 0
-    );
+    console.log(this.props.files);
     let content,
-      { errors } = this.state;
+      {
+        errors,
+        inputMenuToggle,
+        inputMenuArray,
+        variableMenuToggle,
+        variableSelected,
+        inputType
+      } = this.state;
     if (
       this.state.node !== null &&
       this.props.node.formNodes !== null &&
@@ -247,6 +473,69 @@ class EditNodeForm extends Component {
         this.state.node.subtopicConnections.length === 0)
     ) {
       const { subtopicOptions, sourceOptions } = this.state;
+
+      let inputMenuJSX = [];
+      if (inputMenuToggle) {
+        inputMenuArray.forEach(inputType => {
+          inputMenuJSX.push(
+            <Paper
+              onClick={() => {
+                this.inputTypeSelection(inputType.title);
+              }}
+            >
+              <h4>{inputType.title}</h4>
+            </Paper>
+          );
+        });
+      }
+
+      let variableMenuJSX = [];
+      if (variableMenuToggle) {
+        if (this.state.inputType === "image") {
+          if (this.props.files) {
+            for (let i = 0; i < this.props.files.length; i++) {
+              variableMenuJSX.push(
+                <Paper
+                  onClick={() => {
+                    this.imageSelection(this.props.files[i].title);
+                  }}
+                >
+                  <img
+                    src={this.props.files[i].content}
+                    alt={this.props.files[i].title}
+                    style={{ maxHeight: "2em" }}
+                  />
+                </Paper>
+              );
+            }
+          } else {
+            variableMenuJSX.push(<p>No Images have been added</p>);
+          }
+        } else if (this.state.inputType === "node") {
+          let nodeArray = [];
+          if (this.state.sourceObjects && this.state.subtopicObjects) {
+            nodeArray = this.state.sourceObjects.concat(
+              this.state.subtopicObjects
+            );
+          } else if (this.state.sourceObjects) {
+            nodeArray = this.state.sourceObjects;
+          } else if (this.state.subtopicObjects) {
+            nodeArray = this.state.subtopicObjects;
+          }
+          for (var i = 0; i < nodeArray.length; i++) {
+            let node = nodeArray[i][Object.keys(nodeArray[i])[1]];
+            variableMenuJSX.push(
+              <Paper
+                onClick={() => {
+                  this.nodeSelection(node._id);
+                }}
+              >
+                <p>{node.title}</p>
+              </Paper>
+            );
+          }
+        }
+      }
 
       content = (
         <div>
@@ -267,13 +556,18 @@ class EditNodeForm extends Component {
                 id="content"
                 label="Description of Idea"
                 name="content"
-                onChange={this.onChange}
+                onChange={this.contentUpdate}
+                onKeyDown={this.contentKeyDown}
+                onClick={this.contentClick}
+                ref="content"
                 value={this.state.content}
                 margin="normal"
                 variant="outlined"
                 fullWidth
                 multiline
               />
+              {inputMenuJSX}
+              {variableMenuJSX}
               <SelectMultiple
                 placeholder="Select sources for this subject"
                 onChange={this.onSourceSelect}
@@ -332,7 +626,10 @@ EditNodeForm.defaultProps = {
 EditNodeForm.propTypes = {
   auth: PropTypes.object.isRequired,
   singleNode: PropTypes.object.isRequired,
-  private: PropTypes.bool
+  subtopics: PropTypes.array,
+  sources: PropTypes.array,
+  private: PropTypes.bool,
+  files: PropTypes.array
 };
 
 export default connect(

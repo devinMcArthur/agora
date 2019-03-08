@@ -53,6 +53,7 @@ class Node extends Component {
     this.toggleEditForm = this.toggleEditForm.bind(this);
     this.toggleNodeForm = this.toggleNodeForm.bind(this);
     this.toggleSubtopics = this.toggleSubtopics.bind(this);
+    this.handleLineOutput = this.handleLineOutput.bind(this);
   }
 
   componentDidMount() {
@@ -101,6 +102,31 @@ class Node extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    console.log("update", this);
+
+    // Handle Node Navigation
+    if (
+      this.state.node !== null &&
+      this.props.params.nodeID !== this.state.node._id.toString()
+    ) {
+      this.setState(
+        {
+          node: null,
+          editFormToggle: false,
+          toggleNodeForm: false,
+          subtopicToggle: false,
+          subtopics: null,
+          sources: null,
+          files: null,
+          universe: null
+        },
+        () => {
+          this.props.nodeFullClear();
+          this.props.getNodeByID(this.props.params.nodeID);
+        }
+      );
+    }
+
     // Handle loaded Universe
     if (this.props.universe.universe !== null && this.state.universe === null) {
       this.setState({ universe: this.props.universe.universe });
@@ -199,6 +225,119 @@ class Node extends Component {
     this.setState({ toggleNodeForm: !this.state.toggleNodeForm });
   }
 
+  handleLineOutput() {
+    // render new lines
+    let count = 0,
+      lineArray = [],
+      { node } = this.state;
+
+    let imageStyle = {
+      maxHeight: "5em",
+      display: "block",
+      marginLeft: "auto",
+      marginRight: "auto"
+    };
+
+    // Split content into paragraphs
+    node.content.string.split("\n").forEach(line => {
+      if (line !== "") {
+        // Find Input Tags "<>"
+        let regex = /<.*?>/g;
+        let match = line.match(regex);
+        if (match) {
+          let rawLine = line;
+          line = [];
+          for (var i = 0; i < match.length; i++) {
+            line.push(<p>{rawLine.substring(0, rawLine.search(match[i]))}</p>);
+            if (match[i].includes("Image")) {
+              if (this.state.files) {
+                match[i].split(" ").forEach(section => {
+                  if (section.includes("img=")) {
+                    let quoteRegex = /"(?:[^"\\]|\\.)*"/;
+                    let fileName = section
+                      .match(quoteRegex)[0]
+                      .replace(/"/g, "");
+                    for (var i = 0; i < this.state.files.length; i++) {
+                      if (this.state.files[i].title === fileName) {
+                        line.push(
+                          <img
+                            style={imageStyle}
+                            src={this.state.files[i].content}
+                            alt={this.state.files[i].title}
+                          />
+                        );
+                        line.push(
+                          <p>
+                            {rawLine.substring(
+                              rawLine.search(section) + section.length,
+                              rawLine.length
+                            )}
+                          </p>
+                        );
+                      }
+                    }
+                  }
+                });
+              }
+            } else if (match[i].includes("Node")) {
+              let nodeArray = [];
+              if (this.state.subtopics && this.state.sources) {
+                nodeArray = this.state.subtopics.concat(this.state.sources);
+              } else if (this.state.subtopics) {
+                nodeArray = this.state.subtopics;
+              } else if (this.state.sources) {
+                nodeArray = this.state.sources;
+              }
+              let string = match[i];
+              match[i].split(" ").forEach(section => {
+                if (section.includes("id=")) {
+                  let quoteRegex = /"(?:[^"\\]|\\.)*"/;
+                  let nodeID = section.match(quoteRegex)[0].replace(/"/g, "");
+                  let text = string
+                    .substring(
+                      string.search(nodeID) + nodeID.length + 1,
+                      string.length
+                    )
+                    .match(quoteRegex)
+                    .toString()
+                    .replace(/"/g, "");
+                  for (var i = 0; i < nodeArray.length; i++) {
+                    let node = nodeArray[i][Object.keys(nodeArray[i])[1]];
+                    if (node._id.toString() === nodeID) {
+                      line.push(
+                        <Link to={`/node/${nodeID}`}>
+                          {text} ({node.title})
+                        </Link>
+                      );
+                      line.push(
+                        <p>
+                          {rawLine.substring(
+                            rawLine.search(string) + string.length,
+                            rawLine.length
+                          )}
+                        </p>
+                      );
+                    }
+                  }
+                }
+              });
+            }
+          }
+        }
+
+        lineArray.push(
+          <p style={{ color: "white" }} key={`line-${count}`}>
+            {line}
+          </p>
+        );
+      } else {
+        lineArray.push(<br />);
+      }
+      count++;
+    });
+    return lineArray;
+  }
+
   render() {
     let { editFormToggle, toggleNodeForm, universe } = this.state;
     let content;
@@ -209,17 +348,24 @@ class Node extends Component {
         nodeForm,
         subtopicToggleButtonText;
       let node = this.state.node;
+
       let fileArray = [];
       if (this.state.files && this.state.files.length > 0) {
         for (var i = 0; i < this.state.files.length; i++) {
-          if (this.state.files[i].includes("image")) {
+          if (this.state.files[i].content.includes("image")) {
             fileArray.push(
-              <img style={{ maxWidth: "80%" }} src={this.state.files[i]} />
+              <img
+                alt={this.state.files[i].title}
+                style={{ maxWidth: "80%" }}
+                src={this.state.files[i].content}
+              />
             );
           } else {
             fileArray.push(<p>This file is invalid</p>);
           }
         }
+      } else if (this.props.node.filesLoading) {
+        fileArray = <Spinner />;
       }
 
       if (editFormToggle) {
@@ -227,6 +373,9 @@ class Node extends Component {
           <div>
             <EditNodeForm
               singleNode={node}
+              files={this.state.files}
+              subtopics={this.state.subtopics}
+              sources={this.state.sources}
               private={!this.props.universe.universe.public}
             />
           </div>
@@ -340,23 +489,10 @@ class Node extends Component {
         );
       }
 
-      let lineArray, nodeContent;
+      let nodeContent;
       if (node.content.string) {
-        // render new lines
-        let count = 0;
-        lineArray = [];
-        node.content.string.split("\n").forEach(line => {
-          if (line !== "") {
-            lineArray.push(
-              <p style={{ color: "white" }} key={`line-${count}`}>
-                {line}
-              </p>
-            );
-          } else {
-            lineArray.push(<br />);
-          }
-          count++;
-        });
+        let lineArray = this.handleLineOutput();
+
         nodeContent = (
           <Paper
             style={{

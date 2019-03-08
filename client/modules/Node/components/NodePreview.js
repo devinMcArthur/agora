@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Link } from "react-router";
 import { browserHistory } from "react-router";
 import _ from "lodash";
 
@@ -22,9 +21,7 @@ import {
   clearNodes,
   clearNode,
   nodeFullClear,
-  deleteNode,
-  retrieveNodeFiles,
-  clearFiles
+  deleteNode
 } from "../NodeActions";
 import { getUniverse, clearUniverse } from "../../Universe/UniverseActions";
 
@@ -43,8 +40,7 @@ class NodePreview extends Component {
       toggleNodeForm: false,
       subtopicToggle,
       subtopics: null,
-      sources: null,
-      files: null
+      sources: null
     };
 
     this.toggleEditForm = this.toggleEditForm.bind(this);
@@ -56,9 +52,6 @@ class NodePreview extends Component {
     // Handle component loading
     let { node } = this.state;
     if (node) {
-      if (node.files && node.files.length > 0) {
-        this.props.retrieveNodeFiles(node._id);
-      }
       if (node.subtopicConnections && node.subtopicConnections.length > 0) {
         this.props.getSubtopics(node._id);
       }
@@ -94,16 +87,6 @@ class NodePreview extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    // Put loaded Files into State
-    if (
-      this.state.node &&
-      this.state.node.files.length > 0 &&
-      this.props.node.files !== null &&
-      this.state.files === null
-    ) {
-      this.setState({ files: this.props.node.files });
-      this.props.clearFiles();
-    }
     // Grab appropriate subtopics for this node
     if (
       this.props.node.subtopics !== null &&
@@ -145,9 +128,6 @@ class NodePreview extends Component {
         this.props.node.node.sourceConnections.length > 0
       ) {
         this.props.getSources(this.props.node.node._id);
-      }
-      if (this.props.node.node.files && this.props.node.node.files.length > 0) {
-        this.props.retrieveNodeFiles(this.props.node.node._id);
       }
     }
     // Update subtopicToggle
@@ -198,18 +178,6 @@ class NodePreview extends Component {
         nodeForm,
         subtopicToggleButtonText;
       let node = this.state.node;
-      let fileArray = [];
-      if (this.state.files && this.state.files.length > 0) {
-        for (var i = 0; i < this.state.files.length; i++) {
-          if (this.state.files[i].includes("image")) {
-            fileArray.push(
-              <img style={{ maxWidth: "80%" }} src={this.state.files[i]} />
-            );
-          } else {
-            fileArray.push(<p>This file is invalid</p>);
-          }
-        }
-      }
 
       if (editFormToggle) {
         editForm = (
@@ -396,7 +364,6 @@ class NodePreview extends Component {
             {nodeContent}
             <div>{subtopicJSX}</div>
             {subtopicToggleJSX}
-            {fileArray}
           </Paper>
         </div>
       );
@@ -447,8 +414,6 @@ export default connect(
     clearSubtopics,
     clearNodes,
     clearNode,
-    deleteNode,
-    retrieveNodeFiles,
-    clearFiles
+    deleteNode
   }
 )(NodePreview);
